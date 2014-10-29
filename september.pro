@@ -13,8 +13,17 @@ TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp\
-        septembereditor.cpp
+        septembereditor.cpp \
+    widgetstyle.cpp \
+    widgetuistyle.cpp \
+    searchandreplace.cpp
 
-HEADERS  += septembereditor.h
+HEADERS  += septembereditor.h \
+    widgetstyle.h \
+    widgetuistyle.h \
+    searchandreplace.h
 
-FORMS    += septembereditor.ui
+FORMS    += septembereditor.ui \
+    widgetstyle.ui \
+    widgetuistyle.ui \
+    searchandreplace.ui
