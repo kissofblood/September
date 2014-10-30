@@ -7,12 +7,15 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->setupUi(this);
     ui->widgetSearchAndReplace->setVisible(false);
     ui->widgetWidget->setVisible(false);
-    ui->widgetUI->setVisible(false);
+    //ui->widgetUI->setVisible(false);
 
-    this->connect(ui->btnCloseListFile, &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenListFile);
-    this->connect(ui->btnSearchAndReplace, &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetSearchAndReplace);
-    this->connect(ui->btnWidget, &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetWidget);
-    this->connect(ui->btnUi, &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetUI);
+    this->connect(ui->btnCloseListFile,     &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenListFile);
+    this->connect(ui->btnSearchAndReplace,  &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetSearchAndReplace);
+    this->connect(ui->btnWidget,            &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetWidget);
+    this->connect(ui->btnUi,                &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetUI);
+
+
+    qDebug()<<KeyWords::widget["QAbstractScrollArea"];
 }
 
 SeptemberEditor::~SeptemberEditor()

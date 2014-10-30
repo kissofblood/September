@@ -1,6 +1,7 @@
 #ifndef SEPTEMBEREDITOR_H
 #define SEPTEMBEREDITOR_H
 
+#include "qsskeywords.h"
 #include <QMainWindow>
 
 
@@ -32,7 +33,7 @@ private slots:
 
 private:
     Ui::SeptemberEditor         *ui = nullptr;
-    ClickedButton m_clickedButton;
+    ClickedButton               m_clickedButton;
 };
 
 #endif // SEPTEMBEREDITOR_H

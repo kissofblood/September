@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui uitools
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,12 +16,15 @@ SOURCES += main.cpp\
         septembereditor.cpp \
     widgetstyle.cpp \
     widgetuistyle.cpp \
-    searchandreplace.cpp
+    searchandreplace.cpp \
+    viewwidgetui.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \
     widgetuistyle.h \
-    searchandreplace.h
+    searchandreplace.h \
+    qsskeywords.h \
+    viewwidgetui.h
 
 FORMS    += septembereditor.ui \
     widgetstyle.ui \
