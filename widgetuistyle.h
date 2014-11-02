@@ -32,7 +32,7 @@ private:
         void setViewWidgetUi(QBuffer* bufferUi);
 
     private:
-        QWidget         *m_view     = new QWidget;
+        QWidget         *m_view     = nullptr;
         QPushButton     *m_close    = new QPushButton("Закрыть");
     };
 

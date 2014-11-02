@@ -1,7 +1,5 @@
 #include "graphicswidget.h"
 
-#include <QtDebug>
-
 GraphicsWidget::GraphicsWidget(QWidget* wgt, QGraphicsItem* parent) : QGraphicsItem(parent)
     , m_rectWidget(0, 0, wgt->width() + 3, wgt->height() + 3)
 {
@@ -17,7 +15,7 @@ GraphicsWidget::GraphicsWidget(QWidget* wgt, QGraphicsItem* parent) : QGraphicsI
     m_rectBottomLeft->setCursor(Qt::SizeBDiagCursor);
     m_rectMidLeft->setCursor(Qt::SizeHorCursor);
 
-    pointerRect(m_rectWidget);
+    pointerRect();
     setVisibleRect(false);
 
     this->setAcceptHoverEvents(true);
@@ -60,7 +58,6 @@ void GraphicsWidget::resizeRect(const QPointF& point, Rect* r)
 
     QSizeF sizeRectWidget = rectWgt.size();
     QSizeF sizeProxyWidget = m_proxyWidget->minimumSize();
-    qDebug()<<sizeProxyWidget;
     if(sizeRectWidget.width() > sizeProxyWidget.width() + 3
         && sizeRectWidget.height() > sizeProxyWidget.height() + 3)
     {
@@ -68,20 +65,20 @@ void GraphicsWidget::resizeRect(const QPointF& point, Rect* r)
         m_rectWidget = rectWgt;
         QRectF rectProxyWgt(rectWgt.x() + 2, rectWgt.y() + 2, rectWgt.width() - 3, rectWgt.height() - 3);
         m_proxyWidget->setGeometry(rectProxyWgt);
-        pointerRect(m_rectWidget);
+        pointerRect();
     }
 }
 
-void GraphicsWidget::pointerRect(const QRectF& r)
+void GraphicsWidget::pointerRect()
 {
-    m_rectTopLeft->setRect(r.left() - 3, r.top() - 3, 6, 6);
-    m_rectTopMid->setRect(r.left() + r.width() / 2 - 3, r.top() - 3, 6, 6);
-    m_rectTopRight->setRect(r.right() - 3, r.top() - 3, 6, 6);
-    m_rectMidRight->setRect(r.right() - 3, r.top() + r.height() / 2 - 3, 6, 6);
-    m_rectBottomRight->setRect(r.right() - 3, r.bottom() - 3, 6, 6);
-    m_rectBottomMid->setRect(r.left() + r.width() / 2 - 3, r.bottom() - 3, 6, 6);
-    m_rectBottomLeft->setRect(r.left() - 3, r.bottom() - 3, 6, 6);
-    m_rectMidLeft->setRect(r.left() - 3, r.top() + r.height() / 2 - 3, 6, 6);
+    m_rectTopLeft->setRect(m_rectWidget.left() - 3, m_rectWidget.top() - 3, 6, 6);
+    m_rectTopMid->setRect(m_rectWidget.left() + m_rectWidget.width() / 2 - 3, m_rectWidget.top() - 3, 6, 6);
+    m_rectTopRight->setRect(m_rectWidget.right() - 3, m_rectWidget.top() - 3, 6, 6);
+    m_rectMidRight->setRect(m_rectWidget.right() - 3, m_rectWidget.top() + m_rectWidget.height() / 2 - 3, 6, 6);
+    m_rectBottomRight->setRect(m_rectWidget.right() - 3, m_rectWidget.bottom() - 3, 6, 6);
+    m_rectBottomMid->setRect(m_rectWidget.left() + m_rectWidget.width() / 2 - 3, m_rectWidget.bottom() - 3, 6, 6);
+    m_rectBottomLeft->setRect(m_rectWidget.left() - 3, m_rectWidget.bottom() - 3, 6, 6);
+    m_rectMidLeft->setRect(m_rectWidget.left() - 3, m_rectWidget.top() + m_rectWidget.height() / 2 - 3, 6, 6);
 }
 
 void GraphicsWidget::setVisibleRect(bool value)
@@ -171,5 +168,6 @@ void GraphicsWidget::ProxyWidget::keyPressEvent(QKeyEvent* event)
 void GraphicsWidget::ProxyWidget::keyReleaseEvent(QKeyEvent* event)
 {
     this->setCursor(Qt::ArrowCursor);
+    m_keyboard = Qt::NoModifier;
     QGraphicsProxyWidget::keyReleaseEvent(event);
 }

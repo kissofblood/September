@@ -51,7 +51,6 @@ void WidgetUiStyle::showFull()
 WidgetUiStyle::ShowFullWidgetUi::ShowFullWidgetUi(QWidget* parent) : QDialog(parent)
 {
     QVBoxLayout* box = new QVBoxLayout;
-    box->addWidget(m_view);
     box->addWidget(m_close);
     this->setLayout(box);
 
@@ -61,9 +60,12 @@ WidgetUiStyle::ShowFullWidgetUi::ShowFullWidgetUi(QWidget* parent) : QDialog(par
 void WidgetUiStyle::ShowFullWidgetUi::setViewWidgetUi(QBuffer* bufferUi)
 {
     QBoxLayout* l = qobject_cast<QBoxLayout*>(this->layout());
-    l->removeWidget(m_view);
-    m_view->layout()->deleteLater();
-    m_view->deleteLater();
+    if(m_view != nullptr)
+    {
+        l->removeWidget(m_view);
+        m_view->deleteLater();
+        m_view = nullptr;
+    }
 
     m_view = new QWidget;
     l->insertWidget(0, m_view);

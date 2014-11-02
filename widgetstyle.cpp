@@ -16,11 +16,15 @@ WidgetStyle::WidgetStyle(QWidget* parent) : QWidget(parent),
             ui->listWidget->addItem(key);
         }
 
-    ui->view->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    m_scene = new WidgetScene(0, 0, 5000, 5000, this);
     ui->view->setScene(m_scene);
 
-    this->connect(ui->lineEdit, &QLineEdit::textChanged, this, &WidgetStyle::filterListWidget);
-    this->connect(ui->btnAddWidget, &QPushButton::clicked, this, &WidgetStyle::selectWidget);
+    ui->view->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+
+    this->connect(ui->lineEdit,     &QLineEdit::textChanged,    this, &WidgetStyle::filterListWidget);
+    this->connect(ui->btnAddWidget, &QPushButton::clicked,      this, &WidgetStyle::selectWidget);
+    this->connect(ui->btnWidgetRemove, &QPushButton::clicked,   this, &WidgetStyle::deleteWidget);
+    this->connect(ui->btnClear,     &QPushButton::clicked,      this, &WidgetStyle::clearScene);
 }
 
 WidgetStyle::~WidgetStyle()
@@ -42,17 +46,27 @@ void WidgetStyle::filterListWidget()
 
 void WidgetStyle::selectWidget()
 {
-    static bool flag = true;
     QListWidgetItem* item = ui->listWidget->currentItem();
     if(item == nullptr)
         return;
     QWidget* widget = createWidget(item->text());
-    if(flag)
+    if(m_scene == nullptr)
     {
-        m_scene->setSceneRect(0, 0, 5000, 5000);
-        flag = false;
+        m_scene = new WidgetScene(0, 0, 5000, 5000, this);
+        ui->view->setScene(m_scene);
     }
     m_scene->addItem(new GraphicsWidget(widget));
+}
+
+void WidgetStyle::deleteWidget()
+{
+
+}
+
+void WidgetStyle::clearScene()
+{
+    m_scene->deleteLater();
+    m_scene = nullptr;
 }
 
 QWidget* WidgetStyle::createWidget(const QString& name)
@@ -99,7 +113,7 @@ QWidget* WidgetStyle::createWidget(const QString& name)
     else if(name == "DoubleSpinBox")
     {
         QDoubleSpinBox* box = new QDoubleSpinBox;
-        box->resize(31, 38);
+        box->resize(71, 38);
         return box;
     }
     else if(name == "Frame") //??
@@ -110,7 +124,7 @@ QWidget* WidgetStyle::createWidget(const QString& name)
     }
     else if(name == "GroupBox")
     {
-        QGroupBox* box = new QGroupBox;
+        QGroupBox* box = new QGroupBox("GroupBox");
         box->resize(150, 100);
         return box;
     }
@@ -286,7 +300,8 @@ QWidget* WidgetStyle::createWidget(const QString& name)
         QToolBox* box = new QToolBox;
         box->addItem(new QWidget, "Widget1");
         box->addItem(new QWidget, "Widget2");
-        box->resize(100, 140);
+        box->addItem(new QWidget, "Widget3");
+        box->resize(100, 170);
         return box;
     }
     else if(name == "TreeView")
@@ -308,4 +323,38 @@ QWidget* WidgetStyle::createWidget(const QString& name)
         return widget;
     }
     return nullptr;
+}
+
+WidgetStyle::WidgetScene::WidgetScene(qreal x, qreal y, qreal widht, qreal height, QObject* parent) : QGraphicsScene(x, y, widht, height, parent)
+{ }
+
+void WidgetStyle::WidgetScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
+{
+    m_rectItem = this->addRect(event->scenePos().x(), event->scenePos().y(), 0, 0);
+    m_topLeft = event->scenePos();
+    QGraphicsScene::mousePressEvent(event);
+}
+
+void WidgetStyle::WidgetScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+{
+    if(m_rectItem != nullptr)
+    {
+        QRectF rect = m_rectItem->rect();
+        QPointF point = event->scenePos();
+        qDebug()<<rect<<point;
+        if(point.y() > m_topLeft.y() && point.x() > m_topLeft.x())
+        {
+            qDebug()<<"FDS";
+            rect.setBottomRight(point);
+        }
+        else if(point.y() < m_topLeft.y() && point.x() < m_topLeft.x())
+        {
+            qDebug()<<"FSD";
+            m_topLeft = rect.bottomRight();
+            rect.setTopRight(point);
+        }
+
+        m_rectItem->setRect(rect);
+    }
+    QGraphicsScene::mouseMoveEvent(event);
 }

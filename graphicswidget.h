@@ -33,7 +33,7 @@ private:
         ~Rect() override = default;
 
     private:
-        GraphicsWidget     *m_rectWidget   = nullptr;
+        GraphicsWidget      *m_rectWidget   = nullptr;
         Qt::MouseButton     m_mouseButton  = Qt::NoButton;
 
         void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -71,7 +71,7 @@ private:
     bool        m_hideRect;
 
     void resizeRect(const QPointF& point, Rect* r);
-    void pointerRect(const QRectF& r);
+    void pointerRect();
     void setVisibleRect(bool value);
     void hoverEnterEvent(QGraphicsSceneHoverEvent*) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent*) override;

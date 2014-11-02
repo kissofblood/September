@@ -21,10 +21,26 @@ public:
 private slots:
     void filterListWidget();
     void selectWidget();
+    void deleteWidget();
+    void clearScene();
 
 private:
+    class WidgetScene : public QGraphicsScene
+    {
+    public:
+        WidgetScene(qreal x, qreal y, qreal widht, qreal height, QObject* parent = nullptr);
+        ~WidgetScene() override = default;
+
+    private:
+        QGraphicsRectItem*  m_rectItem = nullptr;
+        QPointF             m_topLeft;
+
+        void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+        void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
+    };
+
     Ui::WidgetStyle     *ui             = nullptr;
-    QGraphicsScene      *m_scene        = new QGraphicsScene(this);
+    WidgetScene         *m_scene        = nullptr;
 
     QWidget* createWidget(const QString& name);
 };
