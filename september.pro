@@ -17,14 +17,16 @@ SOURCES += main.cpp\
     widgetstyle.cpp \
     widgetuistyle.cpp \
     searchandreplace.cpp \
-    viewwidgetui.cpp
+    viewwidgetui.cpp \
+    graphicswidget.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \
     widgetuistyle.h \
     searchandreplace.h \
     qsskeywords.h \
-    viewwidgetui.h
+    viewwidgetui.h \
+    graphicswidget.h
 
 FORMS    += septembereditor.ui \
     widgetstyle.ui \

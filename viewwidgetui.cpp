@@ -12,4 +12,5 @@ void ViewWidgetUi::wheelEvent(QWheelEvent* event)
         else
             this->scale(1 / 1.1, 1 / 1.1);
     }
+    QGraphicsView::wheelEvent(event);
 }

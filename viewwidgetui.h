@@ -2,11 +2,11 @@
 #define VIEWWIDGETUI_H
 
 #include <QWidget>
-#include <QtWidgets>
+#include <QGraphicsView>
+#include <QWheelEvent>
 
 class ViewWidgetUi : public QGraphicsView
 {
-    Q_OBJECT
 public:
     explicit ViewWidgetUi(QWidget* parent = nullptr);
     ~ViewWidgetUi() override = default;
