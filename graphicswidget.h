@@ -16,7 +16,6 @@
 #include <QBrush>
 #include <QPen>
 #include <QGraphicsColorizeEffect>
-#include <QPainterPath>
 #include <QColor>
 
 class GraphicsWidget : public QGraphicsItem
@@ -26,9 +25,10 @@ public:
     ~GraphicsWidget() override;
 
     QRectF boundingRect() const override;
-    QPainterPath shape() const override;
+    bool contains(const QPointF& point) const override;
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = nullptr) override;
     void selectWidget(bool value);
+    QRectF boundingRectToScene();
 
 private:
     class Rect : public QGraphicsRectItem

@@ -33,12 +33,8 @@ QRectF GraphicsWidget::boundingRect() const
                   m_rectWidget.width() + 6, m_rectWidget.height() + 6);
 }
 
-QPainterPath GraphicsWidget::shape() const
-{
-    QPainterPath path;
-    path.addRect(this->mapToScene(boundingRect()).boundingRect());
-    return path;
-}
+bool GraphicsWidget::contains(const QPointF& point) const
+{ return this->mapToScene(boundingRect()).boundingRect().contains(point); }
 
 void GraphicsWidget::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
@@ -56,6 +52,9 @@ void GraphicsWidget::selectWidget(bool value)
     else
         m_effect->setStrength(0);
 }
+
+QRectF GraphicsWidget::boundingRectToScene()
+{ return this->mapToScene(boundingRect()).boundingRect(); }
 
 void GraphicsWidget::resizeRect(const QPointF& point, Rect* r)
 {

@@ -118,7 +118,7 @@ QWidget* WidgetStyle::createWidget(const QString& name)
     else if(name == "DoubleSpinBox")
     {
         QDoubleSpinBox* box = new QDoubleSpinBox;
-        box->resize(71, 38);
+        box->resize(80, 38);
         return box;
     }
     else if(name == "Frame") //??
@@ -335,7 +335,7 @@ void WidgetStyle::distinguishRect(const QRectF& rect)
     m_deleteGraphicsWgt_.clear();
     for(GraphicsWidget* wgt : m_graphicsWgt_)
     {
-        if(rect.intersects(wgt->shape().boundingRect()))
+        if(rect.intersects(wgt->boundingRectToScene()))
         {
             wgt->selectWidget(true);
             m_deleteGraphicsWgt_.push_back(wgt);
