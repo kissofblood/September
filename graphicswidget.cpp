@@ -1,10 +1,13 @@
 #include "graphicswidget.h"
 
 GraphicsWidget::GraphicsWidget(QWidget* wgt, QGraphicsItem* parent) : QGraphicsItem(parent)
-    , m_rectWidget(0, 0, wgt->width() + 3, wgt->height() + 3)
+    , m_rectWidget(3, 3, wgt->width() + 3, wgt->height() + 3)
 {
+    m_effect->setColor(QColor(103, 157, 205));
+    m_effect->setStrength(0);
     m_proxyWidget->setWidget(wgt);
-    m_proxyWidget->setPos(2, 2);
+    m_proxyWidget->setPos(5, 5);
+    m_proxyWidget->setGraphicsEffect(m_effect);
 
     m_rectTopLeft->setCursor(Qt::SizeFDiagCursor);
     m_rectTopMid->setCursor(Qt::SizeVerCursor);
@@ -21,10 +24,20 @@ GraphicsWidget::GraphicsWidget(QWidget* wgt, QGraphicsItem* parent) : QGraphicsI
     this->setAcceptHoverEvents(true);
 }
 
+GraphicsWidget::~GraphicsWidget()
+{ delete m_effect; }
+
 QRectF GraphicsWidget::boundingRect() const
 {
     return QRectF(m_rectWidget.x() - 3, m_rectWidget.y() - 3,
                   m_rectWidget.width() + 6, m_rectWidget.height() + 6);
+}
+
+QPainterPath GraphicsWidget::shape() const
+{
+    QPainterPath path;
+    path.addRect(this->mapToScene(boundingRect()).boundingRect());
+    return path;
 }
 
 void GraphicsWidget::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
@@ -34,6 +47,14 @@ void GraphicsWidget::paint(QPainter* painter, const QStyleOptionGraphicsItem*, Q
         painter->setPen(Qt::blue);
         painter->drawRect(m_rectWidget);
     }
+}
+
+void GraphicsWidget::selectWidget(bool value)
+{
+    if(value)
+        m_effect->setStrength(1.0);
+    else
+        m_effect->setStrength(0);
 }
 
 void GraphicsWidget::resizeRect(const QPointF& point, Rect* r)

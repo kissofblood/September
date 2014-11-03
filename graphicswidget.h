@@ -15,15 +15,20 @@
 #include <QSizeF>
 #include <QBrush>
 #include <QPen>
+#include <QGraphicsColorizeEffect>
+#include <QPainterPath>
+#include <QColor>
 
 class GraphicsWidget : public QGraphicsItem
 {
 public:
     GraphicsWidget(QWidget* wgt, QGraphicsItem* parent = nullptr);
-    ~GraphicsWidget() override = default;
+    ~GraphicsWidget() override;
 
     QRectF boundingRect() const override;
+    QPainterPath shape() const override;
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = nullptr) override;
+    void selectWidget(bool value);
 
 private:
     class Rect : public QGraphicsRectItem
@@ -55,7 +60,7 @@ private:
         void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
         void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
         void keyPressEvent(QKeyEvent* event) override;
-        void keyReleaseEvent(QKeyEvent*event) override;
+        void keyReleaseEvent(QKeyEvent* event) override;
     };
 
     Rect    *m_rectTopLeft      = new Rect(this);
@@ -67,12 +72,14 @@ private:
     Rect    *m_rectBottomLeft   = new Rect(this);
     Rect    *m_rectMidLeft      = new Rect(this);
     ProxyWidget *m_proxyWidget  = new ProxyWidget(this);
+    QGraphicsColorizeEffect     *m_effect = new QGraphicsColorizeEffect;
     QRectF      m_rectWidget;
     bool        m_hideRect;
 
     void resizeRect(const QPointF& point, Rect* r);
     void pointerRect();
     void setVisibleRect(bool value);
+    void moveRectWidget();
     void hoverEnterEvent(QGraphicsSceneHoverEvent*) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent*) override;
 };

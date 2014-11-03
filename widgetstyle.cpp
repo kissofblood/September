@@ -16,9 +16,6 @@ WidgetStyle::WidgetStyle(QWidget* parent) : QWidget(parent),
             ui->listWidget->addItem(key);
         }
 
-    m_scene = new WidgetScene(0, 0, 5000, 5000, this);
-    ui->view->setScene(m_scene);
-
     ui->view->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
     this->connect(ui->lineEdit,     &QLineEdit::textChanged,    this, &WidgetStyle::filterListWidget);
@@ -55,18 +52,26 @@ void WidgetStyle::selectWidget()
         m_scene = new WidgetScene(0, 0, 5000, 5000, this);
         ui->view->setScene(m_scene);
     }
-    m_scene->addItem(new GraphicsWidget(widget));
+    m_graphicsWgt_.push_back(new GraphicsWidget(widget));
+    m_scene->addItem(m_graphicsWgt_.back());
 }
 
 void WidgetStyle::deleteWidget()
 {
-
+    for(GraphicsWidget* wgt : m_deleteGraphicsWgt_)
+    {
+        m_scene->removeItem(wgt);
+        m_graphicsWgt_.erase(qFind(m_graphicsWgt_.begin(), m_graphicsWgt_.end(), wgt));
+        delete wgt;
+    }
+    m_deleteGraphicsWgt_.clear();
 }
 
 void WidgetStyle::clearScene()
 {
     m_scene->deleteLater();
     m_scene = nullptr;
+    m_graphicsWgt_.clear();
 }
 
 QWidget* WidgetStyle::createWidget(const QString& name)
@@ -89,13 +94,13 @@ QWidget* WidgetStyle::createWidget(const QString& name)
     else if(name == "DateEdit")
     {
         QDateEdit* date = new QDateEdit;
-        date->resize(95, 26);
+        date->resize(105, 30);
         return date;
     }
     else if(name == "DateTimeEdit")
     {
         QDateTimeEdit* date = new QDateTimeEdit;
-        date->resize(140, 27);
+        date->resize(155, 27);
         return date;
     }
     else if(name == "Dialog")
@@ -325,36 +330,102 @@ QWidget* WidgetStyle::createWidget(const QString& name)
     return nullptr;
 }
 
+void WidgetStyle::distinguishRect(const QRectF& rect)
+{
+    m_deleteGraphicsWgt_.clear();
+    for(GraphicsWidget* wgt : m_graphicsWgt_)
+    {
+        if(rect.intersects(wgt->shape().boundingRect()))
+        {
+            wgt->selectWidget(true);
+            m_deleteGraphicsWgt_.push_back(wgt);
+        }
+        else
+        {
+            auto iter = qFind(m_deleteGraphicsWgt_.begin(), m_deleteGraphicsWgt_.end(), wgt);
+            if(iter != m_deleteGraphicsWgt_.end())
+                m_deleteGraphicsWgt_.erase(iter);
+            wgt->selectWidget(false);
+        }
+    }
+}
+
+bool WidgetStyle::containsWidget(const QPointF& point)
+{
+    for(GraphicsWidget* wgt : m_graphicsWgt_)
+        if(wgt->contains(point))
+            return true;
+    return false;
+}
+
 WidgetStyle::WidgetScene::WidgetScene(qreal x, qreal y, qreal widht, qreal height, QObject* parent) : QGraphicsScene(x, y, widht, height, parent)
+    , m_wgtStyle(qobject_cast<WidgetStyle*>(parent))
 { }
 
 void WidgetStyle::WidgetScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-    m_rectItem = this->addRect(event->scenePos().x(), event->scenePos().y(), 0, 0);
-    m_topLeft = event->scenePos();
+    if(event->button() == Qt::LeftButton)
+    {
+        QPointF point = event->scenePos();
+        if(m_wgtStyle->containsWidget(point))
+            m_mouseButton = Qt::NoButton;
+        else
+        {
+            m_rectItem = this->addRect(point.x(), point.y(), 0, 0);
+            m_rectItem->setPen(QPen(QColor(103, 157, 205)));
+            m_rectItem->setBrush(QBrush(QColor(200, 218, 231, 100)));
+            m_topLeftRect = event->scenePos();
+            m_mouseButton = Qt::LeftButton;
+            m_wgtStyle->distinguishRect(m_rectItem->rect());
+        }
+    }
+    else
+        m_mouseButton = Qt::NoButton;
     QGraphicsScene::mousePressEvent(event);
 }
 
 void WidgetStyle::WidgetScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
-    if(m_rectItem != nullptr)
+    if(m_mouseButton == Qt::LeftButton)
     {
         QRectF rect = m_rectItem->rect();
         QPointF point = event->scenePos();
-        qDebug()<<rect<<point;
-        if(point.y() > m_topLeft.y() && point.x() > m_topLeft.x())
+
+        if(point.x() >= m_topLeftRect.x() && point.y() >= m_topLeftRect.y())
         {
-            qDebug()<<"FDS";
+            rect.setTopLeft(m_topLeftRect);
             rect.setBottomRight(point);
         }
-        else if(point.y() < m_topLeft.y() && point.x() < m_topLeft.x())
+        else if(point.x() >= m_topLeftRect.x() && point.y() <= m_topLeftRect.y())
         {
-            qDebug()<<"FSD";
-            m_topLeft = rect.bottomRight();
+            rect.setTopLeft(m_topLeftRect);
             rect.setTopRight(point);
         }
-
+        else if(point.x() <= m_topLeftRect.x() && point.y() >= m_topLeftRect.y())
+        {
+            rect.setTopLeft(m_topLeftRect);
+            rect.setBottomLeft(point);
+        }
+        else if(point.x() <= m_topLeftRect.x() && point.y() <= m_topLeftRect.y())
+        {
+            rect.setTopLeft(m_topLeftRect);
+            rect.setTopLeft(point);
+        }
         m_rectItem->setRect(rect);
+        m_wgtStyle->distinguishRect(rect);
     }
     QGraphicsScene::mouseMoveEvent(event);
+}
+
+void WidgetStyle::WidgetScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+{
+    if(m_mouseButton != Qt::NoButton)
+    {
+        m_mouseButton = Qt::NoButton;
+        this->removeItem(m_rectItem);
+        delete m_rectItem;
+        m_rectItem = nullptr;
+    }
+
+    QGraphicsScene::mouseReleaseEvent(event);
 }

@@ -32,17 +32,24 @@ private:
         ~WidgetScene() override = default;
 
     private:
-        QGraphicsRectItem*  m_rectItem = nullptr;
-        QPointF             m_topLeft;
+        WidgetStyle         *m_wgtStyle = nullptr;
+        QGraphicsRectItem   *m_rectItem = nullptr;
+        QPointF             m_topLeftRect;
+        Qt::MouseButton     m_mouseButton = Qt::NoButton;
 
         void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
         void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
+        void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
     };
 
-    Ui::WidgetStyle     *ui             = nullptr;
-    WidgetScene         *m_scene        = nullptr;
+    Ui::WidgetStyle             *ui             = nullptr;
+    WidgetScene                 *m_scene        = nullptr;
+    QVector<GraphicsWidget*>    m_graphicsWgt_;
+    QVector<GraphicsWidget*>    m_deleteGraphicsWgt_;
 
     QWidget* createWidget(const QString& name);
+    void distinguishRect(const QRectF& rect);
+    bool containsWidget(const QPointF& point);
 };
 
 #endif // WIDGETSTYLE_H
