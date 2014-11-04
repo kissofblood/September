@@ -2,7 +2,8 @@
 #include "ui_widgetstyle.h"
 
 WidgetStyle::WidgetStyle(QWidget* parent) : QWidget(parent),
-    ui(new Ui::WidgetStyle)
+    ui(new Ui::WidgetStyle),
+    m_editor(qobject_cast<SeptemberEditor*>(parent->parent()))
 {
     ui->setupUi(this);
     for(auto& str : KeyWords::widget)
@@ -22,6 +23,8 @@ WidgetStyle::WidgetStyle(QWidget* parent) : QWidget(parent),
     this->connect(ui->btnAddWidget, &QPushButton::clicked,      this, &WidgetStyle::selectWidget);
     this->connect(ui->btnWidgetRemove, &QPushButton::clicked,   this, &WidgetStyle::deleteWidget);
     this->connect(ui->btnClear,     &QPushButton::clicked,      this, &WidgetStyle::clearScene);
+    this->connect(m_editor, &SeptemberEditor::updateStyleSheet, this, [this](const QString& style)
+    { std::for_each(m_graphicsWgt_.begin(), m_graphicsWgt_.end(), std::bind(&GraphicsWidget::setStyleSheet, std::placeholders::_1, style)); });
 }
 
 WidgetStyle::~WidgetStyle()
@@ -53,6 +56,7 @@ void WidgetStyle::selectWidget()
         ui->view->setScene(m_scene);
     }
     m_graphicsWgt_.push_back(new GraphicsWidget(widget));
+    m_graphicsWgt_.back()->setStyleSheet(m_editor->styleSheet());
     m_scene->addItem(m_graphicsWgt_.back());
 }
 

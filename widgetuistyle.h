@@ -1,11 +1,19 @@
 #ifndef WIDGETUISTYLE_H
 #define WIDGETUISTYLE_H
 
+#include "septembereditor.h"
 #include <QWidget>
-
+#include <QDialog>
+#include <QPushButton>
+#include <QBuffer>
+#include <QtUiTools/QUiLoader>
+#include <QList>
+#include <QGraphicsItem>
+#include <QGraphicsProxyWidget>
+#include <QGraphicsScene>
+#include <QString>
 
 #include <QtWidgets>
-#include <QtUiTools/QUiLoader>
 
 namespace Ui {
 class WidgetUiStyle;
@@ -21,6 +29,7 @@ public:
 private slots:
     void openUI();
     void showFull();
+    void setStyleSheetWidget(const QString& style);
 
 private:
     class ShowFullWidgetUi : public QDialog
@@ -30,6 +39,7 @@ private:
         ~ShowFullWidgetUi() override = default;
 
         void setViewWidgetUi(QBuffer* bufferUi);
+        void setStyleSheetDialog(const QString& style);
 
     private:
         QWidget         *m_view     = nullptr;
@@ -39,6 +49,7 @@ private:
     Ui::WidgetUiStyle       *ui             = nullptr;
     QGraphicsScene          *m_sceneView    = nullptr;
     QBuffer                 *m_bufferUi     = nullptr;
+    SeptemberEditor         *m_editor    = nullptr;
     ShowFullWidgetUi        *m_showFull     = new ShowFullWidgetUi(this);
 };
 

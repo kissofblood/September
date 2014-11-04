@@ -17,6 +17,7 @@
 #include <QPen>
 #include <QGraphicsColorizeEffect>
 #include <QColor>
+#include <QString>
 
 class GraphicsWidget : public QGraphicsItem
 {
@@ -29,6 +30,7 @@ public:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = nullptr) override;
     void selectWidget(bool value);
     QRectF boundingRectToScene();
+    void setStyleSheet(const QString& styleSheet);
 
 private:
     class Rect : public QGraphicsRectItem
@@ -39,7 +41,7 @@ private:
 
     private:
         GraphicsWidget      *m_rectWidget   = nullptr;
-        Qt::MouseButton     m_mouseButton  = Qt::NoButton;
+        Qt::MouseButton     m_mouseButton   = Qt::NoButton;
 
         void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
         void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
@@ -80,8 +82,8 @@ private:
     void pointerRect();
     void setVisibleRect(bool value);
     void moveRectWidget();
-    void hoverEnterEvent(QGraphicsSceneHoverEvent*) override;
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent*) override;
+    void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent* event) override;
 };
 
 #endif // GRAPHICSWIDGET_H

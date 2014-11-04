@@ -56,6 +56,9 @@ void GraphicsWidget::selectWidget(bool value)
 QRectF GraphicsWidget::boundingRectToScene()
 { return this->mapToScene(boundingRect()).boundingRect(); }
 
+void GraphicsWidget::setStyleSheet(const QString& styleSheet)
+{ m_proxyWidget->widget()->setStyleSheet(styleSheet); }
+
 void GraphicsWidget::resizeRect(const QPointF& point, Rect* r)
 {
     QRectF rectWgt = m_rectWidget;
@@ -115,11 +118,17 @@ void GraphicsWidget::setVisibleRect(bool value)
     this->update();
 }
 
-void GraphicsWidget::hoverEnterEvent(QGraphicsSceneHoverEvent*)
-{ setVisibleRect(true); }
+void GraphicsWidget::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+{
+    setVisibleRect(true);
+    QGraphicsItem::hoverEnterEvent(event);
+}
 
-void GraphicsWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
-{ setVisibleRect(false); }
+void GraphicsWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
+{
+    setVisibleRect(false);
+    QGraphicsItem::hoverLeaveEvent(event);
+}
 
 GraphicsWidget::Rect::Rect(QGraphicsItem* parent) : QGraphicsRectItem(parent)
     , m_rectWidget(qgraphicsitem_cast<GraphicsWidget*>(parent))

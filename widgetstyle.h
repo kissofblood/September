@@ -2,8 +2,11 @@
 #define WIDGETSTYLE_H
 
 #include "qsskeywords.h"
+#include "septembereditor.h"
 #include "graphicswidget.h"
 #include <QWidget>
+#include <algorithm>
+#include <functional>
 
 #include <QtWidgets>
 
@@ -44,6 +47,7 @@ private:
 
     Ui::WidgetStyle             *ui             = nullptr;
     WidgetScene                 *m_scene        = nullptr;
+    SeptemberEditor             *m_editor       = nullptr;
     QVector<GraphicsWidget*>    m_graphicsWgt_;
     QVector<GraphicsWidget*>    m_deleteGraphicsWgt_;
 

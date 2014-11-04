@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     widgetuistyle.cpp \
     searchandreplace.cpp \
     viewwidgetui.cpp \
-    graphicswidget.cpp
+    graphicswidget.cpp \
+    coreeditor.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \
@@ -26,7 +27,8 @@ HEADERS  += septembereditor.h \
     searchandreplace.h \
     qsskeywords.h \
     viewwidgetui.h \
-    graphicswidget.h
+    graphicswidget.h \
+    coreeditor.h
 
 FORMS    += septembereditor.ui \
     widgetstyle.ui \

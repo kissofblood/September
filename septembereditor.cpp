@@ -6,19 +6,26 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
 {
     ui->setupUi(this);
     ui->widgetSearchAndReplace->setVisible(false);
-    //ui->widgetWidget->setVisible(false);
+    ui->widgetWidget->setVisible(false);
     ui->widgetUI->setVisible(false);
+
+    this->setObjectName("fdj0i93489thj59t5");
 
     this->connect(ui->btnCloseListFile,     &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenListFile);
     this->connect(ui->btnSearchAndReplace,  &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetSearchAndReplace);
     this->connect(ui->btnWidget,            &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetWidget);
     this->connect(ui->btnUi,                &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetUI);
+    this->connect(ui->plainTextEdit, &CoreEditor::textChanged, this, [this]()
+    { emit updateStyleSheet(ui->plainTextEdit->document()->toPlainText()); });
 }
 
 SeptemberEditor::~SeptemberEditor()
 {
     delete ui;
 }
+
+QString SeptemberEditor::styleSheet() const
+{ return ui->plainTextEdit->document()->toPlainText(); }
 
 void SeptemberEditor::closeOrOpenListFile()
 {

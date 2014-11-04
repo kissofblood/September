@@ -25,6 +25,11 @@ public:
     explicit SeptemberEditor(QWidget* parent = nullptr);
     ~SeptemberEditor() override;
 
+    QString styleSheet() const;
+
+signals:
+    void updateStyleSheet(const QString& text);
+
 private slots:
     void closeOrOpenListFile();
     void closeOrOpenWidgetSearchAndReplace();
