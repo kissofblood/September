@@ -6,7 +6,7 @@ WidgetStyle::WidgetStyle(QWidget* parent) : QWidget(parent),
     m_editor(qobject_cast<SeptemberEditor*>(parent->parent()))
 {
     ui->setupUi(this);
-    for(auto& str : KeyWords::widget)
+    for(auto& str : KeyWords::keyWordsFromFile("listOfStylableWidgets"))
         if(str != "QAbstractScrollArea" && str != "QColumnView" && str != "QDialogButtonBox"
            && str != "QHeaderView" && str != "QMessageBox" && str != "QSizeGrip"
             && str != "QStatusBar" && str != "QTabBar" && str != "QToolBar"

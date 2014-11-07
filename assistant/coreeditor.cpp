@@ -3,7 +3,8 @@
 CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
 {
     m_completer->setWidget(this);
-    m_completer->setModel(new QStringListModel(KeyWords::widget, this));
+    m_completer->setModel(new QStringListModel(KeyWords::keyWordsFromFile("listOfStylableWidgets")
+                                             + KeyWords::keyWordsFromFile("listOfProperties"), this));
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_completer->setCompletionMode(QCompleter::PopupCompletion);
 
@@ -129,8 +130,6 @@ void CoreEditor::keyPressEvent(QKeyEvent* event)
         }
 
     if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_Space)
-        flagKey = true;
-    if((flagKey && event->key() == Qt::Key_Backspace) || flagKey)
         flagKey = true;
 
     if(!(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_Space))

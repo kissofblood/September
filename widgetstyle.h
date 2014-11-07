@@ -1,7 +1,7 @@
 #ifndef WIDGETSTYLE_H
 #define WIDGETSTYLE_H
 
-#include "qsskeywords.h"
+#include "keywords.h"
 #include "septembereditor.h"
 #include "graphicswidget.h"
 #include <QWidget>

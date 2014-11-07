@@ -1,7 +1,7 @@
 #ifndef COREEDITOR_H
 #define COREEDITOR_H
 
-#include "qsskeywords.h"
+#include "keywords.h"
 #include <QWidget>
 #include <QPlainTextEdit>
 #include <QSize>

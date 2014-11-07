@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/keyWords">
+        <file>listOfStylableWidgets</file>
+        <file>listOfProperties</file>
+        <file>listOfIcons</file>
+        <file>listOfPseudo-States</file>
+        <file>listOfSub-Controls</file>
+    </qresource>
+</RCC>

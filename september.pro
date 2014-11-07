@@ -17,20 +17,23 @@ SOURCES += main.cpp\
     widgetstyle.cpp \
     widgetuistyle.cpp \
     searchandreplace.cpp \
-    viewwidgetui.cpp \
     graphicswidget.cpp \
-    coreeditor.cpp
+    assistant/coreeditor.cpp \
+    assistant/viewwidgetui.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \
     widgetuistyle.h \
     searchandreplace.h \
-    qsskeywords.h \
-    viewwidgetui.h \
     graphicswidget.h \
-    coreeditor.h
+    assistant/coreeditor.h \
+    assistant/viewwidgetui.h \
+    keywords.h
 
 FORMS    += septembereditor.ui \
     widgetstyle.ui \
     widgetuistyle.ui \
     searchandreplace.ui
+
+RESOURCES += \
+    qssKeyWords/resource.qrc

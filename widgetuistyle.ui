@@ -41,7 +41,7 @@
   <customwidget>
    <class>ViewWidgetUi</class>
    <extends>QGraphicsView</extends>
-   <header>viewwidgetui.h</header>
+   <header>assistant/viewwidgetui.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

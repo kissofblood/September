@@ -1,7 +1,6 @@
 #ifndef SEPTEMBEREDITOR_H
 #define SEPTEMBEREDITOR_H
 
-#include "qsskeywords.h"
 #include <QMainWindow>
 
 
