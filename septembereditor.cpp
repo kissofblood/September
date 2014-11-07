@@ -8,15 +8,29 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->widgetSearchAndReplace->setVisible(false);
     ui->widgetWidget->setVisible(false);
     ui->widgetUI->setVisible(false);
-
-    this->setObjectName("fdj0i93489thj59t5");
+    ui->mnFileExit->setShortcut(QKeySequence(QKeySequence::Quit));
 
     this->connect(ui->btnCloseListFile,     &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenListFile);
     this->connect(ui->btnSearchAndReplace,  &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetSearchAndReplace);
     this->connect(ui->btnWidget,            &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetWidget);
     this->connect(ui->btnUi,                &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetUI);
+    this->connect(ui->mnFileExit,           &QAction::triggered,   qApp, &QApplication::quit);
+
+
+
     this->connect(ui->plainTextEdit, &CoreEditor::textChanged, this, [this]()
     { emit updateStyleSheet(ui->plainTextEdit->document()->toPlainText()); });
+
+    this->connect(ui->barBtnCreateFile, &QPushButton::clicked, this, [this]()
+    {
+        static bool value = false;
+        ui->plainTextEdit->setVisibleLineNimberArea(value);
+        if(value)
+            value = false;
+        else
+            value = true;
+        qDebug()<<value;
+    });
 }
 
 SeptemberEditor::~SeptemberEditor()

@@ -49,7 +49,7 @@ private:
     Ui::WidgetUiStyle       *ui             = nullptr;
     QGraphicsScene          *m_sceneView    = nullptr;
     QBuffer                 *m_bufferUi     = nullptr;
-    SeptemberEditor         *m_editor    = nullptr;
+    SeptemberEditor         *m_editor       = nullptr;
     ShowFullWidgetUi        *m_showFull     = new ShowFullWidgetUi(this);
 };
 

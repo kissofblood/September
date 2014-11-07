@@ -28,10 +28,7 @@ GraphicsWidget::~GraphicsWidget()
 { delete m_effect; }
 
 QRectF GraphicsWidget::boundingRect() const
-{
-    return QRectF(m_rectWidget.x() - 3, m_rectWidget.y() - 3,
-                  m_rectWidget.width() + 6, m_rectWidget.height() + 6);
-}
+{ return { m_rectWidget.x() - 3, m_rectWidget.y() - 3, m_rectWidget.width() + 6, m_rectWidget.height() + 6 }; }
 
 bool GraphicsWidget::contains(const QPointF& point) const
 { return this->mapToScene(boundingRect()).boundingRect().contains(point); }
@@ -59,25 +56,25 @@ QRectF GraphicsWidget::boundingRectToScene()
 void GraphicsWidget::setStyleSheet(const QString& styleSheet)
 { m_proxyWidget->widget()->setStyleSheet(styleSheet); }
 
-void GraphicsWidget::resizeRect(const QPointF& point, Rect* r)
+void GraphicsWidget::resizeRect(const QPointF& p, Rect* r)
 {
     QRectF rectWgt = m_rectWidget;
     if(r == m_rectTopLeft)
-        rectWgt.setTopLeft(point);
+        rectWgt.setTopLeft(p);
     else if(r == m_rectTopMid)
-        rectWgt.setTop(point.y());
+        rectWgt.setTop(p.y());
     else if(r == m_rectTopRight)
-        rectWgt.setTopRight(point);
+        rectWgt.setTopRight(p);
     else if(r == m_rectMidRight)
-        rectWgt.setRight(point.x());
+        rectWgt.setRight(p.x());
     else if(r == m_rectBottomRight)
-        rectWgt.setBottomRight(point);
+        rectWgt.setBottomRight(p);
     else if(r == m_rectBottomMid)
-        rectWgt.setBottom(point.y());
+        rectWgt.setBottom(p.y());
     else if(r == m_rectBottomLeft)
-        rectWgt.setBottomLeft(point);
+        rectWgt.setBottomLeft(p);
     else if(r == m_rectMidLeft)
-        rectWgt.setLeft(point.x());
+        rectWgt.setLeft(p.x());
 
     QSizeF sizeRectWidget = rectWgt.size();
     QSizeF sizeProxyWidget = m_proxyWidget->minimumSize();

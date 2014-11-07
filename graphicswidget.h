@@ -78,7 +78,7 @@ private:
     QRectF      m_rectWidget;
     bool        m_hideRect;
 
-    void resizeRect(const QPointF& point, Rect* r);
+    void resizeRect(const QPointF& p, Rect* r);
     void pointerRect();
     void setVisibleRect(bool value);
     void moveRectWidget();

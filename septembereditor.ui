@@ -259,7 +259,7 @@
     <addaction name="action_13"/>
     <addaction name="action_14"/>
     <addaction name="separator"/>
-    <addaction name="action_16"/>
+    <addaction name="mnFileExit"/>
    </widget>
    <widget class="QMenu" name="menuHgfhgf">
     <property name="title">
@@ -338,7 +338,7 @@
     <string>Закрыть все</string>
    </property>
   </action>
-  <action name="action_16">
+  <action name="mnFileExit">
    <property name="text">
     <string>Выход</string>
    </property>
