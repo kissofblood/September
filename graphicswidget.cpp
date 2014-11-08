@@ -18,7 +18,7 @@ GraphicsWidget::GraphicsWidget(QWidget* wgt, QGraphicsItem* parent) : QGraphicsI
     m_rectBottomLeft->setCursor(Qt::SizeBDiagCursor);
     m_rectMidLeft->setCursor(Qt::SizeHorCursor);
 
-    pointerRect();
+    setRect();
     setVisibleRect(false);
 
     this->setAcceptHoverEvents(true);
@@ -85,11 +85,11 @@ void GraphicsWidget::resizeRect(const QPointF& p, Rect* r)
         m_rectWidget = rectWgt;
         QRectF rectProxyWgt(rectWgt.x() + 2, rectWgt.y() + 2, rectWgt.width() - 3, rectWgt.height() - 3);
         m_proxyWidget->setGeometry(rectProxyWgt);
-        pointerRect();
+        setRect();
     }
 }
 
-void GraphicsWidget::pointerRect()
+void GraphicsWidget::setRect()
 {
     m_rectTopLeft->setRect(m_rectWidget.left() - 3, m_rectWidget.top() - 3, 6, 6);
     m_rectTopMid->setRect(m_rectWidget.left() + m_rectWidget.width() / 2 - 3, m_rectWidget.top() - 3, 6, 6);

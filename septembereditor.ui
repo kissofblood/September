@@ -367,7 +367,7 @@
   <customwidget>
    <class>CoreEditor</class>
    <extends>QPlainTextEdit</extends>
-   <header>assistant/coreeditor.h</header>
+   <header>assistant/coreEditor/coreeditor.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

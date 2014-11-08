@@ -79,7 +79,7 @@ private:
     bool        m_hideRect;
 
     void resizeRect(const QPointF& p, Rect* r);
-    void pointerRect();
+    void setRect();
     void setVisibleRect(bool value);
     void moveRectWidget();
     void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override;

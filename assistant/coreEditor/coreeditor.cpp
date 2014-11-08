@@ -2,11 +2,16 @@
 
 CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
 {
+    QStringList icons = KeyWords::keyWordsFromFile("listOfIcons");
+    QStringList properties = KeyWords::keyWordsFromFile("listOfProperties");
+    QStringList pseudo = KeyWords::keyWordsFromFile("listOfPseudo-States");
+    QStringList widgets =  KeyWords::keyWordsFromFile("listOfStylableWidgets");
+    QStringList sub = KeyWords::keyWordsFromFile("listOfSub-Controls");
     m_completer->setWidget(this);
-    m_completer->setModel(new QStringListModel(KeyWords::keyWordsFromFile("listOfStylableWidgets")
-                                             + KeyWords::keyWordsFromFile("listOfProperties"), this));
+    m_completer->setModel(new QStringListModel(KeyWords::keyWordsFromFile("listOfStylableWidgets"), this));
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_completer->setCompletionMode(QCompleter::PopupCompletion);
+    m_highlighter = new Highlighter(icons, properties, pseudo, widgets, sub,  this->document());
 
     this->connect(this, &QPlainTextEdit::blockCountChanged,     this, std::bind(&CoreEditor::updateLineNumberAreaWidth, this));
     this->connect(this, &QPlainTextEdit::updateRequest,         this, &CoreEditor::updateLineNumberArea);
@@ -22,6 +27,13 @@ void CoreEditor::setVisibleLineNimberArea(bool value)
 {
     m_visibleLineNumberAre = value;
     m_lineNumberArea->update();
+}
+
+void CoreEditor::setColorDocument(const QColor& color)
+{
+    QPalette pal;
+    pal.setColor(QPalette::Base, color);
+    this->setPalette(pal);
 }
 
 void CoreEditor::updateLineNumberAreaWidth()
@@ -108,7 +120,7 @@ int CoreEditor::lineNumberAreaWidth()
 void CoreEditor::resizeEvent(QResizeEvent* event)
 {
     QRect rect = this->contentsRect();
-    m_lineNumberArea->setGeometry(QRect(rect.left(), rect.top(), lineNumberAreaWidth(), rect.height()));
+    m_lineNumberArea->setGeometry({ rect.left(), rect.top(), lineNumberAreaWidth(), rect.height() });
     QPlainTextEdit::resizeEvent(event);
 }
 
@@ -116,17 +128,12 @@ void CoreEditor::keyPressEvent(QKeyEvent* event)
 {
     static bool flagKey = false;
     if(m_completer->popup()->isVisible())
-        switch(event->key())
+        if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return
+            || event->key() == Qt::Key_Escape || event->key() == Qt::Key_Tab)
         {
-        case Qt::Key_Enter:
-        case Qt::Key_Return:
-        case Qt::Key_Escape:
-        case Qt::Key_Tab:
             flagKey = false;
             event->ignore();
             return;
-        default:
-            break;
         }
 
     if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_Space)

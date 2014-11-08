@@ -18,17 +18,19 @@ SOURCES += main.cpp\
     widgetuistyle.cpp \
     searchandreplace.cpp \
     graphicswidget.cpp \
-    assistant/coreeditor.cpp \
-    assistant/viewwidgetui.cpp
+    assistant/viewwidgetui.cpp \
+    assistant/coreEditor/coreeditor.cpp \
+    assistant/coreEditor/highlighter.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \
     widgetuistyle.h \
     searchandreplace.h \
     graphicswidget.h \
-    assistant/coreeditor.h \
     assistant/viewwidgetui.h \
-    keywords.h
+    keywords.h \
+    assistant/coreEditor/coreeditor.h \
+    assistant/coreEditor/highlighter.h
 
 FORMS    += septembereditor.ui \
     widgetstyle.ui \

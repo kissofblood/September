@@ -2,6 +2,7 @@
 #define COREEDITOR_H
 
 #include "keywords.h"
+#include "highlighter.h"
 #include <QWidget>
 #include <QPlainTextEdit>
 #include <QSize>
@@ -28,6 +29,7 @@ public:
     ~CoreEditor() override = default;
 
     void setVisibleLineNimberArea(bool value);
+    void setColorDocument(const QColor& color);
 
 private slots:
     void updateLineNumberAreaWidth();
@@ -52,6 +54,7 @@ private:
 
     LineNumberArea  *m_lineNumberArea       = new LineNumberArea(this);
     QCompleter      *m_completer            = new QCompleter(this);
+    Highlighter     *m_highlighter          = nullptr;
     bool            m_visibleLineNumberAre  = true;
 
     void lineNumberAreaPaintEvent(QPaintEvent* event);
