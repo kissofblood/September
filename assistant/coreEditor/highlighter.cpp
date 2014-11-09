@@ -5,7 +5,7 @@ Highlighter::Highlighter(const QStringList& icons,  const QStringList& propertie
                          const QStringList& sub,    QTextDocument* parent) : QSyntaxHighlighter(parent)
     , m_commentStart("/\\*")
     , m_commentEnd("\\*/")
-    , m_number("[0-9]+")
+    , m_number("([0-9]+)|([0-9]+\\.[0-9]+)")
 {
     std::function<QVector<HighlightingRule>(const QBrush&, QFont::Weight, const QStringList&)> setHighlighter
             = [](const QBrush& bruch, QFont::Weight weight, const QStringList& list)
@@ -72,9 +72,13 @@ void Highlighter::highlightBlock(const QString& text)
     this->setCurrentBlockState(0);
     int indexNum = m_number.indexIn(text);
     if(indexNum == -1)
-        this->setFormat(1, m_number.matchedLength(), m_numberFormat);
-    else
-        this->setFormat(indexNum, m_number.matchedLength(), m_numberFormat);
+        indexNum = 1;
+    while(indexNum >= 0)
+    {
+        int length = m_number.matchedLength();
+        this->setFormat(indexNum, length, m_numberFormat);
+        indexNum = m_number.indexIn(text, indexNum + length);
+    }
     this->setCurrentBlockState(0);
 
     int indexStart = 0;

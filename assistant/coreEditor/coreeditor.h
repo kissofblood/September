@@ -1,7 +1,7 @@
 #ifndef COREEDITOR_H
 #define COREEDITOR_H
 
-#include "keywords.h"
+#include "assistant/keywords.h"
 #include "highlighter.h"
 #include <QWidget>
 #include <QPlainTextEdit>

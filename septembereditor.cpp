@@ -8,13 +8,15 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->widgetSearchAndReplace->setVisible(false);
     ui->widgetWidget->setVisible(false);
     ui->widgetUI->setVisible(false);
-    ui->mnFileExit->setShortcut(QKeySequence(QKeySequence::Quit));
+    ui->mnOpen->setShortcut(QKeySequence(QKeySequence::Open));
+    ui->mnExit->setShortcut(QKeySequence(QKeySequence::Quit));
 
     this->connect(ui->btnCloseListFile,     &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenListFile);
     this->connect(ui->btnSearchAndReplace,  &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetSearchAndReplace);
     this->connect(ui->btnWidget,            &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetWidget);
     this->connect(ui->btnUi,                &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetUI);
-    this->connect(ui->mnFileExit,           &QAction::triggered,   qApp, &QApplication::quit);
+    this->connect(ui->mnOpen,               &QAction::triggered,   this, &SeptemberEditor::openFile);
+    this->connect(ui->mnExit,               &QAction::triggered,   qApp, &QApplication::quit);
 
 
 
@@ -109,4 +111,17 @@ void SeptemberEditor::closeOrOpenWidgetUI()
         ui->widgetWidget->setVisible(false);
         ui->widgetUI->setVisible(true);
     }
+}
+
+void SeptemberEditor::openFile()
+{
+    ui->plainTextEdit->clear();
+    QString path = QFileDialog::getOpenFileName(this, QString("Open file"), QString(), QString("*.qss"));
+    if(path.length() == 0)
+        return;
+
+    QFile file(path);
+    if(file.open(QIODevice::ReadOnly))
+        ui->plainTextEdit->appendPlainText(file.readAll());
+    file.close();
 }

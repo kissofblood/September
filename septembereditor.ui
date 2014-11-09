@@ -244,9 +244,9 @@
     <property name="title">
      <string>Файл</string>
     </property>
-    <addaction name="action"/>
+    <addaction name="mnCreate"/>
     <addaction name="separator"/>
-    <addaction name="action_3"/>
+    <addaction name="mnOpen"/>
     <addaction name="action_4"/>
     <addaction name="separator"/>
     <addaction name="action_6"/>
@@ -259,7 +259,7 @@
     <addaction name="action_13"/>
     <addaction name="action_14"/>
     <addaction name="separator"/>
-    <addaction name="mnFileExit"/>
+    <addaction name="mnExit"/>
    </widget>
    <widget class="QMenu" name="menuHgfhgf">
     <property name="title">
@@ -288,12 +288,12 @@
    <addaction name="menu_3"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="action">
+  <action name="mnCreate">
    <property name="text">
     <string>Создать</string>
    </property>
   </action>
-  <action name="action_3">
+  <action name="mnOpen">
    <property name="text">
     <string>Открыть</string>
    </property>
@@ -338,7 +338,7 @@
     <string>Закрыть все</string>
    </property>
   </action>
-  <action name="mnFileExit">
+  <action name="mnExit">
    <property name="text">
     <string>Выход</string>
    </property>

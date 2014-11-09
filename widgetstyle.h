@@ -1,9 +1,9 @@
 #ifndef WIDGETSTYLE_H
 #define WIDGETSTYLE_H
 
-#include "keywords.h"
+#include "assistant/keywords.h"
+#include "assistant/graphicswidget.h"
 #include "septembereditor.h"
-#include "graphicswidget.h"
 #include <QWidget>
 #include <algorithm>
 #include <functional>

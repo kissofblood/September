@@ -1,4 +1,5 @@
 QAbstractScrollArea
+QAbstractItemView
 QCheckBox
 QColumnView
 QComboBox

@@ -30,6 +30,7 @@ private slots:
     void closeOrOpenWidgetSearchAndReplace();
     void closeOrOpenWidgetWidget();
     void closeOrOpenWidgetUI();
+    void openFile();
 
 private:
     struct ClickedButton

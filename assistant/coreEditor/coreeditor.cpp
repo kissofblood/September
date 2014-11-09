@@ -69,7 +69,7 @@ void CoreEditor::setFormatNumber(const QTextCharFormat& charFormat)
 { m_highlighter->setFormatNumber(charFormat); }
 
 void CoreEditor::updateLineNumberAreaWidth()
-{ this->setViewportMargins(lineNumberAreaWidth() + 5, 0, 0, 5); }
+{ this->setViewportMargins(lineNumberAreaWidth(), 0, 0, 1); }
 
 void CoreEditor::highlightCurrentLine()
 {
@@ -109,7 +109,7 @@ void CoreEditor::insertCompletion(const QString& text)
 void CoreEditor::lineNumberAreaPaintEvent(QPaintEvent* event)
 {
     QPainter painter(m_lineNumberArea);
-    painter.fillRect(event->rect(), Qt::lightGray);
+    painter.fillRect(event->rect(), QColor(35, 35, 35));
 
     if(!m_visibleLineNumberAre)
         return;
@@ -124,7 +124,8 @@ void CoreEditor::lineNumberAreaPaintEvent(QPaintEvent* event)
         if(block.isVisible() && bottom >= event->rect().top())
         {
             QString number = QString::number(blockNumber + 1);
-            painter.setPen(Qt::black);
+            painter.setPen(QColor(136, 136, 136));
+            painter.setFont(QFont("Areal", -1, QFont::Bold));
             painter.drawText(0, top, m_lineNumberArea->width(), this->fontMetrics().height(), Qt::AlignCenter, number);
         }
 
