@@ -1,14 +1,16 @@
 #include "coreeditor.h"
 
 CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
-{
+    , m_lineColor(26, 21, 21)
+    , m_otherTextColor(170, 170, 170)
+{   
     QStringList icons = KeyWords::keyWordsFromFile("listOfIcons");
     QStringList properties = KeyWords::keyWordsFromFile("listOfProperties");
     QStringList pseudo = KeyWords::keyWordsFromFile("listOfPseudo-States");
     QStringList widgets =  KeyWords::keyWordsFromFile("listOfStylableWidgets");
     QStringList sub = KeyWords::keyWordsFromFile("listOfSub-Controls");
     m_completer->setWidget(this);
-    m_completer->setModel(new QStringListModel(KeyWords::keyWordsFromFile("listOfStylableWidgets"), this));
+    m_completer->setModel(new QStringListModel(widgets, this));
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_completer->setCompletionMode(QCompleter::PopupCompletion);
     m_highlighter = new Highlighter(icons, properties, pseudo, widgets, sub,  this->document());
@@ -21,6 +23,8 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
 
     updateLineNumberAreaWidth();
     highlightCurrentLine();
+    setDocumentColor(QColor(Qt::black));
+    this->document()->setDefaultFont(QFont("Droid Sans Mono", 12, QFont::Monospace));
 }
 
 void CoreEditor::setVisibleLineNimberArea(bool value)
@@ -29,12 +33,40 @@ void CoreEditor::setVisibleLineNimberArea(bool value)
     m_lineNumberArea->update();
 }
 
-void CoreEditor::setColorDocument(const QColor& color)
+void CoreEditor::setDocumentColor(const QColor& color)
 {
     QPalette pal;
+    pal.setColor(QPalette::Text, m_otherTextColor);
     pal.setColor(QPalette::Base, color);
     this->setPalette(pal);
 }
+
+void CoreEditor::setLineColor(const QColor& color)
+{ m_lineColor = color; }
+
+void CoreEditor::setOtherTextColor(const QColor& color)
+{ m_otherTextColor = color; }
+
+void CoreEditor::setFormatIcons(const QTextCharFormat& charFormat)
+{ m_highlighter->setFormatIcons(charFormat); }
+
+void CoreEditor::setFormatProperties(const QTextCharFormat& charFormat)
+{ m_highlighter->setFormatProperties(charFormat); }
+
+void CoreEditor::setFormatPseudo(const QTextCharFormat& charFormat)
+{ m_highlighter->setFormatPseudo(charFormat); }
+
+void CoreEditor::setFormatWidgets(const QTextCharFormat& charFormat)
+{ m_highlighter->setFormatWidgets(charFormat); }
+
+void CoreEditor::setFormatSub(const QTextCharFormat& charFormat)
+{ m_highlighter->setFormatSub(charFormat); }
+
+void CoreEditor::setFormatComment(const QTextCharFormat& charFormat)
+{ m_highlighter->setFormatComment(charFormat); }
+
+void CoreEditor::setFormatNumber(const QTextCharFormat& charFormat)
+{ m_highlighter->setFormatNumber(charFormat); }
 
 void CoreEditor::updateLineNumberAreaWidth()
 { this->setViewportMargins(lineNumberAreaWidth() + 5, 0, 0, 5); }
@@ -45,8 +77,7 @@ void CoreEditor::highlightCurrentLine()
     if(!this->isReadOnly())
     {
         QTextEdit::ExtraSelection selection;
-        QColor lineColor = QColor(Qt::yellow).lighter(160);
-        selection.format.setBackground(lineColor);
+        selection.format.setBackground(m_lineColor);
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
         selection.cursor = this->textCursor();
         selection.cursor.clearSelection();

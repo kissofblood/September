@@ -2,7 +2,10 @@
 #define SEPTEMBEREDITOR_H
 
 #include <QMainWindow>
-
+#include <QString>
+#include <QWidget>
+#include <QKeySequence>
+#include <QPushButton>
 
 #include <QtWidgets>
 
@@ -13,13 +16,6 @@ class SeptemberEditor;
 class SeptemberEditor : public QMainWindow
 {
     Q_OBJECT
-
-    struct ClickedButton
-    {
-        bool searchAndReplace = false;
-        bool widget = false;
-        bool UI = false;
-    };
 public:
     explicit SeptemberEditor(QWidget* parent = nullptr);
     ~SeptemberEditor() override;
@@ -36,6 +32,12 @@ private slots:
     void closeOrOpenWidgetUI();
 
 private:
+    struct ClickedButton
+    {
+        bool searchAndReplace = false;
+        bool widget = false;
+        bool widgetUI = false;
+    };
     Ui::SeptemberEditor         *ui = nullptr;
     ClickedButton               m_clickedButton;
 };

@@ -20,7 +20,6 @@ GraphicsWidget::GraphicsWidget(QWidget* wgt, QGraphicsItem* parent) : QGraphicsI
 
     setRect();
     setVisibleRect(false);
-
     this->setAcceptHoverEvents(true);
 }
 

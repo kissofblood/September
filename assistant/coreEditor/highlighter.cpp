@@ -5,6 +5,7 @@ Highlighter::Highlighter(const QStringList& icons,  const QStringList& propertie
                          const QStringList& sub,    QTextDocument* parent) : QSyntaxHighlighter(parent)
     , m_commentStart("/\\*")
     , m_commentEnd("\\*/")
+    , m_number("[0-9]+")
 {
     std::function<QVector<HighlightingRule>(const QBrush&, QFont::Weight, const QStringList&)> setHighlighter
             = [](const QBrush& bruch, QFont::Weight weight, const QStringList& list)
@@ -17,7 +18,7 @@ Highlighter::Highlighter(const QStringList& icons,  const QStringList& propertie
         charFormat.setFontWeight(weight);
         for(auto& str : list)
         {
-            rule.pattern.setPattern(str);
+            rule.pattern.setPattern("\\b" + str + "\\b");
             rule.format = charFormat;
             vecRule.push_back(rule);
         }
@@ -25,11 +26,12 @@ Highlighter::Highlighter(const QStringList& icons,  const QStringList& propertie
     };
 
     m_highlightingRule_.insert("icons", setHighlighter(QBrush(Qt::green), QFont::Bold, icons));
-    m_highlightingRule_.insert("properties", setHighlighter(QBrush(Qt::red), QFont::Bold, properties));
-    m_highlightingRule_.insert("pseudo", setHighlighter(QBrush(Qt::darkBlue), QFont::Bold, pseudo));
-    m_highlightingRule_.insert("widgets", setHighlighter(QBrush(Qt::darkRed), QFont::Bold, widgets));
-    m_highlightingRule_.insert("sub", setHighlighter(QBrush(Qt::darkMagenta), QFont::Bold, sub));
-    m_commentText.setForeground(Qt::blue);
+    m_highlightingRule_.insert("properties", setHighlighter(QBrush(QColor(255, 255, 85)), QFont::Bold, properties));
+    m_highlightingRule_.insert("pseudo", setHighlighter(QBrush(QColor(84, 84, 255)), QFont::Bold, pseudo));
+    m_highlightingRule_.insert("widgets", setHighlighter(QBrush(QColor(85, 255, 85)), QFont::Bold, widgets));
+    m_highlightingRule_.insert("sub", setHighlighter(QBrush(QColor(100, 74, 155)), QFont::Bold, sub));
+    m_commentTextFormat.setForeground(QColor(85, 255, 255));
+    m_numberFormat.setForeground(QColor(243, 81, 243));
 }
 
 void Highlighter::setFormatIcons(const QTextCharFormat& charFormat)
@@ -48,7 +50,10 @@ void Highlighter::setFormatSub(const QTextCharFormat& charFormat)
 { setCharFormat("sub", charFormat); }
 
 void Highlighter::setFormatComment(const QTextCharFormat& charFormat)
-{ m_commentText = charFormat; }
+{ m_commentTextFormat = charFormat; }
+
+void Highlighter::setFormatNumber(const QTextCharFormat& charFormat)
+{ m_numberFormat = charFormat; }
 
 void Highlighter::highlightBlock(const QString& text)
 {
@@ -65,6 +70,12 @@ void Highlighter::highlightBlock(const QString& text)
             }
         }
     this->setCurrentBlockState(0);
+    int indexNum = m_number.indexIn(text);
+    if(indexNum == -1)
+        this->setFormat(1, m_number.matchedLength(), m_numberFormat);
+    else
+        this->setFormat(indexNum, m_number.matchedLength(), m_numberFormat);
+    this->setCurrentBlockState(0);
 
     int indexStart = 0;
     if(this->previousBlockState() != 1)
@@ -80,7 +91,7 @@ void Highlighter::highlightBlock(const QString& text)
         }
         else
             commentLength = indexEnd - indexStart + m_commentEnd.matchedLength();
-        this->setFormat(indexStart, commentLength, m_commentText);
+        this->setFormat(indexStart, commentLength, m_commentTextFormat);
         indexStart = m_commentStart.indexIn(text, indexStart + commentLength);
     }
 }

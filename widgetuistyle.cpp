@@ -95,4 +95,3 @@ void WidgetUiStyle::ShowFullWidgetUi::setStyleSheetDialog(const QString& style)
     if(m_view != nullptr)
         m_view->setStyleSheet(style);
 }
-

@@ -3,20 +3,19 @@
 
 #include <QTextDocument>
 #include <QSyntaxHighlighter>
-#include <QTextDocument>
 #include <QString>
 #include <QStringList>
 #include <QRegExp>
 #include <QTextCharFormat>
 #include <QVector>
 #include <QHash>
+#include <QBrush>
+#include <QFont>
+#include <QColor>
 #include <functional>
-
-#include <QtWidgets>
 
 class Highlighter : public QSyntaxHighlighter
 {
-    Q_OBJECT
 public:
     Highlighter(const QStringList& icons,  const QStringList& properties,
                 const QStringList& pseudo, const QStringList& widgets,
@@ -29,6 +28,7 @@ public:
     void setFormatWidgets(const QTextCharFormat& charFormat);
     void setFormatSub(const QTextCharFormat& charFormat);
     void setFormatComment(const QTextCharFormat& charFormat);
+    void setFormatNumber(const QTextCharFormat& charFormat);
     void highlightBlock(const QString& text) override;
 
 private:
@@ -38,9 +38,11 @@ private:
         QTextCharFormat format;
     };
     QHash<QString, QVector<HighlightingRule>> m_highlightingRule_;
-    QTextCharFormat m_commentText;
+    QTextCharFormat m_commentTextFormat;
+    QTextCharFormat m_numberFormat;
     QRegExp         m_commentStart;
     QRegExp         m_commentEnd;
+    QRegExp         m_number;
 
     void setCharFormat(const QString& name, const QTextCharFormat& charFormat);
 };

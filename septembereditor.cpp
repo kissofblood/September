@@ -67,7 +67,7 @@ void SeptemberEditor::closeOrOpenWidgetSearchAndReplace()
     {
         m_clickedButton.searchAndReplace = true;
         m_clickedButton.widget = false;
-        m_clickedButton.UI = false;
+        m_clickedButton.widgetUI = false;
         ui->btnUi->setDown(false);
         ui->widgetWidget->setVisible(false);
         ui->widgetUI->setVisible(false);
@@ -86,7 +86,7 @@ void SeptemberEditor::closeOrOpenWidgetWidget()
     {
         m_clickedButton.widget = true;
         m_clickedButton.searchAndReplace = false;
-        m_clickedButton.UI = false;
+        m_clickedButton.widgetUI = false;
         ui->widgetSearchAndReplace->setVisible(false);
         ui->widgetUI->setVisible(false);
         ui->widgetWidget->setVisible(true);
@@ -95,14 +95,14 @@ void SeptemberEditor::closeOrOpenWidgetWidget()
 
 void SeptemberEditor::closeOrOpenWidgetUI()
 {
-    if(m_clickedButton.UI)
+    if(m_clickedButton.widgetUI)
     {
-        m_clickedButton.UI = false;
+        m_clickedButton.widgetUI = false;
         ui->widgetUI->setVisible(false);
     }
     else
     {
-        m_clickedButton.UI = true;
+        m_clickedButton.widgetUI = true;
         m_clickedButton.searchAndReplace = false;
         m_clickedButton.widget = false;
         ui->widgetSearchAndReplace->setVisible(false);

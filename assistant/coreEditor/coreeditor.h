@@ -29,7 +29,16 @@ public:
     ~CoreEditor() override = default;
 
     void setVisibleLineNimberArea(bool value);
-    void setColorDocument(const QColor& color);
+    void setDocumentColor(const QColor& color);
+    void setLineColor(const QColor& color);
+    void setOtherTextColor(const QColor& color);
+    void setFormatIcons(const QTextCharFormat& charFormat);
+    void setFormatProperties(const QTextCharFormat& charFormat);
+    void setFormatPseudo(const QTextCharFormat& charFormat);
+    void setFormatWidgets(const QTextCharFormat& charFormat);
+    void setFormatSub(const QTextCharFormat& charFormat);
+    void setFormatComment(const QTextCharFormat& charFormat);
+    void setFormatNumber(const QTextCharFormat& charFormat);
 
 private slots:
     void updateLineNumberAreaWidth();
@@ -55,6 +64,8 @@ private:
     LineNumberArea  *m_lineNumberArea       = new LineNumberArea(this);
     QCompleter      *m_completer            = new QCompleter(this);
     Highlighter     *m_highlighter          = nullptr;
+    QColor          m_lineColor;
+    QColor          m_otherTextColor;
     bool            m_visibleLineNumberAre  = true;
 
     void lineNumberAreaPaintEvent(QPaintEvent* event);
