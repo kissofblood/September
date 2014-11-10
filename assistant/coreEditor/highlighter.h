@@ -12,7 +12,6 @@
 #include <QBrush>
 #include <QFont>
 #include <QColor>
-#include <functional>
 
 class Highlighter : public QSyntaxHighlighter
 {

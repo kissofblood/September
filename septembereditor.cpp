@@ -8,6 +8,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->widgetSearchAndReplace->setVisible(false);
     ui->widgetWidget->setVisible(false);
     ui->widgetUI->setVisible(false);
+    ui->mnNew->setShortcut(QKeySequence(QKeySequence::New));
     ui->mnOpen->setShortcut(QKeySequence(QKeySequence::Open));
     ui->mnExit->setShortcut(QKeySequence(QKeySequence::Quit));
 
@@ -15,10 +16,9 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->btnSearchAndReplace,  &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetSearchAndReplace);
     this->connect(ui->btnWidget,            &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetWidget);
     this->connect(ui->btnUi,                &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetUI);
+    this->connect(ui->barBtnOpenFile,       &QPushButton::clicked, this, &SeptemberEditor::openFile);
     this->connect(ui->mnOpen,               &QAction::triggered,   this, &SeptemberEditor::openFile);
     this->connect(ui->mnExit,               &QAction::triggered,   qApp, &QApplication::quit);
-
-
 
     this->connect(ui->plainTextEdit, &CoreEditor::textChanged, this, [this]()
     { emit updateStyleSheet(ui->plainTextEdit->document()->toPlainText()); });
@@ -33,6 +33,14 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
             value = true;
         qDebug()<<value;
     });
+
+    QFile file("/home/september/style.qss");
+    if(file.open(QIODevice::ReadOnly))
+    {
+        ui->plainTextEdit->clear();
+        ui->plainTextEdit->appendPlainText(file.readAll());
+    }
+    file.close();
 }
 
 SeptemberEditor::~SeptemberEditor()
@@ -115,13 +123,15 @@ void SeptemberEditor::closeOrOpenWidgetUI()
 
 void SeptemberEditor::openFile()
 {
-    ui->plainTextEdit->clear();
-    QString path = QFileDialog::getOpenFileName(this, QString("Open file"), QString(), QString("*.qss"));
+    QString path = QFileDialog::getOpenFileName(this, QString("Open file"), QString("/home/september"), QString("*.qss"));
     if(path.length() == 0)
         return;
 
-    QFile file(path);
+    QFile file("/home/september/style.qss");
     if(file.open(QIODevice::ReadOnly))
+    {
+        ui->plainTextEdit->clear();
         ui->plainTextEdit->appendPlainText(file.readAll());
+    }
     file.close();
 }

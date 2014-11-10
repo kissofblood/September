@@ -244,7 +244,7 @@
     <property name="title">
      <string>Файл</string>
     </property>
-    <addaction name="mnCreate"/>
+    <addaction name="mnNew"/>
     <addaction name="separator"/>
     <addaction name="mnOpen"/>
     <addaction name="action_4"/>
@@ -288,7 +288,7 @@
    <addaction name="menu_3"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="mnCreate">
+  <action name="mnNew">
    <property name="text">
     <string>Создать</string>
    </property>

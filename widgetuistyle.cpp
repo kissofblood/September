@@ -20,6 +20,9 @@ WidgetUiStyle::~WidgetUiStyle()
 void WidgetUiStyle::openUI()
 {
     QString path = QFileDialog::getOpenFileName(this, "Open file", QString("/home/september"), "*.ui");
+    if(path.length() == 0)
+        return;
+
     QFile file(path);
     if(file.open(QIODevice::ReadOnly))
     {
