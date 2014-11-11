@@ -28,9 +28,7 @@ WidgetStyle::WidgetStyle(QWidget* parent) : QWidget(parent),
 }
 
 WidgetStyle::~WidgetStyle()
-{
-    delete ui;
-}
+{ delete ui; }
 
 void WidgetStyle::filterListWidget()
 {

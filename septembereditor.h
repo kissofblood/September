@@ -21,6 +21,7 @@ public:
     ~SeptemberEditor() override;
 
     QString styleSheet() const;
+    QTextDocument* getDocument() const;
 
 signals:
     void updateStyleSheet(const QString& text);

@@ -22,34 +22,16 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
 
     this->connect(ui->plainTextEdit, &CoreEditor::textChanged, this, [this]()
     { emit updateStyleSheet(ui->plainTextEdit->document()->toPlainText()); });
-
-    this->connect(ui->barBtnCreateFile, &QPushButton::clicked, this, [this]()
-    {
-        static bool value = false;
-        ui->plainTextEdit->setVisibleLineNimberArea(value);
-        if(value)
-            value = false;
-        else
-            value = true;
-        qDebug()<<value;
-    });
-
-    QFile file("/home/september/style.qss");
-    if(file.open(QIODevice::ReadOnly))
-    {
-        ui->plainTextEdit->clear();
-        ui->plainTextEdit->appendPlainText(file.readAll());
-    }
-    file.close();
 }
 
 SeptemberEditor::~SeptemberEditor()
-{
-    delete ui;
-}
+{ delete ui; }
 
 QString SeptemberEditor::styleSheet() const
 { return ui->plainTextEdit->document()->toPlainText(); }
+
+QTextDocument* SeptemberEditor::getDocument() const
+{ return ui->plainTextEdit->document(); }
 
 void SeptemberEditor::closeOrOpenListFile()
 {
@@ -123,11 +105,11 @@ void SeptemberEditor::closeOrOpenWidgetUI()
 
 void SeptemberEditor::openFile()
 {
-    QString path = QFileDialog::getOpenFileName(this, QString("Open file"), QString("/home/september"), QString("*.qss"));
+    QString path = QFileDialog::getOpenFileName(this, QString("Open file"), QString(), QString("*.qss"));
     if(path.length() == 0)
         return;
 
-    QFile file("/home/september/style.qss");
+    QFile file(path);
     if(file.open(QIODevice::ReadOnly))
     {
         ui->plainTextEdit->clear();

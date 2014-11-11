@@ -13,6 +13,8 @@
 #include <QFont>
 #include <QColor>
 
+#include <qdebug.h>
+
 class Highlighter : public QSyntaxHighlighter
 {
 public:

@@ -13,9 +13,7 @@ WidgetUiStyle::WidgetUiStyle(QWidget* parent) : QWidget(parent),
 }
 
 WidgetUiStyle::~WidgetUiStyle()
-{
-    delete ui;
-}
+{ delete ui; }
 
 void WidgetUiStyle::openUI()
 {

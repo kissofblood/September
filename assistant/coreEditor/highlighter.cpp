@@ -20,7 +20,7 @@ Highlighter::Highlighter(const QStringList& icons,  const QStringList& propertie
             if(name == "icons" || name == "properties" || name == "widgets")
                 rule.pattern.setPattern(R"(\b)" + str + R"(\b)");
             else if(name == "pseudo")
-                rule.pattern.setPattern(R"(\b:)" + str + R"(\b)");
+                rule.pattern.setPattern(R"(\b(:!)" + str + R"(|:)" + str + R"()\b)");
             else if(name == "sub")
                 rule.pattern.setPattern(R"(\b::)" + str + R"(\b)");
             rule.format = charFormat;
@@ -85,6 +85,7 @@ void Highlighter::highlightBlock(const QString& text)
                 index = expression.indexIn(text, index + length);
             }
         }
+
     this->setCurrentBlockState(0);
     int indexNum = m_number.indexIn(text);
     if(indexNum == -1)

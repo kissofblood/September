@@ -3,7 +3,7 @@
 CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
     , m_lineColor(26, 21, 21)
     , m_otherTextColor(170, 170, 170)
-{   
+{
     QStringList icons = KeyWords::keyWordsFromFile("listOfIcons");
     QStringList properties = KeyWords::keyWordsFromFile("listOfProperties");
     QStringList pseudo = KeyWords::keyWordsFromFile("listOfPseudo-States");
