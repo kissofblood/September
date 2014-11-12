@@ -16,9 +16,10 @@ SearchAndReplace::SearchAndReplace(QWidget* parent) : QWidget(parent),
     this->connect(ui->editSearch,       &QLineEdit::returnPressed,   this, &SearchAndReplace::searchText);
     this->connect(ui->btnNext,          &QPushButton::clicked,       this, &SearchAndReplace::nextSearchText);
     this->connect(ui->btnPrev,          &QPushButton::clicked,       this, &SearchAndReplace::prevSearchText);
-    this->connect(ui->btnReplace,       &QPushButton::clicked,       this, &SearchAndReplace::replace);
+    this->connect(ui->btnReplace,       &QPushButton::clicked,       this, &SearchAndReplace::replaceText);
     this->connect(ui->checkRegister,    &QCheckBox::stateChanged,    this, &SearchAndReplace::setRegister);
     this->connect(ui->checkRegEx,       &QCheckBox::stateChanged,    this, &SearchAndReplace::setRegExp);
+    this->connect(ui->checkReplaceAll,  &QCheckBox::stateChanged,    this, &SearchAndReplace::replaceTextAll);
 }
 
 SearchAndReplace::~SearchAndReplace()
@@ -150,7 +151,37 @@ void SearchAndReplace::setRegExp(int state)
         m_isRegExp = true;
 }
 
-void SearchAndReplace::replace()
+void SearchAndReplace::replaceTextAll(int state)
 {
+    if(state == 0)
+        m_isReplaceAll = false;
+    else if(state == 2)
+        m_isReplaceAll = true;
+}
 
+void SearchAndReplace::replaceText()
+{
+    QString text = ui->editReplace->text();
+    if(text.isEmpty())
+        return;
+    else if(m_textCharFormatUndo_.empty())
+        return;
+
+    if(m_isReplaceAll)
+    {
+        for(auto& pair : m_textCharFormatUndo_)
+        {
+            pair.first.removeSelectedText();
+            pair.first.insertText(text);
+        }
+        return;
+    }
+
+    int pos = m_posCursor;
+    if(m_posCursor < 0)
+        pos = 0;
+    else if(m_posCursor >= m_textCharFormatUndo_.size())
+        pos = m_textCharFormatUndo_.size() - 1;
+    m_textCharFormatUndo_[pos].first.removeSelectedText();
+    m_textCharFormatUndo_[pos].first.insertText(text);
 }

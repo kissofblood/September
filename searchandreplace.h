@@ -37,7 +37,8 @@ private slots:
     void prevSearchText();
     void setRegister(int state);
     void setRegExp(int state);
-    void replace();
+    void replaceTextAll(int state);
+    void replaceText();
 
 private:
     Ui::SearchAndReplace    *ui                 = nullptr;
@@ -46,8 +47,9 @@ private:
     QPushButton             *m_btnOk            = nullptr;
     QFlags<QTextDocument::FindFlag> m_findFlag  = QTextDocument::FindWholeWords;
     QVector<QPair<QTextCursor, QTextCharFormat>> m_textCharFormatUndo_;
-    int     m_posCursor = 0;
-    bool    m_isRegExp  = false;
+    int     m_posCursor     = 0;
+    bool    m_isRegExp      = false;
+    bool    m_isReplaceAll  = false;
 };
 
 #endif // SEARCHANDREPLACE_H
