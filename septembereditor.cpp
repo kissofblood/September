@@ -8,10 +8,17 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->widgetSearchAndReplace->setVisible(false);
     ui->widgetWidget->setVisible(false);
     ui->widgetUI->setVisible(false);
-    ui->btnSearchAndReplace->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));
     ui->mnNew->setShortcut(QKeySequence(QKeySequence::New));
     ui->mnOpen->setShortcut(QKeySequence(QKeySequence::Open));
-    ui->mnExit->setShortcut(QKeySequence(QKeySequence::Quit));
+    ui->mnQuit->setShortcut(QKeySequence(QKeySequence::Quit));
+
+    ui->mnUndo->setShortcut(QKeySequence(QKeySequence::Undo));
+    ui->mnRedo->setShortcut(QKeySequence(QKeySequence::Redo));
+    ui->mnCut->setShortcut(QKeySequence(QKeySequence::Cut));
+    ui->mnCopy->setShortcut(QKeySequence(QKeySequence::Copy));
+    ui->mnPaste->setShortcut(QKeySequence(QKeySequence::Paste));
+    ui->mnSelectAll->setShortcut(QKeySequence(QKeySequence::SelectAll));
+    ui->mnSearchReplace->setShortcut(QKeySequence(QKeySequence::Find));
 
     ui->listFile->setVisible(false);
 
@@ -20,8 +27,15 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->btnWidget,            &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetWidget);
     this->connect(ui->btnUi,                &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetUI);
     this->connect(ui->barBtnOpenFile,       &QPushButton::clicked, this, &SeptemberEditor::openFile);
-    this->connect(ui->mnOpen,               &QAction::triggered,   this, &SeptemberEditor::openFile);
-    this->connect(ui->mnExit,               &QAction::triggered,   qApp, &QApplication::quit);
+    this->connect(ui->mnOpen,           &QAction::triggered,    this, &SeptemberEditor::openFile);
+    this->connect(ui->mnQuit,           &QAction::triggered,    qApp, &QApplication::quit);
+    this->connect(ui->mnUndo,           &QAction::triggered,    ui->plainTextEdit, &QPlainTextEdit::undo);
+    this->connect(ui->mnRedo,           &QAction::triggered,    ui->plainTextEdit, &QPlainTextEdit::redo);
+    this->connect(ui->mnCut,            &QAction::triggered,    ui->plainTextEdit, &QPlainTextEdit::cut);
+    this->connect(ui->mnCopy,           &QAction::triggered,    ui->plainTextEdit, &QPlainTextEdit::copy);
+    this->connect(ui->mnPaste,          &QAction::triggered,    ui->plainTextEdit, &QPlainTextEdit::paste);
+    this->connect(ui->mnSelectAll,      &QAction::triggered,    ui->plainTextEdit, &QPlainTextEdit::selectAll);
+    this->connect(ui->mnSearchReplace,  &QAction::triggered,    this, &SeptemberEditor::closeOrOpenWidgetSearchAndReplace);
 
     this->connect(ui->plainTextEdit, &CoreEditor::textChanged, this, [this]()
     { emit updateStyleSheet(ui->plainTextEdit->document()->toPlainText()); });

@@ -14,12 +14,13 @@ SearchAndReplace::SearchAndReplace(QWidget* parent) : QWidget(parent),
 
     this->connect(ui->btnSearch,        &QPushButton::clicked,       this, &SearchAndReplace::searchText);
     this->connect(ui->editSearch,       &QLineEdit::returnPressed,   this, &SearchAndReplace::searchText);
+    this->connect(ui->editReplace,      &QLineEdit::returnPressed,   this, &SearchAndReplace::replaceText);
     this->connect(ui->btnNext,          &QPushButton::clicked,       this, &SearchAndReplace::nextSearchText);
     this->connect(ui->btnPrev,          &QPushButton::clicked,       this, &SearchAndReplace::prevSearchText);
     this->connect(ui->btnReplace,       &QPushButton::clicked,       this, &SearchAndReplace::replaceText);
     this->connect(ui->checkRegister,    &QCheckBox::stateChanged,    this, &SearchAndReplace::setRegister);
     this->connect(ui->checkRegEx,       &QCheckBox::stateChanged,    this, &SearchAndReplace::setRegExp);
-    this->connect(ui->checkReplaceAll,  &QCheckBox::stateChanged,    this, &SearchAndReplace::replaceTextAll);
+    this->connect(ui->checkReplaceAll,  &QCheckBox::stateChanged,    this, &SearchAndReplace::setReplaceTextAll);
 }
 
 SearchAndReplace::~SearchAndReplace()
@@ -151,7 +152,7 @@ void SearchAndReplace::setRegExp(int state)
         m_isRegExp = true;
 }
 
-void SearchAndReplace::replaceTextAll(int state)
+void SearchAndReplace::setReplaceTextAll(int state)
 {
     if(state == 0)
         m_isReplaceAll = false;

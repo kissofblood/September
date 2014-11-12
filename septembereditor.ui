@@ -243,7 +243,7 @@
      <height>23</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFdsfs">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>Файл</string>
     </property>
@@ -262,12 +262,21 @@
     <addaction name="action_13"/>
     <addaction name="action_14"/>
     <addaction name="separator"/>
-    <addaction name="mnExit"/>
+    <addaction name="mnQuit"/>
    </widget>
-   <widget class="QMenu" name="menuHgfhgf">
+   <widget class="QMenu" name="menuCorrection">
     <property name="title">
      <string>Правка</string>
     </property>
+    <addaction name="mnUndo"/>
+    <addaction name="mnRedo"/>
+    <addaction name="mnCut"/>
+    <addaction name="mnCopy"/>
+    <addaction name="mnPaste"/>
+    <addaction name="separator"/>
+    <addaction name="mnSelectAll"/>
+    <addaction name="separator"/>
+    <addaction name="mnSearchReplace"/>
    </widget>
    <widget class="QMenu" name="menu">
     <property name="title">
@@ -284,8 +293,8 @@
      <string>Справка</string>
     </property>
    </widget>
-   <addaction name="menuFdsfs"/>
-   <addaction name="menuHgfhgf"/>
+   <addaction name="menuFile"/>
+   <addaction name="menuCorrection"/>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
    <addaction name="menu_3"/>
@@ -341,9 +350,49 @@
     <string>Закрыть все</string>
    </property>
   </action>
-  <action name="mnExit">
+  <action name="mnQuit">
    <property name="text">
     <string>Выход</string>
+   </property>
+  </action>
+  <action name="mnUndo">
+   <property name="text">
+    <string>Отменить</string>
+   </property>
+  </action>
+  <action name="mnRedo">
+   <property name="text">
+    <string>Повторить</string>
+   </property>
+  </action>
+  <action name="mnCut">
+   <property name="text">
+    <string>Вырезать</string>
+   </property>
+  </action>
+  <action name="mnCopy">
+   <property name="text">
+    <string>Копировать</string>
+   </property>
+  </action>
+  <action name="mnPaste">
+   <property name="text">
+    <string>Вставить</string>
+   </property>
+  </action>
+  <action name="mnRemove">
+   <property name="text">
+    <string>Удалить</string>
+   </property>
+  </action>
+  <action name="mnSelectAll">
+   <property name="text">
+    <string>Выделить все</string>
+   </property>
+  </action>
+  <action name="mnSearchReplace">
+   <property name="text">
+    <string>Поиск/замена</string>
    </property>
   </action>
  </widget>

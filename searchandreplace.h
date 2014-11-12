@@ -37,7 +37,7 @@ private slots:
     void prevSearchText();
     void setRegister(int state);
     void setRegExp(int state);
-    void replaceTextAll(int state);
+    void setReplaceTextAll(int state);
     void replaceText();
 
 private:

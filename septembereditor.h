@@ -6,8 +6,13 @@
 #include <QWidget>
 #include <QKeySequence>
 #include <QPushButton>
-
-#include <QtWidgets>
+#include <QPlainTextEdit>
+#include <QAction>
+#include <QTextDocument>
+#include <QTextCursor>
+#include <QFileDialog>
+#include <QFile>
+#include <QIODevice>
 
 namespace Ui {
 class SeptemberEditor;
