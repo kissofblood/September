@@ -194,6 +194,28 @@ void CoreEditor::keyPressEvent(QKeyEvent* event)
     }
 }
 
+void CoreEditor::wheelEvent(QWheelEvent* event)
+{
+    if(event->modifiers() == Qt::ControlModifier)
+    {
+        if(event->delta() > 0)
+        {
+            m_zoomDocument += 1;
+            this->zoomIn();
+            this->document()->setDefaultFont(QFont("Droid Sans Mono", m_zoomDocument, QFont::Monospace));
+        }
+        else
+        {
+            m_zoomDocument -= 1;
+            if(m_zoomDocument <= 1)
+                m_zoomDocument = 1;
+            this->zoomOut();
+            this->document()->setDefaultFont(QFont("Droid Sans Mono", m_zoomDocument, QFont::Monospace));
+        }
+    }
+    QPlainTextEdit::wheelEvent(event);
+}
+
 CoreEditor::LineNumberArea::LineNumberArea(QWidget* parent) : QWidget(parent)
   , m_editor(qobject_cast<CoreEditor*>(parent))
 { }

@@ -37,6 +37,7 @@ private slots:
     void prevSearchText();
     void setRegister(int state);
     void setRegExp(int state);
+    void replace();
 
 private:
     Ui::SearchAndReplace    *ui                 = nullptr;

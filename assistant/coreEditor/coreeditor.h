@@ -9,6 +9,8 @@
 #include <QRect>
 #include <QResizeEvent>
 #include <QPaintEvent>
+#include <QWheelEvent>
+#include <QKeyEvent>
 #include <QColor>
 #include <QList>
 #include <QTextEdit>
@@ -18,6 +20,10 @@
 #include <QString>
 #include <functional>
 #include <QCompleter>
+#include <QStringList>
+#include <QPalette>
+#include <QTextCursor>
+#include <QFont>
 
 #include <QtWidgets>
 
@@ -67,11 +73,13 @@ private:
     QColor          m_lineColor;
     QColor          m_otherTextColor;
     bool            m_visibleLineNumberAre  = true;
+    int             m_zoomDocument          = 12;
 
     void lineNumberAreaPaintEvent(QPaintEvent* event);
     int lineNumberAreaWidth();
     void resizeEvent(QResizeEvent* event) override;
     void keyPressEvent(QKeyEvent* event) override;
+    void wheelEvent(QWheelEvent* event) override;
 };
 
 #endif // COREEDITOR_H
