@@ -22,6 +22,7 @@ public:
 
     QString styleSheet() const;
     QTextDocument* getDocument() const;
+    void setPositionCursor(const QTextCursor& cursor);
 
 signals:
     void updateStyleSheet(const QString& text);

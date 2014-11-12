@@ -17,10 +17,12 @@ Highlighter::Highlighter(const QStringList& icons,  const QStringList& propertie
         charFormat.setFontWeight(weight);
         for(auto& str : list)
         {
-            if(name == "icons" || name == "properties" || name == "widgets")
+            if(name == "widgets")
                 rule.pattern.setPattern(R"(\b)" + str + R"(\b)");
+            if(name == "icons" || name == "properties")
+                rule.pattern.setPattern(R"([^((::)|:|(:\!)|\{)]\b)" + str + R"(\b)");
             else if(name == "pseudo")
-                rule.pattern.setPattern(R"(\b(:!)" + str + R"(|:)" + str + R"()\b)");
+                rule.pattern.setPattern(R"(\b(:\!)" + str + R"(|:)" + str + R"()\b)");
             else if(name == "sub")
                 rule.pattern.setPattern(R"(\b::)" + str + R"(\b)");
             rule.format = charFormat;
@@ -71,7 +73,7 @@ void Highlighter::highlightBlock(const QString& text)
                 int length;
                 if(i.key() == "icons" || i.key() == "properties" || i.key() == "widgets")
                     length = expression.matchedLength();
-                if(i.key() == "pseudo")
+                else if(i.key() == "pseudo")
                 {
                     index += 1;
                     length = expression.matchedLength() - 1;

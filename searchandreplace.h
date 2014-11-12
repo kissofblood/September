@@ -11,8 +11,10 @@
 #include <QTextDocument>
 #include <QBrush>
 #include <QColor>
-
-#include <QtWidgets>
+#include <QMessageBox>
+#include <QVector>
+#include <QPair>
+#include <QKeySequence>
 
 namespace Ui {
 class SearchAndReplace;
@@ -27,11 +29,16 @@ public:
 
 private slots:
     void searchText();
+    void nextSearchText();
+    void prevSearchText();
 
 private:
-    Ui::SearchAndReplace    *ui         = nullptr;
-    SeptemberEditor         *m_editor   = nullptr;
+    Ui::SearchAndReplace    *ui             = nullptr;
+    SeptemberEditor         *m_editor       = nullptr;
+    QMessageBox             *m_msgBox       = new QMessageBox(this);
+    QPushButton             *m_btnOk        = nullptr;
     QVector<QPair<QTextCursor, QTextCharFormat>> m_textCharFormatUndo_;
+    int m_posCursor = 0;
 };
 
 #endif // SEARCHANDREPLACE_H

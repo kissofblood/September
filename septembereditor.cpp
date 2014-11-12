@@ -12,6 +12,8 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->mnOpen->setShortcut(QKeySequence(QKeySequence::Open));
     ui->mnExit->setShortcut(QKeySequence(QKeySequence::Quit));
 
+    ui->listFile->setVisible(false);
+
     this->connect(ui->btnCloseListFile,     &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenListFile);
     this->connect(ui->btnSearchAndReplace,  &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetSearchAndReplace);
     this->connect(ui->btnWidget,            &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetWidget);
@@ -32,6 +34,9 @@ QString SeptemberEditor::styleSheet() const
 
 QTextDocument* SeptemberEditor::getDocument() const
 { return ui->plainTextEdit->document(); }
+
+void SeptemberEditor::setPositionCursor(const QTextCursor& cursor)
+{ ui->plainTextEdit->setTextCursor(cursor); }
 
 void SeptemberEditor::closeOrOpenListFile()
 {
@@ -116,4 +121,7 @@ void SeptemberEditor::openFile()
         ui->plainTextEdit->appendPlainText(file.readAll());
     }
     file.close();
+    QTextCursor cursorFirst(ui->plainTextEdit->document());
+    cursorFirst.setPosition(0);
+    ui->plainTextEdit->setTextCursor(cursorFirst);
 }
