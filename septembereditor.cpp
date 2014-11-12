@@ -8,6 +8,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->widgetSearchAndReplace->setVisible(false);
     ui->widgetWidget->setVisible(false);
     ui->widgetUI->setVisible(false);
+    ui->btnSearchAndReplace->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));
     ui->mnNew->setShortcut(QKeySequence(QKeySequence::New));
     ui->mnOpen->setShortcut(QKeySequence(QKeySequence::Open));
     ui->mnExit->setShortcut(QKeySequence(QKeySequence::Quit));
@@ -59,6 +60,7 @@ void SeptemberEditor::closeOrOpenWidgetSearchAndReplace()
     {
         m_clickedButton.searchAndReplace = false;
         ui->widgetSearchAndReplace->setVisible(false);
+        ui->plainTextEdit->setFocus();
     }
     else
     {
@@ -69,6 +71,7 @@ void SeptemberEditor::closeOrOpenWidgetSearchAndReplace()
         ui->widgetWidget->setVisible(false);
         ui->widgetUI->setVisible(false);
         ui->widgetSearchAndReplace->setVisible(true);
+        ui->widgetSearchAndReplace->setFocusEditSearch();
     }
 }
 

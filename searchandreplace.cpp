@@ -12,14 +12,19 @@ SearchAndReplace::SearchAndReplace(QWidget* parent) : QWidget(parent),
     m_msgBox->addButton("Нет", QMessageBox::RejectRole);
     m_msgBox->setIcon(QMessageBox::Information);
 
-    this->connect(ui->btnSearch,    &QPushButton::clicked,       this, &SearchAndReplace::searchText);
-    this->connect(ui->editSearch,   &QLineEdit::returnPressed,   this, &SearchAndReplace::searchText);
-    this->connect(ui->btnNext,      &QPushButton::clicked,       this, &SearchAndReplace::nextSearchText);
-    this->connect(ui->btnPrev,      &QPushButton::clicked,       this, &SearchAndReplace::prevSearchText);
+    this->connect(ui->btnSearch,        &QPushButton::clicked,       this, &SearchAndReplace::searchText);
+    this->connect(ui->editSearch,       &QLineEdit::returnPressed,   this, &SearchAndReplace::searchText);
+    this->connect(ui->btnNext,          &QPushButton::clicked,       this, &SearchAndReplace::nextSearchText);
+    this->connect(ui->btnPrev,          &QPushButton::clicked,       this, &SearchAndReplace::prevSearchText);
+    this->connect(ui->checkRegister,    &QCheckBox::stateChanged,    this, &SearchAndReplace::setRegister);
+    this->connect(ui->checkRegEx,       &QCheckBox::stateChanged,    this, &SearchAndReplace::setRegExp);
 }
 
 SearchAndReplace::~SearchAndReplace()
 { delete ui; }
+
+void SearchAndReplace::setFocusEditSearch()
+{ ui->editSearch->setFocus(); }
 
 void SearchAndReplace::searchText()
 {
@@ -43,7 +48,17 @@ void SearchAndReplace::searchText()
     colorFormat.setBackground(QBrush(QColor(85, 85, 0)));
     while(!highlightCursor.isNull() && !highlightCursor.atEnd())
     {
-        highlightCursor = m_editor->getDocument()->find(textSearch, highlightCursor, QTextDocument::FindWholeWords);
+        if(!m_isRegExp)
+            highlightCursor = m_editor->getDocument()->find(textSearch, highlightCursor, m_findFlag);
+        else
+        {
+            QRegExp regExp(R"()" + textSearch + R"()");
+            if(m_findFlag == QTextDocument::FindWholeWords)
+                regExp.setCaseSensitivity(Qt::CaseInsensitive);
+            else
+                regExp.setCaseSensitivity(Qt::CaseSensitive);
+            highlightCursor = m_editor->getDocument()->find(regExp, highlightCursor);
+        }
 
         if(!highlightCursor.isNull())
         {
@@ -116,4 +131,20 @@ void SearchAndReplace::prevSearchText()
             m_editor->setPositionCursor(cursor);
         }
     }
+}
+
+void SearchAndReplace::setRegister(int state)
+{
+    if(state == 0)
+        m_findFlag = QTextDocument::FindWholeWords;
+    else if(state == 2)
+        m_findFlag = QTextDocument::FindWholeWords | QTextDocument::FindCaseSensitively;
+}
+
+void SearchAndReplace::setRegExp(int state)
+{
+    if(state == 0)
+        m_isRegExp = false;
+    else if(state == 2)
+        m_isRegExp = true;
 }
