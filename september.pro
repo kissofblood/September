@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     assistant/viewwidgetui.cpp \
     assistant/coreEditor/coreeditor.cpp \
     assistant/coreEditor/highlighter.cpp \
-    assistant/graphicswidget.cpp
+    assistant/graphicswidget.cpp \
+    assistant/coreEditor/completermodel.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \
@@ -30,7 +31,8 @@ HEADERS  += septembereditor.h \
     assistant/coreEditor/coreeditor.h \
     assistant/coreEditor/highlighter.h \
     assistant/graphicswidget.h \
-    assistant/keywords.h
+    assistant/keywords.h \
+    assistant/coreEditor/completermodel.h
 
 FORMS    += septembereditor.ui \
     widgetstyle.ui \

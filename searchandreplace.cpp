@@ -6,8 +6,8 @@ SearchAndReplace::SearchAndReplace(QWidget* parent) : QWidget(parent),
     m_editor(qobject_cast<SeptemberEditor*>(parent->parent()))
 {
     ui->setupUi(this);
-    ui->btnNext->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Up));
-    ui->btnPrev->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Down));
+    ui->btnNext->setShortcut(Qt::CTRL + Qt::Key_Up);
+    ui->btnPrev->setShortcut(Qt::CTRL + Qt::Key_Down);
     m_btnOk = m_msgBox->addButton("Да", QMessageBox::AcceptRole);
     m_msgBox->addButton("Нет", QMessageBox::RejectRole);
     m_msgBox->setIcon(QMessageBox::Information);

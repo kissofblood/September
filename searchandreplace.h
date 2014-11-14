@@ -14,7 +14,6 @@
 #include <QMessageBox>
 #include <QVector>
 #include <QPair>
-#include <QKeySequence>
 #include <QRegExp>
 #include <QCheckBox>
 

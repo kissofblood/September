@@ -13,6 +13,7 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QIODevice>
+#include <functional>
 
 namespace Ui {
 class SeptemberEditor;
@@ -33,18 +34,18 @@ signals:
     void updateStyleSheet(const QString& text);
 
 private slots:
-    void closeOrOpenListFile();
-    void closeOrOpenWidgetSearchAndReplace();
-    void closeOrOpenWidgetWidget();
-    void closeOrOpenWidgetUI();
+    void closeOrShowListFile();
+    void closeOrShowWidgetSearchAndReplace();
+    void closeOrShowCreateWidget();
+    void closeOrShowOpenUI();
     void openFile();
 
 private:
     struct ClickedButton
     {
-        bool searchAndReplace = false;
-        bool widget = false;
-        bool widgetUI = false;
+        bool searchAndReplace   = false;
+        bool createWidget       = false;
+        bool openUI             = false;
     };
     Ui::SeptemberEditor         *ui = nullptr;
     ClickedButton               m_clickedButton;

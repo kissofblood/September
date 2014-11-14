@@ -6,36 +6,53 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
 {
     ui->setupUi(this);
     ui->widgetSearchAndReplace->setVisible(false);
-    ui->widgetWidget->setVisible(false);
-    ui->widgetUI->setVisible(false);
-    ui->mnNew->setShortcut(QKeySequence(QKeySequence::New));
-    ui->mnOpen->setShortcut(QKeySequence(QKeySequence::Open));
-    ui->mnQuit->setShortcut(QKeySequence(QKeySequence::Quit));
+    ui->widgetCreateWidget->setVisible(false);
+    ui->widgetOpenUI->setVisible(false);
+    ui->listDocument->setVisible(false);
+    ui->mnNew->setShortcut(QKeySequence::New);
+    ui->mnOpen->setShortcut(QKeySequence::Open);
+    ui->mnQuit->setShortcut(QKeySequence::Quit);
 
-    ui->mnUndo->setShortcut(QKeySequence(QKeySequence::Undo));
-    ui->mnRedo->setShortcut(QKeySequence(QKeySequence::Redo));
-    ui->mnCut->setShortcut(QKeySequence(QKeySequence::Cut));
-    ui->mnCopy->setShortcut(QKeySequence(QKeySequence::Copy));
-    ui->mnPaste->setShortcut(QKeySequence(QKeySequence::Paste));
-    ui->mnSelectAll->setShortcut(QKeySequence(QKeySequence::SelectAll));
-    ui->mnSearchReplace->setShortcut(QKeySequence(QKeySequence::Find));
+    ui->mnUndo->setShortcut(QKeySequence::Undo);
+    ui->mnRedo->setShortcut(QKeySequence::Redo);
+    ui->mnCut->setShortcut(QKeySequence::Cut);
+    ui->mnCopy->setShortcut(QKeySequence::Copy);
+    ui->mnPaste->setShortcut(QKeySequence::Paste);
+    ui->mnSelectAll->setShortcut(QKeySequence::SelectAll);
+    ui->mnSearchReplace->setShortcut(QKeySequence::Find);
 
-    ui->listFile->setVisible(false);
+    ui->mnListDocument->setCheckable(true);
+    ui->mnCreateWidget->setCheckable(true);
+    ui->mnOpenUi->setCheckable(true);
+    ui->mnNumberLine->setCheckable(true);
+    ui->mnNumberLine->setChecked(true);
+    ui->mnNumberLine->setShortcut(Qt::CTRL + Qt::Key_L);
+    ui->mnListDocument->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Q);
+    ui->mnCreateWidget->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_W);
+    ui->mnOpenUi->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_E);
+    ui->mnZoomIn->setShortcut(QKeySequence::ZoomIn);
+    ui->mnZoomOut->setShortcut(QKeySequence::ZoomOut);
 
-    this->connect(ui->btnCloseListFile,     &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenListFile);
-    this->connect(ui->btnSearchAndReplace,  &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetSearchAndReplace);
-    this->connect(ui->btnWidget,            &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetWidget);
-    this->connect(ui->btnUi,                &QPushButton::clicked, this, &SeptemberEditor::closeOrOpenWidgetUI);
+    this->connect(ui->btnCloseListFile,     &QPushButton::clicked, this, &SeptemberEditor::closeOrShowListFile);
+    this->connect(ui->btnSearchAndReplace,  &QPushButton::clicked, this, &SeptemberEditor::closeOrShowWidgetSearchAndReplace);
+    this->connect(ui->btnCreateWidget,      &QPushButton::clicked, this, &SeptemberEditor::closeOrShowCreateWidget);
+    this->connect(ui->btnOpenUi,            &QPushButton::clicked, this, &SeptemberEditor::closeOrShowOpenUI);
     this->connect(ui->barBtnOpenFile,       &QPushButton::clicked, this, &SeptemberEditor::openFile);
     this->connect(ui->mnOpen,           &QAction::triggered,    this, &SeptemberEditor::openFile);
     this->connect(ui->mnQuit,           &QAction::triggered,    qApp, &QApplication::quit);
-    this->connect(ui->mnUndo,           &QAction::triggered,    ui->plainTextEdit, &QPlainTextEdit::undo);
-    this->connect(ui->mnRedo,           &QAction::triggered,    ui->plainTextEdit, &QPlainTextEdit::redo);
-    this->connect(ui->mnCut,            &QAction::triggered,    ui->plainTextEdit, &QPlainTextEdit::cut);
-    this->connect(ui->mnCopy,           &QAction::triggered,    ui->plainTextEdit, &QPlainTextEdit::copy);
-    this->connect(ui->mnPaste,          &QAction::triggered,    ui->plainTextEdit, &QPlainTextEdit::paste);
-    this->connect(ui->mnSelectAll,      &QAction::triggered,    ui->plainTextEdit, &QPlainTextEdit::selectAll);
-    this->connect(ui->mnSearchReplace,  &QAction::triggered,    this, &SeptemberEditor::closeOrOpenWidgetSearchAndReplace);
+    this->connect(ui->mnUndo,           &QAction::triggered,    ui->plainTextEdit, &CoreEditor::undo);
+    this->connect(ui->mnRedo,           &QAction::triggered,    ui->plainTextEdit, &CoreEditor::redo);
+    this->connect(ui->mnCut,            &QAction::triggered,    ui->plainTextEdit, &CoreEditor::cut);
+    this->connect(ui->mnCopy,           &QAction::triggered,    ui->plainTextEdit, &CoreEditor::copy);
+    this->connect(ui->mnPaste,          &QAction::triggered,    ui->plainTextEdit, &CoreEditor::paste);
+    this->connect(ui->mnSelectAll,      &QAction::triggered,    ui->plainTextEdit, &CoreEditor::selectAll);
+    this->connect(ui->mnSearchReplace,  &QAction::triggered,    this, &SeptemberEditor::closeOrShowWidgetSearchAndReplace);
+    this->connect(ui->mnListDocument, &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowListFile, this));
+    this->connect(ui->mnCreateWidget, &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowCreateWidget, this));
+    this->connect(ui->mnOpenUi,       &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowOpenUI, this));
+    this->connect(ui->mnNumberLine,   &QAction::triggered, ui->plainTextEdit, &CoreEditor::setVisibleLineNimberArea);
+    this->connect(ui->mnZoomIn,     &QAction::triggered, ui->plainTextEdit, &CoreEditor::zoomDocIn);
+    this->connect(ui->mnZoomOut,    &QAction::triggered, ui->plainTextEdit, &CoreEditor::zoomDocOut);
 
     this->connect(ui->plainTextEdit, &CoreEditor::textChanged, this, [this]()
     { emit updateStyleSheet(ui->plainTextEdit->document()->toPlainText()); });
@@ -53,22 +70,29 @@ QTextDocument* SeptemberEditor::getDocument() const
 void SeptemberEditor::setPositionCursor(const QTextCursor& cursor)
 { ui->plainTextEdit->setTextCursor(cursor); }
 
-void SeptemberEditor::closeOrOpenListFile()
+void SeptemberEditor::closeOrShowListFile()
 {
-    static bool clicked = true;
+    QPushButton* button = qobject_cast<QPushButton*>(this->sender());
+    static bool clicked = false;
     if(clicked)
     {
+        if(button != nullptr)
+            ui->mnListDocument->setChecked(false);
+
         clicked = false;
-        ui->listFile->setVisible(false);
+        ui->listDocument->setVisible(false);
     }
     else
     {
+        if(button != nullptr)
+            ui->mnListDocument->setChecked(true);
+
         clicked = true;
-        ui->listFile->setVisible(true);
+        ui->listDocument->setVisible(true);
     }
 }
 
-void SeptemberEditor::closeOrOpenWidgetSearchAndReplace()
+void SeptemberEditor::closeOrShowWidgetSearchAndReplace()
 {
     if(m_clickedButton.searchAndReplace)
     {
@@ -79,49 +103,73 @@ void SeptemberEditor::closeOrOpenWidgetSearchAndReplace()
     else
     {
         m_clickedButton.searchAndReplace = true;
-        m_clickedButton.widget = false;
-        m_clickedButton.widgetUI = false;
-        ui->btnUi->setDown(false);
-        ui->widgetWidget->setVisible(false);
-        ui->widgetUI->setVisible(false);
+        m_clickedButton.createWidget = false;
+        m_clickedButton.openUI = false;
+        ui->btnOpenUi->setDown(false);
+        ui->widgetCreateWidget->setVisible(false);
+        ui->widgetOpenUI->setVisible(false);
         ui->widgetSearchAndReplace->setVisible(true);
         ui->widgetSearchAndReplace->setFocusEditSearch();
+        ui->mnCreateWidget->setChecked(false);
+        ui->mnOpenUi->setChecked(false);
     }
 }
 
-void SeptemberEditor::closeOrOpenWidgetWidget()
+void SeptemberEditor::closeOrShowCreateWidget()
 {
-    if(m_clickedButton.widget)
+    QPushButton* button = qobject_cast<QPushButton*>(this->sender());
+    if(m_clickedButton.createWidget)
     {
-        m_clickedButton.widget = false;
-        ui->widgetWidget->setVisible(false);
+        if(button != nullptr)
+            ui->mnCreateWidget->setChecked(false);
+
+        m_clickedButton.createWidget = false;
+        ui->widgetCreateWidget->setVisible(false);
     }
     else
     {
-        m_clickedButton.widget = true;
+        if(button == nullptr)
+            ui->mnOpenUi->setChecked(false);
+        else
+        {
+            ui->mnCreateWidget->setChecked(true);
+            ui->mnOpenUi->setChecked(false);
+        }
+        m_clickedButton.createWidget = true;
         m_clickedButton.searchAndReplace = false;
-        m_clickedButton.widgetUI = false;
+        m_clickedButton.openUI = false;
         ui->widgetSearchAndReplace->setVisible(false);
-        ui->widgetUI->setVisible(false);
-        ui->widgetWidget->setVisible(true);
+        ui->widgetOpenUI->setVisible(false);
+        ui->widgetCreateWidget->setVisible(true);
     }
 }
 
-void SeptemberEditor::closeOrOpenWidgetUI()
+void SeptemberEditor::closeOrShowOpenUI()
 {
-    if(m_clickedButton.widgetUI)
+    QPushButton* button = qobject_cast<QPushButton*>(this->sender());
+    if(m_clickedButton.openUI)
     {
-        m_clickedButton.widgetUI = false;
-        ui->widgetUI->setVisible(false);
+        if(button != nullptr)
+            ui->mnOpenUi->setChecked(false);
+
+        m_clickedButton.openUI = false;
+        ui->widgetOpenUI->setVisible(false);
     }
     else
     {
-        m_clickedButton.widgetUI = true;
+        if(button == nullptr)
+            ui->mnCreateWidget->setChecked(false);
+        else
+        {
+            ui->mnOpenUi->setChecked(true);
+            ui->mnCreateWidget->setChecked(false);
+        }
+        m_clickedButton.openUI = true;
         m_clickedButton.searchAndReplace = false;
-        m_clickedButton.widget = false;
+        m_clickedButton.createWidget = false;
         ui->widgetSearchAndReplace->setVisible(false);
-        ui->widgetWidget->setVisible(false);
-        ui->widgetUI->setVisible(true);
+        ui->widgetCreateWidget->setVisible(false);
+        ui->widgetOpenUI->setVisible(true);
     }
 }
 

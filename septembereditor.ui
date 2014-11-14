@@ -156,7 +156,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QListWidget" name="listFile">
+         <widget class="QListWidget" name="listDocument">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -198,10 +198,10 @@
          </widget>
         </item>
         <item>
-         <widget class="WidgetStyle" name="widgetWidget" native="true"/>
+         <widget class="WidgetStyle" name="widgetCreateWidget" native="true"/>
         </item>
         <item>
-         <widget class="WidgetUiStyle" name="widgetUI" native="true"/>
+         <widget class="WidgetUiStyle" name="widgetOpenUI" native="true"/>
         </item>
        </layout>
       </item>
@@ -215,14 +215,14 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btnWidget">
+         <widget class="QPushButton" name="btnCreateWidget">
           <property name="text">
            <string>Widget</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btnUi">
+         <widget class="QPushButton" name="btnOpenUi">
           <property name="text">
            <string>UI</string>
           </property>
@@ -278,10 +278,28 @@
     <addaction name="separator"/>
     <addaction name="mnSearchReplace"/>
    </widget>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="menuView">
     <property name="title">
      <string>Вид</string>
     </property>
+    <widget class="QMenu" name="mnShowWidget">
+     <property name="title">
+      <string>Показать</string>
+     </property>
+     <addaction name="mnListDocument"/>
+     <addaction name="mnCreateWidget"/>
+     <addaction name="mnOpenUi"/>
+    </widget>
+    <addaction name="action"/>
+    <addaction name="action_2"/>
+    <addaction name="separator"/>
+    <addaction name="mnShowWidget"/>
+    <addaction name="separator"/>
+    <addaction name="action_17"/>
+    <addaction name="mnNumberLine"/>
+    <addaction name="separator"/>
+    <addaction name="mnZoomIn"/>
+    <addaction name="mnZoomOut"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -295,7 +313,7 @@
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuCorrection"/>
-   <addaction name="menu"/>
+   <addaction name="menuView"/>
    <addaction name="menu_2"/>
    <addaction name="menu_3"/>
   </widget>
@@ -393,6 +411,51 @@
   <action name="mnSearchReplace">
    <property name="text">
     <string>Поиск/замена</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>Предыдущий документ</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>Следующий документ</string>
+   </property>
+  </action>
+  <action name="mnListDocument">
+   <property name="text">
+    <string>Показать &quot;Список документов&quot;</string>
+   </property>
+  </action>
+  <action name="mnCreateWidget">
+   <property name="text">
+    <string>Показать &quot;Создать виджеты&quot;</string>
+   </property>
+  </action>
+  <action name="mnOpenUi">
+   <property name="text">
+    <string>Показать &quot;Открыть UI&quot;</string>
+   </property>
+  </action>
+  <action name="action_17">
+   <property name="text">
+    <string>Динамический перенос строк</string>
+   </property>
+  </action>
+  <action name="mnNumberLine">
+   <property name="text">
+    <string>Номера строк</string>
+   </property>
+  </action>
+  <action name="mnZoomIn">
+   <property name="text">
+    <string>Увеличить размер шрифта</string>
+   </property>
+  </action>
+  <action name="mnZoomOut">
+   <property name="text">
+    <string>Уменьшить размер шрифта</string>
    </property>
   </action>
  </widget>

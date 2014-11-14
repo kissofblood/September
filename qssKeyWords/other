@@ -1,1 +1,41 @@
- 
+white
+black
+red
+darkRed
+green
+darkGreen
+blue
+darkBlue
+cyan
+darkCyan
+magenta
+darkMagenta
+yellow
+gray
+darkGray
+lightGray
+transparent
+
+Border Style
+dashed
+dot-dash
+dot-dot-dash
+dotted
+double
+groove
+inset
+outset
+ridge
+solid
+none
+
+rgb(r, g, b)
+rgba(r, g, b, a)
+hsv(h, s, v)
+hsva(h, s, v, a)
+#rrggbb
+
+Gradient
+qlineargradient
+qradialgradient
+qconicalgradient

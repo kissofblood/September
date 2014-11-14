@@ -149,6 +149,22 @@ int CoreEditor::lineNumberAreaWidth()
     return 10 + this->fontMetrics().width('0') * digits;
 }
 
+void CoreEditor::zoomDocIn()
+{
+    m_zoomDocument += 1;
+    this->zoomIn();
+    this->document()->setDefaultFont(QFont("Droid Sans Mono", m_zoomDocument, QFont::Monospace));
+}
+
+void CoreEditor::zoomDocOut()
+{
+    m_zoomDocument -= 1;
+    if(m_zoomDocument < 1)
+        m_zoomDocument = 1;
+    this->zoomOut();
+    this->document()->setDefaultFont(QFont("Droid Sans Mono", m_zoomDocument, QFont::Monospace));
+}
+
 void CoreEditor::resizeEvent(QResizeEvent* event)
 {
     QRect rect = this->contentsRect();
@@ -199,19 +215,9 @@ void CoreEditor::wheelEvent(QWheelEvent* event)
     if(event->modifiers() == Qt::ControlModifier)
     {
         if(event->delta() > 0)
-        {
-            m_zoomDocument += 1;
-            this->zoomIn();
-            this->document()->setDefaultFont(QFont("Droid Sans Mono", m_zoomDocument, QFont::Monospace));
-        }
+            zoomDocIn();
         else
-        {
-            m_zoomDocument -= 1;
-            if(m_zoomDocument <= 1)
-                m_zoomDocument = 1;
-            this->zoomOut();
-            this->document()->setDefaultFont(QFont("Droid Sans Mono", m_zoomDocument, QFont::Monospace));
-        }
+            zoomDocOut();
     }
     QPlainTextEdit::wheelEvent(event);
 }

@@ -34,7 +34,6 @@ public:
     explicit CoreEditor(QWidget* parent = nullptr);
     ~CoreEditor() override = default;
 
-    void setVisibleLineNimberArea(bool value);
     void setDocumentColor(const QColor& color);
     void setLineColor(const QColor& color);
     void setOtherTextColor(const QColor& color);
@@ -45,6 +44,11 @@ public:
     void setFormatSub(const QTextCharFormat& charFormat);
     void setFormatComment(const QTextCharFormat& charFormat);
     void setFormatNumber(const QTextCharFormat& charFormat);
+
+public slots:
+    void zoomDocIn();
+    void zoomDocOut();
+    void setVisibleLineNimberArea(bool value);
 
 private slots:
     void updateLineNumberAreaWidth();
@@ -75,8 +79,8 @@ private:
     bool            m_visibleLineNumberAre  = true;
     int             m_zoomDocument          = 12;
 
-    void lineNumberAreaPaintEvent(QPaintEvent* event);
     int lineNumberAreaWidth();
+    void lineNumberAreaPaintEvent(QPaintEvent* event);
     void resizeEvent(QResizeEvent* event) override;
     void keyPressEvent(QKeyEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;
