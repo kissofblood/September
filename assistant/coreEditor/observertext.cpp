@@ -24,34 +24,47 @@ void ObserverText::textParser(const QString& text)
         }
         else
         {
-            if(text[i] == '!' && text[i - 1] == ':' && text[i - 2] == ':')
+            if(text[i] == '!' && text[i - 1].isLetter())
             {
                 emit stringListModelChanged(m_strListModel_["empty"]);
                 break;
             }
-            else if(text[i] == '!' && text[i - 1] == ':')
+            if(text[i] == '!' && text[i - 1] == ':')
             {
-                emit stringListModelChanged(m_strListModel_["pseudo"]);
+                int count = 0;
+                for(int j = i - 2; j >= 0; j--)
+                {
+                    if(text[j].isLetter())
+                        break;
+                    else
+                        count += 1;
+                }
+                if(count == 0)
+                    emit stringListModelChanged(m_strListModel_["pseudo"]);
+                else
+                    emit stringListModelChanged(m_strListModel_["empty"]);
                 break;
             }
-            else if(text[i] == '!' && text[i - 1] != ':')
-            {
-                emit stringListModelChanged(m_strListModel_["empty"]);
-                break;
-            }
-            else if(text[i] == ':' && text[i - 1] == '!')
-            {
-                emit stringListModelChanged(m_strListModel_["empty"]);
-                break;
-            }
-            else if(text[i] == ':' && text[i - 1] != ':')
+            else if(text[i] == ':' && text[i - 1].isLetter())
             {
                 emit stringListModelChanged(m_strListModel_["pseudo"]);
                 break;
             }
             else if(text[i] == ':' && text[i - 1] == ':')
             {
-                emit stringListModelChanged(m_strListModel_["sub"]);
+                int count = 0;
+                for(int j = i - 2; j >= 0; j--)
+                {
+                    if(text[j].isLetter())
+                        break;
+                    else
+                        count += 1;
+                }
+
+                if(count == 0)
+                    emit stringListModelChanged(m_strListModel_["sub"]);
+                else
+                    emit stringListModelChanged(m_strListModel_["empty"]);
                 break;
             }
             else if(text[i] == 'Q' || text[i] == ',')
