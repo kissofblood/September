@@ -18,7 +18,7 @@ class Highlighter : public QSyntaxHighlighter
 public:
     Highlighter(const QStringList& icons,  const QStringList& properties,
                 const QStringList& pseudo, const QStringList& widgets,
-                const QStringList& sub,    QTextDocument* parent = nullptr);
+                const QStringList& sub,    const QStringList& other, QTextDocument* parent = nullptr);
     ~Highlighter() override = default;
 
     void setFormatIcons(const QTextCharFormat& charFormat);

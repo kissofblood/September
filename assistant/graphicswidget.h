@@ -36,7 +36,7 @@ private:
     class Rect : public QGraphicsRectItem
     {
     public:
-        explicit Rect(QGraphicsItem* parent = nullptr);
+        explicit Rect(GraphicsWidget* parent = nullptr);
         ~Rect() override = default;
 
     private:
@@ -50,7 +50,7 @@ private:
     class ProxyWidget : public QGraphicsProxyWidget
     {
     public:
-        ProxyWidget(QGraphicsItem* parent = nullptr);
+        ProxyWidget(GraphicsWidget* parent = nullptr);
         ~ProxyWidget() override = default;
 
     private:

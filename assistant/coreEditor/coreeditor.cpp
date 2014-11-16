@@ -9,21 +9,33 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
     QStringList pseudo = KeyWords::keyWordsFromFile("listOfPseudo-States");
     QStringList widgets =  KeyWords::keyWordsFromFile("listOfStylableWidgets");
     QStringList sub = KeyWords::keyWordsFromFile("listOfSub-Controls");
+    QStringList other = KeyWords::keyWordsFromFile("other");
+    m_highlighter = new Highlighter(icons, properties, pseudo, widgets, sub, other, this->document());
+    m_observerText = new ObserverText(icons, properties, pseudo, widgets, sub, other, this);
     m_completer->setWidget(this);
-    m_completer->setModel(new QStringListModel(widgets, this));
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_completer->setCompletionMode(QCompleter::PopupCompletion);
-    m_highlighter = new Highlighter(icons, properties, pseudo, widgets, sub,  this->document());
 
     this->connect(this, &QPlainTextEdit::blockCountChanged,     this, std::bind(&CoreEditor::updateLineNumberAreaWidth, this));
     this->connect(this, &QPlainTextEdit::updateRequest,         this, &CoreEditor::updateLineNumberArea);
     this->connect(this, &QPlainTextEdit::cursorPositionChanged, this, &CoreEditor::highlightCurrentLine);
     this->connect(m_completer, SIGNAL(activated(QString)), SLOT(insertCompletion(QString)));
+    this->connect(this, &QPlainTextEdit::cursorPositionChanged, this, [this]()
+    {
+        QTextCursor cursor = this->textCursor();
+        cursor.select(QTextCursor::BlockUnderCursor);
+
+        QTextCursor startBlock = this->textCursor();
+        startBlock.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
+
+        m_observerText->textParser(cursor.selectedText().left(this->textCursor().position() - startBlock.position() + 1));
+    });
+    this->connect(m_observerText, &ObserverText::stringListModelChanged, m_completer, &QCompleter::setModel);
     this->setFocus();
 
     updateLineNumberAreaWidth();
     highlightCurrentLine();
-    setDocumentColor(QColor(Qt::black));
+    setDocumentColor(Qt::black);
     this->document()->setDefaultFont(QFont("Droid Sans Mono", 12, QFont::Monospace));
 }
 
@@ -100,9 +112,12 @@ void CoreEditor::updateLineNumberArea(const QRect& rect, int dy)
 void CoreEditor::insertCompletion(const QString& text)
 {
     QTextCursor cursor = this->textCursor();
-    int numberOfCharsToComplete = text.length() - m_completer->completionPrefix().length();
-    cursor.movePosition(QTextCursor::EndOfWord);
-    cursor.insertText(text.right(numberOfCharsToComplete));
+    cursor.select(QTextCursor::WordUnderCursor);
+    if((cursor.selectedText().end() - 1)->isLetter())
+        cursor.removeSelectedText();
+    else
+        cursor.setPosition(cursor.position());
+    cursor.insertText(text);
     this->setTextCursor(cursor);
 }
 
@@ -195,18 +210,22 @@ void CoreEditor::keyPressEvent(QKeyEvent* event)
         QTextCursor cursor = this->textCursor();
         cursor.select(QTextCursor::WordUnderCursor);
         QString completePrefix = cursor.selectedText();
-        if(!completePrefix.isEmpty() && (completePrefix.end() - 1)->isLetter())
+
+        if(completePrefix.isEmpty() || !(completePrefix.end() - 1)->isLetter())
+            m_completer->setCompletionPrefix(QString());
+        else
         {
             if(completePrefix != m_completer->completionPrefix())
             {
                 m_completer->setCompletionPrefix(completePrefix);
                 m_completer->popup()->setCurrentIndex(m_completer->completionModel()->index(0, 0));
             }
-
-            QRect rect = this->cursorRect();
-            rect.setWidth(m_completer->popup()->sizeHintForColumn(0) + m_completer->popup()->verticalScrollBar()->sizeHint().width());
-            m_completer->complete(rect);
         }
+
+        QRect rect = this->cursorRect();
+        rect.setWidth(m_completer->popup()->sizeHintForColumn(0) + m_completer->popup()->verticalScrollBar()->sizeHint().width());
+
+        m_completer->complete(rect);
     }
 }
 
@@ -222,8 +241,8 @@ void CoreEditor::wheelEvent(QWheelEvent* event)
     QPlainTextEdit::wheelEvent(event);
 }
 
-CoreEditor::LineNumberArea::LineNumberArea(QWidget* parent) : QWidget(parent)
-  , m_editor(qobject_cast<CoreEditor*>(parent))
+CoreEditor::LineNumberArea::LineNumberArea(CoreEditor* parent) : QWidget(parent)
+  , m_editor(parent)
 { }
 
 QSize CoreEditor::LineNumberArea::sizeHint() const

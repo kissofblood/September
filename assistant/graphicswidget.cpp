@@ -126,8 +126,8 @@ void GraphicsWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
     QGraphicsItem::hoverLeaveEvent(event);
 }
 
-GraphicsWidget::Rect::Rect(QGraphicsItem* parent) : QGraphicsRectItem(parent)
-    , m_rectWidget(qgraphicsitem_cast<GraphicsWidget*>(parent))
+GraphicsWidget::Rect::Rect(GraphicsWidget* parent) : QGraphicsRectItem(parent)
+    , m_rectWidget(parent)
 {
     this->setBrush(QBrush(Qt::blue));
     this->setPen(QPen(Qt::blue));
@@ -150,8 +150,8 @@ void GraphicsWidget::Rect::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         m_rectWidget->resizeRect(event->pos(), this);
 }
 
-GraphicsWidget::ProxyWidget::ProxyWidget(QGraphicsItem* parent) : QGraphicsProxyWidget(parent)
-  , m_rectWidget(qgraphicsitem_cast<GraphicsWidget*>(parent))
+GraphicsWidget::ProxyWidget::ProxyWidget(GraphicsWidget* parent) : QGraphicsProxyWidget(parent)
+  , m_rectWidget(parent)
 { }
 
 void GraphicsWidget::ProxyWidget::mousePressEvent(QGraphicsSceneMouseEvent* event)

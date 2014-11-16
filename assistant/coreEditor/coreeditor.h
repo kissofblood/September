@@ -3,6 +3,7 @@
 
 #include "assistant/keywords.h"
 #include "highlighter.h"
+#include "observertext.h"
 #include <QWidget>
 #include <QPlainTextEdit>
 #include <QSize>
@@ -60,7 +61,7 @@ private:
     class LineNumberArea : public QWidget
     {
     public:
-        explicit LineNumberArea(QWidget* parent = nullptr);
+        explicit LineNumberArea(CoreEditor* parent = nullptr);
         ~LineNumberArea() override = default;
 
         QSize sizeHint() const override;
@@ -74,6 +75,7 @@ private:
     LineNumberArea  *m_lineNumberArea       = new LineNumberArea(this);
     QCompleter      *m_completer            = new QCompleter(this);
     Highlighter     *m_highlighter          = nullptr;
+    ObserverText    *m_observerText       = nullptr;
     QColor          m_lineColor;
     QColor          m_otherTextColor;
     bool            m_visibleLineNumberAre  = true;

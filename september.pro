@@ -21,7 +21,7 @@ SOURCES += main.cpp\
     assistant/coreEditor/coreeditor.cpp \
     assistant/coreEditor/highlighter.cpp \
     assistant/graphicswidget.cpp \
-    assistant/coreEditor/completermodel.cpp
+    assistant/coreEditor/observertext.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \
@@ -32,7 +32,7 @@ HEADERS  += septembereditor.h \
     assistant/coreEditor/highlighter.h \
     assistant/graphicswidget.h \
     assistant/keywords.h \
-    assistant/coreEditor/completermodel.h
+    assistant/coreEditor/observertext.h
 
 FORMS    += septembereditor.ui \
     widgetstyle.ui \

@@ -2,7 +2,7 @@
 
 Highlighter::Highlighter(const QStringList& icons,  const QStringList& properties,
                          const QStringList& pseudo, const QStringList& widgets,
-                         const QStringList& sub,    QTextDocument* parent) : QSyntaxHighlighter(parent)
+                         const QStringList& sub,    const QStringList& other,    QTextDocument* parent) : QSyntaxHighlighter(parent)
     , m_commentStart(R"(/\*)")
     , m_commentEnd(R"(\*/)")
     , m_number(R"(\b(([0-9]+)|([0-9]+\.[0-9]+))\b)")
@@ -17,7 +17,7 @@ Highlighter::Highlighter(const QStringList& icons,  const QStringList& propertie
         charFormat.setFontWeight(weight);
         for(auto& str : list)
         {
-            if(name == "widgets")
+            if(name == "widgets" || name == "other")
                 rule.pattern.setPattern(R"(\b)" + str + R"(\b)");
             if(name == "icons" || name == "properties")
                 rule.pattern.setPattern(R"([^((::)|:|(:\!)|\{)]\b)" + str + R"(\b)");
@@ -36,6 +36,7 @@ Highlighter::Highlighter(const QStringList& icons,  const QStringList& propertie
     m_highlightingRule_.insert("pseudo", setHighlighter("pseudo", QBrush(QColor(84, 84, 255)), QFont::Bold, pseudo));
     m_highlightingRule_.insert("widgets", setHighlighter("widgets", QBrush(QColor(85, 255, 85)), QFont::Bold, widgets));
     m_highlightingRule_.insert("sub", setHighlighter("sub", QBrush(QColor(100, 74, 155)), QFont::Bold, sub));
+    m_highlightingRule_.insert("other", setHighlighter("other", QBrush(QColor(Qt::green)), QFont::Bold, other));
     m_commentTextFormat.setForeground(QColor(85, 255, 255));
     m_numberFormat.setForeground(QColor(243, 81, 243));
 }
