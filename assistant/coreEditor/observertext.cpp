@@ -1,10 +1,9 @@
 #include "observertext.h"
 
-ObserverText::ObserverText(const QStringList& icons,    const QStringList& properties,
-                           const QStringList& pseudo,   const QStringList& widgets,
-                           const QStringList& sub,      const QStringList& other, QObject* parent) : QObject(parent)
+ObserverText::ObserverText(const QStringList& properties,   const QStringList& pseudo,
+                           const QStringList& widgets,      const QStringList& sub,
+                           const QStringList& other, QObject* parent) : QObject(parent)
 {
-    m_strListModel_.insert("icons", new QStringListModel(icons, this));
     m_strListModel_.insert("properties", new QStringListModel(properties, this));
     m_strListModel_.insert("pseudo", new QStringListModel(pseudo, this));
     m_strListModel_.insert("widgets", new QStringListModel(widgets, this));
@@ -13,8 +12,11 @@ ObserverText::ObserverText(const QStringList& icons,    const QStringList& prope
     m_strListModel_.insert("empty", new QStringListModel(this));
 }
 
-void ObserverText::textParser(const QString& text)
+void ObserverText::textParserHead(const QString& text)
 {
+    if(!m_isTextParserHead)
+        return;
+
     for(int i = text.length() - 1; i >= 0; i--)
     {
         if(text.length() < 2)
@@ -31,15 +33,7 @@ void ObserverText::textParser(const QString& text)
             }
             if(text[i] == '!' && text[i - 1] == ':')
             {
-                int count = 0;
-                for(int j = i - 2; j >= 0; j--)
-                {
-                    if(text[j].isLetter())
-                        break;
-                    else
-                        count += 1;
-                }
-                if(count == 0)
+                if(text[i - 2].isLetter())
                     emit stringListModelChanged(m_strListModel_["pseudo"]);
                 else
                     emit stringListModelChanged(m_strListModel_["empty"]);
@@ -52,22 +46,13 @@ void ObserverText::textParser(const QString& text)
             }
             else if(text[i] == ':' && text[i - 1] == ':')
             {
-                int count = 0;
-                for(int j = i - 2; j >= 0; j--)
-                {
-                    if(text[j].isLetter())
-                        break;
-                    else
-                        count += 1;
-                }
-
-                if(count == 0)
+                if(text[i - 2].isLetter())
                     emit stringListModelChanged(m_strListModel_["sub"]);
                 else
                     emit stringListModelChanged(m_strListModel_["empty"]);
                 break;
             }
-            else if(text[i] == 'Q' || text[i] == ',')
+            else if(text[i] == 'Q' || text[i] == ',' || text[i] == ' ')
             {
                 emit stringListModelChanged(m_strListModel_["widgets"]);
                 break;
@@ -75,3 +60,40 @@ void ObserverText::textParser(const QString& text)
         }
     }
 }
+
+void ObserverText::textParserBody(const QString& text)
+{
+    for(int i = text.length() - 1; i >= 0; i--)
+    {
+        if(text[i] == '}' || i == 0)
+        {
+            m_isTextParserHead = true;
+            break;
+        }
+        else if(text[i] == '{' || text[i] == ';')
+        {
+            m_isTextParserHead = false;
+            emit stringListModelChanged(m_strListModel_["properties"]);
+            break;
+        }
+        else if(text[i] == ':')
+        {
+            for(int j = i - 1; j >= 0; j--)
+            {
+                if(text[j] == 'Q')
+                {
+                    m_isTextParserHead = true;
+                    break;
+                }
+                else if(text[j] == '{')
+                {
+                    m_isTextParserHead = false;
+                    emit stringListModelChanged(m_strListModel_["other"]);
+                    break;
+                }
+            }
+            break;
+        }
+    }
+}
+

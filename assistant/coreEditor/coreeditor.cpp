@@ -10,8 +10,8 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
     QStringList widgets =  KeyWords::keyWordsFromFile("listOfStylableWidgets");
     QStringList sub = KeyWords::keyWordsFromFile("listOfSub-Controls");
     QStringList other = KeyWords::keyWordsFromFile("other");
-    m_highlighter = new Highlighter(icons, properties, pseudo, widgets, sub, other, this->document());
-    m_observerText = new ObserverText(icons, properties, pseudo, widgets, sub, other, this);
+    m_highlighter = new Highlighter(properties + icons, pseudo, widgets, sub, other, this->document());
+    m_observerText = new ObserverText(properties + icons, pseudo, widgets, sub, other, this);
     m_completer->setWidget(this);
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_completer->setCompletionMode(QCompleter::PopupCompletion);
@@ -28,7 +28,8 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
         QTextCursor startBlock = this->textCursor();
         startBlock.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
 
-        m_observerText->textParser(cursor.selectedText().left(this->textCursor().position() - startBlock.position() + 1));
+        m_observerText->textParserBody(this->document()->toPlainText().left(this->textCursor().position()));
+        m_observerText->textParserHead(cursor.selectedText().left(this->textCursor().position() - startBlock.position() + 1));
     });
     this->connect(m_observerText, &ObserverText::stringListModelChanged, m_completer, &QCompleter::setModel);
     this->setFocus();

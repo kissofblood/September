@@ -1,8 +1,8 @@
 #include "highlighter.h"
 
-Highlighter::Highlighter(const QStringList& icons,  const QStringList& properties,
-                         const QStringList& pseudo, const QStringList& widgets,
-                         const QStringList& sub,    const QStringList& other,    QTextDocument* parent) : QSyntaxHighlighter(parent)
+Highlighter::Highlighter(const QStringList& properties, const QStringList& pseudo,
+                         const QStringList& widgets,    const QStringList& sub,
+                         const QStringList& other,    QTextDocument* parent) : QSyntaxHighlighter(parent)
     , m_commentStart(R"(/\*)")
     , m_commentEnd(R"(\*/)")
     , m_number(R"(\b(([0-9]+)|([0-9]+\.[0-9]+))\b)")
@@ -19,7 +19,7 @@ Highlighter::Highlighter(const QStringList& icons,  const QStringList& propertie
         {
             if(name == "widgets" || name == "other")
                 rule.pattern.setPattern(R"(\b)" + str + R"(\b)");
-            if(name == "icons" || name == "properties")
+            if(name == "properties")
                 rule.pattern.setPattern(R"([^((::)|:|(:\!)|\{)]\b)" + str + R"(\b)");
             else if(name == "pseudo")
                 rule.pattern.setPattern(R"(\b(:\!)" + str + R"(|:)" + str + R"()\b)");
@@ -31,7 +31,6 @@ Highlighter::Highlighter(const QStringList& icons,  const QStringList& propertie
         return vecRule;
     };
 
-    m_highlightingRule_.insert("icons", setHighlighter("icons", QBrush(Qt::green), QFont::Bold, icons));
     m_highlightingRule_.insert("properties", setHighlighter("properties", QBrush(QColor(255, 255, 85)), QFont::Bold, properties));
     m_highlightingRule_.insert("pseudo", setHighlighter("pseudo", QBrush(QColor(84, 84, 255)), QFont::Bold, pseudo));
     m_highlightingRule_.insert("widgets", setHighlighter("widgets", QBrush(QColor(85, 255, 85)), QFont::Bold, widgets));
@@ -72,7 +71,7 @@ void Highlighter::highlightBlock(const QString& text)
             while(index >= 0)
             {
                 int length;
-                if(i.key() == "icons" || i.key() == "properties" || i.key() == "widgets")
+                if(i.key() == "properties" || i.key() == "widgets")
                     length = expression.matchedLength();
                 else if(i.key() == "pseudo")
                 {
