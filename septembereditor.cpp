@@ -176,18 +176,18 @@ void SeptemberEditor::closeOrShowOpenUI()
 void SeptemberEditor::openFile()
 {
     QString path = QFileDialog::getOpenFileName(this, QString("Open file"), QString(), QString("*.qss"));
-    if(path.length() == 0)
+    if(path.isEmpty())
         return;
 
     QFile file(path);
     if(file.open(QIODevice::ReadOnly))
     {
-        ui->plainTextEdit->clear();
-        ui->plainTextEdit->appendPlainText(file.readAll());
+        ui->plainTextEdit->appendText(file.readAll());
+        QTextCursor cursorFirst(ui->plainTextEdit->document());
+        cursorFirst.setPosition(0);
+        ui->plainTextEdit->setTextCursor(cursorFirst);
+        ui->plainTextEdit->checkingCodeQss();
+        ui->plainTextEdit->blockCount();
     }
     file.close();
-    QTextCursor cursorFirst(ui->plainTextEdit->document());
-    cursorFirst.setPosition(0);
-    ui->plainTextEdit->setTextCursor(cursorFirst);
-    ui->plainTextEdit->checkingCodeQss();
 }

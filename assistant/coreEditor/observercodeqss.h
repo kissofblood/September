@@ -8,6 +8,8 @@
 #include <QHash>
 #include <boost/spirit/include/qi.hpp>
 #include <string>
+#include <QHash>
+#include <QMap>
 #include <QVector>
 
 #include <QDebug>
@@ -25,7 +27,7 @@ public:
 
     void textParserHead(const QString& text);
     void textParserBody(const QString& text);
-    QVector<int> checkingCodeQss(const QString& text);
+    QVector<int> checkingCodeQss(std::string& text, const QMap<std::string::iterator, int>& blockCh);
 
 signals:
     void stringListModelChanged(QStringListModel* model);

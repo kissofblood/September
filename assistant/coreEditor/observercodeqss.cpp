@@ -97,11 +97,10 @@ void ObserverCodeQss::textParserBody(const QString& text)
     }
 }
 
-QVector<int> ObserverCodeQss::checkingCodeQss(const QString& text)
+QVector<int> ObserverCodeQss::checkingCodeQss(std::string& text, const QMap<std::string::iterator, int>& blockCh)
 {
-    std::string stdText = text.toStdString();
-    std::string::iterator begin = stdText.begin();
-    std::string::iterator end = stdText.end();
+    std::string::iterator begin = text.begin();
+    std::string::iterator end = text.end();
 
     bool success = qi::phrase_parse(begin, end, CheckingCodeQss(), qi::space);
 
@@ -110,8 +109,10 @@ QVector<int> ObserverCodeQss::checkingCodeQss(const QString& text)
 
     qDebug()<<(begin == end && success)<<'\n';
 
-
-    return QVector<int>();
+    if(begin == end)
+        return QVector<int>();
+    else
+        return { blockCh[begin] };
 }
 
 ObserverCodeQss::CheckingCodeQss::CheckingCodeQss() : qi::grammar<std::string::iterator, qi::space_type, std::string()>::base_type(m_expession)
@@ -123,15 +124,15 @@ ObserverCodeQss::CheckingCodeQss::CheckingCodeQss() : qi::grammar<std::string::i
     m_sub = (':' >> m_selector) | (":!" >> m_selector) | m_ignore;
 
     m_header = ((('.' >> m_selector) | m_selector) >> -
-               (
+                (
                     ("::" >> m_selector >> *m_sub)       |
                     (':' >> m_selector >> *m_sub)        |
                     (":!" >> m_selector >> *m_sub)       |
                     ('#' >> m_selector >>
-                        '[' >> m_selector >> "=\"" >> m_selector >> "\"]" >> *m_sub) |
+                     '[' >> m_selector >> "=\"" >> m_selector >> "\"]" >> *m_sub) |
                     ('#' >> m_selector >> *m_sub)       ||
                     +m_ignore
-               ) >> *m_ignore) % ',' >> '{' >> *(m_body | m_ignore) >> '}';
+                    ) >> *m_ignore) % ',' >> '{' >> *(m_body | m_ignore) >> '}';
 
     m_body = m_property >> ':' >> +(m_ignore | m_value) >> ';';
 

@@ -14,8 +14,10 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
     m_completer->setWidget(this);
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_completer->setCompletionMode(QCompleter::PopupCompletion);
+    m_blockNumberError_.push_back(false);
 
     this->connect(this, &QPlainTextEdit::blockCountChanged,     this, std::bind(&CoreEditor::updateLineNumberAreaWidth, this));
+    this->connect(this, &QPlainTextEdit::blockCountChanged,     this, &CoreEditor::insertOrRemove);
     this->connect(this, &QPlainTextEdit::updateRequest,         this, &CoreEditor::updateLineNumberArea);
     this->connect(this, &QPlainTextEdit::cursorPositionChanged, this, &CoreEditor::highlightCurrentLine);
     this->connect(m_completer, SIGNAL(activated(QString)), SLOT(insertCompletion(QString)));
@@ -43,6 +45,14 @@ void CoreEditor::setVisibleLineNimberArea(bool value)
 {
     m_visibleLineNumberAre = value;
     m_lineNumberArea->update();
+}
+
+void CoreEditor::insertOrRemove(int block)
+{
+    if(m_blockNumberError_.size() < block)
+        m_blockNumberError_.push_back(false);
+    else
+        m_blockNumberError_.pop_back();
 }
 
 void CoreEditor::setDocumentColor(const QColor& color)
@@ -81,7 +91,43 @@ void CoreEditor::setFormatNumber(const QTextCharFormat& charFormat)
 { m_highlighter->setFormatNumber(charFormat); }
 
 void CoreEditor::checkingCodeQss()
-{ m_observerCode->checkingCodeQss(this->toPlainText()); }
+{
+    QTextDocument* doc = this->document();
+    QMap<std::string::iterator, int> blockCharacter;
+    std::string text = doc->toPlainText().toStdString();
+    QTextBlock currentBlock = doc->begin();
+    std::string::iterator iterText = text.begin();
+    int numberBlock = 1;
+
+    while(currentBlock.isValid())
+    {
+        std::string tmpText = currentBlock.text().toStdString();
+        if(tmpText.empty() || *(tmpText.end() - 1) != '\n')
+            tmpText += '\n';
+
+        for(std::size_t i = 0; i < tmpText.length(); i++)
+            if(iterText != text.end())
+            {
+                blockCharacter.insert(iterText, numberBlock);
+                iterText += 1;
+            }
+        numberBlock += 1;
+        currentBlock = currentBlock.next();
+    }
+
+    for(auto& numError : m_observerCode->checkingCodeQss(text, blockCharacter))
+        m_blockNumberError_[numError - 1] = true;
+    m_lineNumberArea->update();
+}
+
+void CoreEditor::appendText(const QString& text)
+{
+    this->clear();
+    this->appendPlainText(text);
+    m_blockNumberError_.clear();
+    for(int i = 0; i < this->blockCount(); i++)
+        m_blockNumberError_.push_back(false);
+}
 
 void CoreEditor::updateLineNumberAreaWidth()
 { this->setViewportMargins(lineNumberAreaWidth(), 0, 0, 1); }
@@ -129,9 +175,6 @@ void CoreEditor::lineNumberAreaPaintEvent(QPaintEvent* event)
     QPainter painter(m_lineNumberArea);
     painter.fillRect(event->rect(), QColor(35, 35, 35));
 
-    if(!m_visibleLineNumberAre)
-        return;
-
     QTextBlock block = this->firstVisibleBlock();
     int blockNumber = block.blockNumber();
     int top = this->blockBoundingGeometry(block).translated(this->contentOffset()).top();
@@ -141,6 +184,16 @@ void CoreEditor::lineNumberAreaPaintEvent(QPaintEvent* event)
     {
         if(block.isVisible() && bottom >= event->rect().top())
         {
+            if(m_blockNumberError_[blockNumber])
+            {
+                painter.setBrush(Qt::red);
+                painter.setPen(Qt::transparent);
+                painter.drawRect(0, top, m_lineNumberArea->width(), this->fontMetrics().height());
+            }
+
+            if(!m_visibleLineNumberAre)
+                return;
+
             QString number = QString::number(blockNumber + 1);
             painter.setPen(QColor(136, 136, 136));
             painter.setFont(QFont("Areal", -1, QFont::Bold));

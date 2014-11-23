@@ -25,6 +25,9 @@
 #include <QPalette>
 #include <QTextCursor>
 #include <QFont>
+#include <string>
+#include <QMap>
+#include <QTextDocument>
 
 #include <QtWidgets>
 
@@ -46,6 +49,7 @@ public:
     void setFormatComment(const QTextCharFormat& charFormat);
     void setFormatNumber(const QTextCharFormat& charFormat);
     void checkingCodeQss();
+    void appendText(const QString& text);
 
 public slots:
     void zoomDocIn();
@@ -57,6 +61,7 @@ private slots:
     void highlightCurrentLine();
     void updateLineNumberArea(const QRect& rect, int dy);
     void insertCompletion(const QString& text);
+    void insertOrRemove(int block);
 
 private:
     class LineNumberArea : public QWidget
@@ -73,14 +78,15 @@ private:
         void paintEvent(QPaintEvent* event) override;
     };
 
-    LineNumberArea  *m_lineNumberArea       = new LineNumberArea(this);
-    QCompleter      *m_completer            = new QCompleter(this);
-    Highlighter     *m_highlighter          = nullptr;
-    ObserverCodeQss *m_observerCode         = nullptr;
-    QColor          m_lineColor;
-    QColor          m_otherTextColor;
-    bool            m_visibleLineNumberAre  = true;
-    int             m_zoomDocument          = 12;
+    LineNumberArea      *m_lineNumberArea       = new LineNumberArea(this);
+    QCompleter          *m_completer            = new QCompleter(this);
+    Highlighter         *m_highlighter          = nullptr;
+    ObserverCodeQss     *m_observerCode         = nullptr;
+    QColor              m_lineColor;
+    QColor              m_otherTextColor;
+    QVector<bool>       m_blockNumberError_;
+    bool                m_visibleLineNumberAre  = true;
+    int                 m_zoomDocument          = 12;
 
     int lineNumberAreaWidth();
     void lineNumberAreaPaintEvent(QPaintEvent* event);
