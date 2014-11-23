@@ -4,14 +4,13 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
     , m_lineColor(26, 21, 21)
     , m_otherTextColor(170, 170, 170)
 {
-    QStringList icons = KeyWords::keyWordsFromFile("listOfIcons");
-    QStringList properties = KeyWords::keyWordsFromFile("listOfProperties");
+    QStringList properties = KeyWords::keyWordsFromFile("listOfProperties") + KeyWords::keyWordsFromFile("listOfIcons");
     QStringList pseudo = KeyWords::keyWordsFromFile("listOfPseudo-States");
     QStringList widgets =  KeyWords::keyWordsFromFile("listOfStylableWidgets");
     QStringList sub = KeyWords::keyWordsFromFile("listOfSub-Controls");
     QStringList other = KeyWords::keyWordsFromFile("other");
-    m_highlighter = new Highlighter(properties + icons, pseudo, widgets, sub, other, this->document());
-    m_observerText = new ObserverText(properties + icons, pseudo, widgets, sub, other, this);
+    m_highlighter = new Highlighter(properties, pseudo, widgets, sub, other, this->document());
+    m_observerText = new ObserverText(properties, pseudo, widgets, sub, other, this);
     m_completer->setWidget(this);
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_completer->setCompletionMode(QCompleter::PopupCompletion);
@@ -80,6 +79,9 @@ void CoreEditor::setFormatComment(const QTextCharFormat& charFormat)
 
 void CoreEditor::setFormatNumber(const QTextCharFormat& charFormat)
 { m_highlighter->setFormatNumber(charFormat); }
+
+void CoreEditor::checkingCodeQss()
+{ m_observerText->checkingCodeQss(this->toPlainText()); }
 
 void CoreEditor::updateLineNumberAreaWidth()
 { this->setViewportMargins(lineNumberAreaWidth(), 0, 0, 1); }

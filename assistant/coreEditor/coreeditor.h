@@ -45,6 +45,7 @@ public:
     void setFormatSub(const QTextCharFormat& charFormat);
     void setFormatComment(const QTextCharFormat& charFormat);
     void setFormatNumber(const QTextCharFormat& charFormat);
+    void checkingCodeQss();
 
 public slots:
     void zoomDocIn();

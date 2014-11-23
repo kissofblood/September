@@ -74,4 +74,4 @@ repeat-x
 repeat-y
 repeat
 no-repeat
-url(filename)
+url()

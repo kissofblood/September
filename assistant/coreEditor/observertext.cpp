@@ -97,3 +97,48 @@ void ObserverText::textParserBody(const QString& text)
     }
 }
 
+QVector<int> ObserverText::checkingCodeQss(const QString& text)
+{
+    std::string stdText = text.toStdString();
+    std::string::iterator begin = stdText.begin();
+    std::string::iterator end = stdText.end();
+
+    bool success = qi::phrase_parse(begin, end, CheckingCodesQss(), qi::space);
+
+    for(auto i = begin; i != end; i++)
+        std::cout<<*i;
+
+    qDebug()<<(begin == end && success)<<'\n';
+
+
+    return QVector<int>();
+}
+
+ObserverText::CheckingCodesQss::CheckingCodesQss() : qi::grammar<std::string::iterator, qi::space_type, std::string()>::base_type(m_expession)
+{
+    m_expession = *(m_header | m_ignore);
+
+    m_ignore = qi::skip["/*" >> *(qi::print -"*/") >> "*/"];
+
+    m_sub = (':' >> m_pattern) | (":!" >> m_pattern) | m_ignore;
+
+    m_header = ('Q' >> +qi::alpha >> -
+               (
+                    ("::" >> m_pattern >> *m_sub)       |
+                    (':' >> m_pattern >> *m_sub)        |
+                    (":!" >> m_pattern >> *m_sub)       |
+                    ('#' >> m_property >>
+                        '[' >> m_property >> "=\"" >> m_property >> "\"]" >> *m_sub) |
+                    ('#' >> m_property >> *m_sub)       ||
+                    +m_ignore
+               ) >> *m_ignore) % ',' >> '{' >> *(m_body | m_ignore) >> '}';
+
+    m_body = m_property >> ':' >> +(m_ignore | m_value) >> ';';
+
+    m_property = +(((qi::lit('-') | qi::lit('!')) >> qi::alnum) | qi::alnum);
+    m_pattern = +(((qi::lit('-') | qi::lit('!')) >> qi::alnum) | qi::alnum);
+
+    m_function = +qi::alnum >> '(' >> *(qi::print -')') >> ')';
+
+    m_value = m_function | ('-' | '+' >> +qi::alnum) | ('"' >> +qi::alnum >> '"') | +qi::alnum | ('#' >> qi::hex);
+}

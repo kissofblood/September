@@ -189,4 +189,5 @@ void SeptemberEditor::openFile()
     QTextCursor cursorFirst(ui->plainTextEdit->document());
     cursorFirst.setPosition(0);
     ui->plainTextEdit->setTextCursor(cursorFirst);
+    ui->plainTextEdit->checkingCodeQss();
 }
