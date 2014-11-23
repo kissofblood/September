@@ -10,7 +10,7 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
     QStringList sub = KeyWords::keyWordsFromFile("listOfSub-Controls");
     QStringList other = KeyWords::keyWordsFromFile("other");
     m_highlighter = new Highlighter(properties, pseudo, widgets, sub, other, this->document());
-    m_observerText = new ObserverText(properties, pseudo, widgets, sub, other, this);
+    m_observerCode = new ObserverCodeQss(properties, pseudo, widgets, sub, other, this);
     m_completer->setWidget(this);
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_completer->setCompletionMode(QCompleter::PopupCompletion);
@@ -27,10 +27,10 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
         QTextCursor startBlock = this->textCursor();
         startBlock.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
 
-        m_observerText->textParserBody(this->document()->toPlainText().left(this->textCursor().position()));
-        m_observerText->textParserHead(cursor.selectedText().left(this->textCursor().position() - startBlock.position() + 1));
+        m_observerCode->textParserBody(this->document()->toPlainText().left(this->textCursor().position()));
+        m_observerCode->textParserHead(cursor.selectedText().left(this->textCursor().position() - startBlock.position() + 1));
     });
-    this->connect(m_observerText, &ObserverText::stringListModelChanged, m_completer, &QCompleter::setModel);
+    this->connect(m_observerCode, &ObserverCodeQss::stringListModelChanged, m_completer, &QCompleter::setModel);
     this->setFocus();
 
     updateLineNumberAreaWidth();
@@ -81,7 +81,7 @@ void CoreEditor::setFormatNumber(const QTextCharFormat& charFormat)
 { m_highlighter->setFormatNumber(charFormat); }
 
 void CoreEditor::checkingCodeQss()
-{ m_observerText->checkingCodeQss(this->toPlainText()); }
+{ m_observerCode->checkingCodeQss(this->toPlainText()); }
 
 void CoreEditor::updateLineNumberAreaWidth()
 { this->setViewportMargins(lineNumberAreaWidth(), 0, 0, 1); }
