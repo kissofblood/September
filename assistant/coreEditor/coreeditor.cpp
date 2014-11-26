@@ -93,29 +93,9 @@ void CoreEditor::setFormatNumber(const QTextCharFormat& charFormat)
 void CoreEditor::checkingCodeQss()
 {
     QTextDocument* doc = this->document();
-    QMap<std::string::iterator, int> blockCharacter;
-    std::string text = doc->toPlainText().toStdString();
-    QTextBlock currentBlock = doc->begin();
-    std::string::iterator iterText = text.begin();
-    int numberBlock = 1;
-
-    while(currentBlock.isValid())
-    {
-        std::string tmpText = currentBlock.text().toStdString();
-        if(tmpText.empty() || *(tmpText.end() - 1) != '\n')
-            tmpText += '\n';
-
-        for(std::size_t i = 0; i < tmpText.length(); i++)
-            if(iterText != text.end())
-            {
-                blockCharacter.insert(iterText, numberBlock);
-                iterText += 1;
-            }
-        numberBlock += 1;
-        currentBlock = currentBlock.next();
-    }
-
-    for(auto& numError : m_observerCode->checkingCodeQss(text, blockCharacter))
+    std::string stdString = doc->toPlainText().toStdString();
+    QTextBlock textBlock = doc->begin();
+    for(auto& numError : m_observerCode->checkingCodeQss(stdString, textBlock))
         m_blockNumberError_[numError - 1] = true;
     m_lineNumberArea->update();
 }

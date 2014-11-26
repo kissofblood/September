@@ -26,7 +26,6 @@
 #include <QTextCursor>
 #include <QFont>
 #include <string>
-#include <QMap>
 #include <QTextDocument>
 
 #include <QtWidgets>

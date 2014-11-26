@@ -97,49 +97,134 @@ void ObserverCodeQss::textParserBody(const QString& text)
     }
 }
 
-QVector<int> ObserverCodeQss::checkingCodeQss(std::string& text, const QMap<std::string::iterator, int>& blockCh)
+QVector<int> ObserverCodeQss::checkingCodeQss(std::string& text, QTextBlock& textBlock)
 {
+    QMap<std::string::iterator, int> blockCharacter;
+    std::string::iterator iterText = text.begin();
+    int numberBlock = 1;    
+
+    while(textBlock.isValid())
+    {
+        std::string tmpText = textBlock.text().toStdString();
+        if(tmpText.empty() || *(tmpText.end() - 1) != '\n')
+            tmpText += '\n';
+
+        for(std::size_t i = 0; i < tmpText.length(); i++)
+            if(iterText != text.end())
+            {
+                blockCharacter.insert(iterText, numberBlock);
+                iterText += 1;
+            }
+        numberBlock += 1;
+        textBlock = textBlock.next();
+    }
+
     std::string::iterator begin = text.begin();
     std::string::iterator end = text.end();
+    CheckingCodeQss cheking(begin, end);
 
-    bool success = qi::phrase_parse(begin, end, CheckingCodeQss(), qi::space);
+    bool success = qi::phrase_parse(begin, end, cheking, qi::space);
 
-    for(auto i = begin; i != end; i++)
-        std::cout<<*i;
-
-    qDebug()<<(begin == end && success)<<'\n';
-
-    if(begin == end)
+    if(begin == end && success)
+    {
+        qDebug()<<"true";
         return QVector<int>();
-    else
-        return { blockCh[begin] };
+    }
+    qDebug()<<"false";
+    return { blockCharacter[cheking.getIterator()] };
 }
 
-ObserverCodeQss::CheckingCodeQss::CheckingCodeQss() : qi::grammar<std::string::iterator, qi::space_type, std::string()>::base_type(m_expession)
+ObserverCodeQss::CheckingCodeQss::CheckingCodeQss(std::string::iterator first, std::string::iterator last) : qi::grammar<std::string::iterator, qi::space_type>::base_type(m_expession)
+    , m_iterFirst(first)
+    , m_iterLast(last)
 {
-    m_expession = *(m_header | m_ignore);
+    auto comp = std::bind(&CheckingCodeQss::compareCh, this, std::placeholders::_1);
+    auto compS1 = std::bind(&CheckingCodeQss::compareStr, this, "/*");
+    auto compS2 = std::bind(&CheckingCodeQss::compareStr, this, "*/");
+    auto compS3 = std::bind(&CheckingCodeQss::compareCh, this, ':');
+    auto compS4 = std::bind(&CheckingCodeQss::compareStr, this, ":!");
+    auto compS5 = std::bind(&CheckingCodeQss::compareCh, this, '.');
+    auto compS6 = std::bind(&CheckingCodeQss::compareStr, this, "::");
+    auto compS7 = std::bind(&CheckingCodeQss::compareCh, this, '#');
+    auto compS8 = std::bind(&CheckingCodeQss::compareCh, this, '[');
+    auto compS9 = std::bind(&CheckingCodeQss::compareCh, this, '=');
+    auto compS10 = std::bind(&CheckingCodeQss::compareCh, this, '"');
+    auto compS11 = std::bind(&CheckingCodeQss::compareCh, this, ']');
+    auto compS12 = std::bind(&CheckingCodeQss::compareCh, this, '{');
+    auto compS13 = std::bind(&CheckingCodeQss::compareCh, this, '}');
+    auto compS14 = std::bind(&CheckingCodeQss::compareCh, this, ',');
+    auto compS15 = std::bind(&CheckingCodeQss::compareCh, this, ';');
+    auto compS16 = std::bind(&CheckingCodeQss::compareCh, this, '-');
+    auto compS17 = std::bind(&CheckingCodeQss::compareCh, this, '_');
+    auto compS18 = std::bind(&CheckingCodeQss::compareCh, this, '+');
+    auto compS19 = std::bind(&CheckingCodeQss::compareCh, this, '(');
+    auto compS20 = std::bind(&CheckingCodeQss::compareCh, this, ')');
 
-    m_ignore = qi::skip["/*" >> *(qi::print -"*/") >> "*/"];
+    m_expession = *(m_header | m_comment);
 
-    m_sub = (':' >> m_selector) | (":!" >> m_selector) | m_ignore;
+    m_comment = qi::lit("/*")[compS1] >> *(qi::print[comp] -"*/") >> qi::lit("*/")[compS2];
 
-    m_header = ((('.' >> m_selector) | m_selector) >> -
-                (
-                    ("::" >> m_selector >> *m_sub)       |
-                    (':' >> m_selector >> *m_sub)        |
-                    (":!" >> m_selector >> *m_sub)       |
-                    ('#' >> m_selector >>
-                     '[' >> m_selector >> "=\"" >> m_selector >> "\"]" >> *m_sub) |
-                    ('#' >> m_selector >> *m_sub)       ||
-                    +m_ignore
-                    ) >> *m_ignore) % ',' >> '{' >> *(m_body | m_ignore) >> '}';
+    m_sub = (qi::lit(':')[compS3] >> m_selector) | (qi::lit(":!")[compS4] >> m_selector);
 
-    m_body = m_property >> ':' >> +(m_ignore | m_value) >> ';';
+    m_header = ((qi::lit('.')[compS5] || m_selector) >> -
+               (
+                   (qi::lit("::")[compS6] >> m_selector >> *m_sub)       |
+                   (qi::lit(':')[compS3] >> m_selector >> *m_sub)        |
+                   (qi::lit(":!")[compS4] >> m_selector >> *m_sub)       |
+                   (qi::lit('#')[compS7] >> m_selector ||
+                   (
+                       qi::lit('[')[compS8]
+                           >> m_selector >> qi::lit('=')[compS9] >> qi::lit('"')[compS10] >> m_selector >>
+                       qi::lit('"')[compS10] >> qi::lit(']')[compS11]
+                   ) >> *m_sub)
+               ) >> *m_comment) % qi::lit(',')[compS14] >> qi::lit('{')[compS12]
+                                                        >> *(m_body | m_comment)
+                                                        >> qi::lit('}')[compS13];
 
-    m_property = qi::alnum >> *(((qi::lit('-') | qi::lit('_')) >> qi::alnum) | qi::alnum);
-    m_selector = qi::alnum >> *(((qi::lit('-') | qi::lit('_')) >> qi::alnum) | qi::alnum);
+    m_body = m_property >> qi::lit(':')[compS3]
+                        >> +(m_comment | m_value)
+                        >> qi::lit(';')[compS15];
 
-    m_function = +qi::alnum >> '(' >> *(qi::print -')') >> ')';
+    m_property = qi::alpha[comp] >> *(((qi::lit('-')[compS16] | qi::lit('_')[compS17])
+                            >> qi::alnum[comp]) | qi::alnum[comp]);
+    m_selector = qi::alpha[comp] >> *(((qi::lit('-')[compS16] | qi::lit('_')[compS17])
+                            >> qi::alnum[comp]) | qi::alnum[comp]);
 
-    m_value = m_function | ('-' | '+' >> +qi::alnum) | ('"' >> +qi::alnum >> '"') | +qi::alnum | ('#' >> qi::hex);
+    m_function = qi::lit('(')[compS19] >> *(qi::print[comp] -')') >> qi::lit(')')[compS20];
+
+    m_value = (+qi::alnum[comp] || m_function)                     |
+              (qi::lit('-')[compS16] | qi::lit('+')[compS18] >> +qi::alnum[comp])    |
+              (qi::lit('"')[compS10] >> +qi::alnum[comp] >> qi::lit('"')[compS10]);
+}
+
+std::string::iterator ObserverCodeQss::CheckingCodeQss::getIterator() const
+{ return m_iterFirst; }
+
+void ObserverCodeQss::CheckingCodeQss::compareCh(const char& ch)
+{
+    while(true)
+    {
+        if(m_iterFirst == m_iterLast)
+        {
+            m_iterFirst = m_iterLast;
+            break;
+        }
+        else if(*m_iterFirst == ch)
+            break;
+        m_iterFirst += 1;
+    }
+}
+
+void ObserverCodeQss::CheckingCodeQss::compareStr(const std::string& str)
+{
+    for(std::size_t i = 0; i < str.length(); i++)
+    {
+        if(m_iterFirst == m_iterLast)
+        {
+            m_iterFirst = m_iterLast;
+            break;
+        }
+        else
+            m_iterFirst += 1;
+    }
 }
