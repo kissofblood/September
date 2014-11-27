@@ -56,18 +56,6 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
 
     this->connect(ui->plainTextEdit, &CoreEditor::textChanged, this, [this]()
     { emit updateStyleSheet(ui->plainTextEdit->document()->toPlainText()); });
-
-    QFile file("/home/september/codeQss1.qss");
-    if(file.open(QIODevice::ReadOnly))
-    {
-        ui->plainTextEdit->appendText(file.readAll());
-        QTextCursor cursorFirst(ui->plainTextEdit->document());
-        cursorFirst.setPosition(0);
-        ui->plainTextEdit->setTextCursor(cursorFirst);
-        ui->plainTextEdit->checkingCodeQss();
-        ui->plainTextEdit->blockCount();
-    }
-    file.close();
 }
 
 SeptemberEditor::~SeptemberEditor()

@@ -40,7 +40,7 @@ public:
     void setDocumentColor(const QColor& color);
     void setLineColor(const QColor& color);
     void setOtherTextColor(const QColor& color);
-    void setFormatIcons(const QTextCharFormat& charFormat);
+    void setFormatOther(const QTextCharFormat& charFormat);
     void setFormatProperties(const QTextCharFormat& charFormat);
     void setFormatPseudo(const QTextCharFormat& charFormat);
     void setFormatWidgets(const QTextCharFormat& charFormat);

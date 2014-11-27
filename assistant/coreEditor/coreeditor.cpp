@@ -69,8 +69,8 @@ void CoreEditor::setLineColor(const QColor& color)
 void CoreEditor::setOtherTextColor(const QColor& color)
 { m_otherTextColor = color; }
 
-void CoreEditor::setFormatIcons(const QTextCharFormat& charFormat)
-{ m_highlighter->setFormatIcons(charFormat); }
+void CoreEditor::setFormatOther(const QTextCharFormat& charFormat)
+{ m_highlighter->setFormatOther(charFormat); }
 
 void CoreEditor::setFormatProperties(const QTextCharFormat& charFormat)
 { m_highlighter->setFormatProperties(charFormat); }

@@ -21,7 +21,7 @@ public:
                 const QStringList& other, QTextDocument* parent = nullptr);
     ~Highlighter() override = default;
 
-    void setFormatIcons(const QTextCharFormat& charFormat);
+    void setFormatOther(const QTextCharFormat& charFormat);
     void setFormatProperties(const QTextCharFormat& charFormat);
     void setFormatPseudo(const QTextCharFormat& charFormat);
     void setFormatWidgets(const QTextCharFormat& charFormat);

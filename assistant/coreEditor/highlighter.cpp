@@ -5,7 +5,7 @@ Highlighter::Highlighter(const QStringList& properties, const QStringList& pseud
                          const QStringList& other,    QTextDocument* parent) : QSyntaxHighlighter(parent)
     , m_commentStart(R"(/\*)")
     , m_commentEnd(R"(\*/)")
-    , m_number(R"(\b(([0-9]+)|([0-9]+\.[0-9]+))\b)")
+    , m_number(R"(([0-9]+)|([0-9]+\.[0-9]+)|(#\b(([a-fA-F]|\d)+)\b))")
 {
     auto setHighlighter = [](const QString& name, const QBrush& bruch, QFont::Weight weight, const QStringList& list)
     {
@@ -17,34 +17,41 @@ Highlighter::Highlighter(const QStringList& properties, const QStringList& pseud
         charFormat.setFontWeight(weight);
         for(auto& str : list)
         {
-            if(name == "widgets" || name == "other")
+            if(name == "widgets" || name == "properties")
                 rule.pattern.setPattern(R"(\b)" + str + R"(\b)");
-            if(name == "properties")
-                rule.pattern.setPattern(R"([^((::)|:|(:\!)|\{)]\b)" + str + R"(\b)");
             else if(name == "pseudo")
                 rule.pattern.setPattern(R"(\b(:\!)" + str + R"(|:)" + str + R"()\b)");
             else if(name == "sub")
                 rule.pattern.setPattern(R"(\b::)" + str + R"(\b)");
+            else if(name == "other")
+                rule.pattern.setPattern(R"(:(\w|\s)*)" + str + R"(.*;)");
             rule.format = charFormat;
             vecRule.push_back(rule);
         }
         return vecRule;
     };
 
+    QStringList strList;
+    for(QString str : other)
+        strList.push_back(str.remove(QRegExp(R"(\(.*\))")));
+
     m_highlightingRule_.insert("properties", setHighlighter("properties", QBrush(QColor(255, 255, 85)), QFont::Bold, properties));
     m_highlightingRule_.insert("pseudo", setHighlighter("pseudo", QBrush(QColor(84, 84, 255)), QFont::Bold, pseudo));
     m_highlightingRule_.insert("widgets", setHighlighter("widgets", QBrush(QColor(85, 255, 85)), QFont::Bold, widgets));
     m_highlightingRule_.insert("sub", setHighlighter("sub", QBrush(QColor(100, 74, 155)), QFont::Bold, sub));
-    m_highlightingRule_.insert("other", setHighlighter("other", QBrush(QColor(Qt::green)), QFont::Bold, other));
+    m_highlightingRule_.insert("other", setHighlighter("other", QBrush(QColor(Qt::gray)), QFont::Bold, strList));
     m_commentTextFormat.setForeground(QColor(85, 255, 255));
     m_numberFormat.setForeground(QColor(243, 81, 243));
 }
 
-void Highlighter::setFormatIcons(const QTextCharFormat& charFormat)
-{ setCharFormat("icons", charFormat); }
+void Highlighter::setFormatOther(const QTextCharFormat& charFormat)
+{ setCharFormat("other", charFormat); }
 
 void Highlighter::setFormatProperties(const QTextCharFormat& charFormat)
-{ setCharFormat("properties", charFormat); }
+{
+    setCharFormat("properties", charFormat);
+    setCharFormat("icons", charFormat);
+}
 
 void Highlighter::setFormatPseudo(const QTextCharFormat& charFormat)
 { setCharFormat("pseudo", charFormat); }
@@ -72,15 +79,33 @@ void Highlighter::highlightBlock(const QString& text)
             {
                 int length;
                 if(i.key() == "properties" || i.key() == "widgets")
+                {
+                    if(index > 1)
+                        if(text[index - 1] == ':' || text[index - 1] == '!')
+                            break;
                     length = expression.matchedLength();
+                }
                 else if(i.key() == "pseudo")
                 {
-                    index += 1;
-                    length = expression.matchedLength() - 1;
+                    if(text[index + 1] == '!')
+                    {
+                        index += 2;
+                        length = expression.matchedLength() - 2;
+                    }
+                    else
+                    {
+                        index += 1;
+                        length = expression.matchedLength() - 1;
+                    }
                 }
                 else if(i.key() == "sub")
                 {
                     index += 2;
+                    length = expression.matchedLength() - 2;
+                }
+                else if(i.key() == "other")
+                {
+                    index += 1;
                     length = expression.matchedLength() - 2;
                 }
                 this->setFormat(index, length, rule.format);

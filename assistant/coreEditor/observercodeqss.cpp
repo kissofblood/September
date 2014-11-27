@@ -186,9 +186,9 @@ ObserverCodeQss::CheckingCodeQss::CheckingCodeQss(std::string::iterator first, s
                         >> qi::lit(';')[compS15];
 
     m_property = qi::alpha[comp] >> *(((qi::lit('-')[compS16] | qi::lit('_')[compS17])
-                            >> qi::alnum[comp]) | qi::alnum[comp]);
+                                 >> qi::alnum[comp]) | qi::alnum[comp]);
     m_selector = qi::alpha[comp] >> *(((qi::lit('-')[compS16] | qi::lit('_')[compS17])
-                            >> qi::alnum[comp]) | qi::alnum[comp]);
+                                 >> qi::alnum[comp]) | qi::alnum[comp]);
 
     m_function = qi::lit('(')[compS19] >> *(qi::print[comp] -')') >> qi::lit(')')[compS20];
 
