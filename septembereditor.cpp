@@ -54,6 +54,8 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnNumberLine,   &QAction::triggered, ui->plainTextEdit, &CoreEditor::setVisibleLineNimberArea);
     this->connect(ui->mnZoomIn,     &QAction::triggered, ui->plainTextEdit, &CoreEditor::zoomDocIn);
     this->connect(ui->mnZoomOut,    &QAction::triggered, ui->plainTextEdit, &CoreEditor::zoomDocOut);
+
+    closeOrShowCreateWidget();
 }
 
 SeptemberEditor::~SeptemberEditor()

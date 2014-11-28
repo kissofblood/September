@@ -402,17 +402,17 @@ void WidgetStyle::WidgetScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         }
         else if(point.x() >= m_topLeftRect.x() && point.y() <= m_topLeftRect.y())
         {
-            rect.setTopLeft(m_topLeftRect);
+            rect.setBottomLeft(m_topLeftRect);
             rect.setTopRight(point);
         }
         else if(point.x() <= m_topLeftRect.x() && point.y() >= m_topLeftRect.y())
         {
-            rect.setTopLeft(m_topLeftRect);
+            rect.setTopRight(m_topLeftRect);
             rect.setBottomLeft(point);
         }
         else if(point.x() <= m_topLeftRect.x() && point.y() <= m_topLeftRect.y())
         {
-            rect.setTopLeft(m_topLeftRect);
+            rect.setBottomRight(m_topLeftRect);
             rect.setTopLeft(point);
         }
         m_rectItem->setRect(rect);
