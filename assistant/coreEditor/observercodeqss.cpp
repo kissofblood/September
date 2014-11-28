@@ -17,47 +17,46 @@ void ObserverCodeQss::textParserHead(const QString& text)
     if(!m_isTextParserHead)
         return;
 
+    if(text.length() < 2)
+    {
+        emit stringListModelChanged(m_strListModel_["widgets"]);
+        return;
+    }
+
     for(int i = text.length() - 1; i >= 0; i--)
     {
-        if(text.length() < 2)
+        if(text[i] == '!' && text[i - 1].isLetter())
+        {
+            emit stringListModelChanged(m_strListModel_["empty"]);
+            break;
+        }
+        if(text[i] == '!' && text[i - 1] == ':')
+        {
+            if(text[i - 2].isLetter())
+                emit stringListModelChanged(m_strListModel_["pseudo"]);
+            else
+                emit stringListModelChanged(m_strListModel_["empty"]);
+            break;
+        }
+        else if(text[i] == ':' && text[i - 1].isLetter())
+        {
+            emit stringListModelChanged(m_strListModel_["pseudo"]);
+            break;
+        }
+        else if(text[i] == ':' && text[i - 1] == ':')
+        {
+            if(text[i - 2].isLetter())
+                emit stringListModelChanged(m_strListModel_["sub"]);
+            else
+                emit stringListModelChanged(m_strListModel_["empty"]);
+            break;
+        }
+        else if(text[i] == 'Q' || text[i] == ',' || text[i] == ' ')
         {
             emit stringListModelChanged(m_strListModel_["widgets"]);
             break;
         }
-        else
-        {
-            if(text[i] == '!' && text[i - 1].isLetter())
-            {
-                emit stringListModelChanged(m_strListModel_["empty"]);
-                break;
-            }
-            if(text[i] == '!' && text[i - 1] == ':')
-            {
-                if(text[i - 2].isLetter())
-                    emit stringListModelChanged(m_strListModel_["pseudo"]);
-                else
-                    emit stringListModelChanged(m_strListModel_["empty"]);
-                break;
-            }
-            else if(text[i] == ':' && text[i - 1].isLetter())
-            {
-                emit stringListModelChanged(m_strListModel_["pseudo"]);
-                break;
-            }
-            else if(text[i] == ':' && text[i - 1] == ':')
-            {
-                if(text[i - 2].isLetter())
-                    emit stringListModelChanged(m_strListModel_["sub"]);
-                else
-                    emit stringListModelChanged(m_strListModel_["empty"]);
-                break;
-            }
-            else if(text[i] == 'Q' || text[i] == ',' || text[i] == ' ')
-            {
-                emit stringListModelChanged(m_strListModel_["widgets"]);
-                break;
-            }
-        }
+
     }
 }
 

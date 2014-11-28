@@ -30,7 +30,7 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
         startBlock.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
 
         m_observerCode->textParserBody(this->document()->toPlainText().left(this->textCursor().position()));
-        m_observerCode->textParserHead(cursor.selectedText().left(this->textCursor().position() - startBlock.position() + 1));
+        m_observerCode->textParserHead(cursor.selectedText().left(this->textCursor().position() - startBlock.position()));
     });
     this->connect(m_observerCode, &ObserverCodeQss::stringListModelChanged, m_completer, &QCompleter::setModel);
     this->connect(this, &QPlainTextEdit::textChanged, this, [this]()
