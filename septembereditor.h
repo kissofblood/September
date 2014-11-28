@@ -30,9 +30,6 @@ public:
     QTextDocument* getDocument() const;
     void setPositionCursor(const QTextCursor& cursor);
 
-signals:
-    void updateStyleSheet(const QString& text);
-
 private slots:
     void closeOrShowListFile();
     void closeOrShowWidgetSearchAndReplace();

@@ -3,13 +3,13 @@
 
 WidgetUiStyle::WidgetUiStyle(QWidget* parent) : QWidget(parent),
     ui(new Ui::WidgetUiStyle),
-    m_editor(qobject_cast<SeptemberEditor*>(parent->parent()))
+    m_editor(parent->parent()->findChild<CoreEditor*>())
 {
     ui->setupUi(this);
 
     this->connect(ui->btnOpen,      &QPushButton::clicked, this, &WidgetUiStyle::openUI);
     this->connect(ui->btnShowFull,  &QPushButton::clicked, this, &WidgetUiStyle::showFull);
-    this->connect(m_editor, &SeptemberEditor::updateStyleSheet, this, &WidgetUiStyle::setStyleSheetWidget);
+    this->connect(m_editor, &CoreEditor::updateStyleSheet, this, &WidgetUiStyle::setStyleSheetWidget);
 }
 
 WidgetUiStyle::~WidgetUiStyle()

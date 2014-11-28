@@ -33,6 +33,8 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
         m_observerCode->textParserHead(cursor.selectedText().left(this->textCursor().position() - startBlock.position() + 1));
     });
     this->connect(m_observerCode, &ObserverCodeQss::stringListModelChanged, m_completer, &QCompleter::setModel);
+    this->connect(this, &QPlainTextEdit::textChanged, this, [this]()
+    { emit updateStyleSheet(this->document()->toPlainText()); });
     this->setFocus();
 
     updateLineNumberAreaWidth();

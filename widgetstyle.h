@@ -3,7 +3,7 @@
 
 #include "assistant/keywords.h"
 #include "assistant/graphicswidget.h"
-#include "septembereditor.h"
+#include "assistant/coreEditor/coreeditor.h"
 #include <QWidget>
 #include <algorithm>
 #include <functional>
@@ -26,6 +26,7 @@ private slots:
     void selectWidget();
     void deleteWidget();
     void clearScene();
+    void setStyleSheetWidget(const QString& style);
 
 private:
     class WidgetScene : public QGraphicsScene
@@ -47,7 +48,7 @@ private:
 
     Ui::WidgetStyle             *ui             = nullptr;
     WidgetScene                 *m_scene        = nullptr;
-    SeptemberEditor             *m_editor       = nullptr;
+    CoreEditor                  *m_editor       = nullptr;
     QVector<GraphicsWidget*>    m_graphicsWgt_;
     QVector<GraphicsWidget*>    m_deleteGraphicsWgt_;
 

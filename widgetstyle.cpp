@@ -3,7 +3,7 @@
 
 WidgetStyle::WidgetStyle(QWidget* parent) : QWidget(parent),
     ui(new Ui::WidgetStyle),
-    m_editor(qobject_cast<SeptemberEditor*>(parent->parent()))
+    m_editor(parent->parent()->findChild<CoreEditor*>())
 {
     ui->setupUi(this);
     for(auto& str : KeyWords::keyWordsFromFile("listOfStylableWidgets"))
@@ -23,8 +23,7 @@ WidgetStyle::WidgetStyle(QWidget* parent) : QWidget(parent),
     this->connect(ui->btnAddWidget, &QPushButton::clicked,      this, &WidgetStyle::selectWidget);
     this->connect(ui->btnWidgetRemove, &QPushButton::clicked,   this, &WidgetStyle::deleteWidget);
     this->connect(ui->btnClear,     &QPushButton::clicked,      this, &WidgetStyle::clearScene);
-    this->connect(m_editor, &SeptemberEditor::updateStyleSheet, this, [this](const QString& style)
-    { std::for_each(m_graphicsWgt_.begin(), m_graphicsWgt_.end(), std::bind(&GraphicsWidget::setStyleSheet, std::placeholders::_1, style)); });
+    this->connect(m_editor, &CoreEditor::updateStyleSheet, this, &WidgetStyle::setStyleSheetWidget);
 }
 
 WidgetStyle::~WidgetStyle()
@@ -75,6 +74,9 @@ void WidgetStyle::clearScene()
     m_scene = nullptr;
     m_graphicsWgt_.clear();
 }
+
+void WidgetStyle::setStyleSheetWidget(const QString& style)
+{ std::for_each(m_graphicsWgt_.begin(), m_graphicsWgt_.end(), std::bind(&GraphicsWidget::setStyleSheet, std::placeholders::_1, style)); }
 
 QWidget* WidgetStyle::createWidget(const QString& name)
 {

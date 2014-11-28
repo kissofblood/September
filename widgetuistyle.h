@@ -1,7 +1,7 @@
 #ifndef WIDGETUISTYLE_H
 #define WIDGETUISTYLE_H
 
-#include "septembereditor.h"
+#include "assistant/coreEditor/coreeditor.h"
 #include <QWidget>
 #include <QDialog>
 #include <QPushButton>
@@ -49,7 +49,7 @@ private:
     Ui::WidgetUiStyle       *ui             = nullptr;
     QGraphicsScene          *m_sceneView    = nullptr;
     QBuffer                 *m_bufferUi     = nullptr;
-    SeptemberEditor         *m_editor       = nullptr;
+    CoreEditor              *m_editor       = nullptr;
     ShowFullWidgetUi        *m_showFull     = new ShowFullWidgetUi(this);
 };
 

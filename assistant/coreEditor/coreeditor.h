@@ -50,6 +50,9 @@ public:
     void checkingCodeQss();
     void appendText(const QString& text);
 
+signals:
+    void updateStyleSheet(const QString& text);
+
 public slots:
     void zoomDocIn();
     void zoomDocOut();

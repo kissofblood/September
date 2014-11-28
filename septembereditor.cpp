@@ -9,6 +9,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->widgetCreateWidget->setVisible(false);
     ui->widgetOpenUI->setVisible(false);
     ui->listDocument->setVisible(false);
+    ui->splitter->setHideHandle(true);
     ui->mnNew->setShortcut(QKeySequence::New);
     ui->mnOpen->setShortcut(QKeySequence::Open);
     ui->mnQuit->setShortcut(QKeySequence::Quit);
@@ -53,9 +54,6 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnNumberLine,   &QAction::triggered, ui->plainTextEdit, &CoreEditor::setVisibleLineNimberArea);
     this->connect(ui->mnZoomIn,     &QAction::triggered, ui->plainTextEdit, &CoreEditor::zoomDocIn);
     this->connect(ui->mnZoomOut,    &QAction::triggered, ui->plainTextEdit, &CoreEditor::zoomDocOut);
-
-    this->connect(ui->plainTextEdit, &CoreEditor::textChanged, this, [this]()
-    { emit updateStyleSheet(ui->plainTextEdit->document()->toPlainText()); });
 }
 
 SeptemberEditor::~SeptemberEditor()
@@ -112,6 +110,7 @@ void SeptemberEditor::closeOrShowWidgetSearchAndReplace()
         ui->widgetSearchAndReplace->setFocusEditSearch();
         ui->mnCreateWidget->setChecked(false);
         ui->mnOpenUi->setChecked(false);
+        ui->splitter->setHideHandle(true);
     }
 }
 
@@ -125,6 +124,8 @@ void SeptemberEditor::closeOrShowCreateWidget()
 
         m_clickedButton.createWidget = false;
         ui->widgetCreateWidget->setVisible(false);
+        if(m_clickedButton.openUI == false && m_clickedButton.createWidget == false)
+            ui->splitter->setHideHandle(true);
     }
     else
     {
@@ -141,6 +142,8 @@ void SeptemberEditor::closeOrShowCreateWidget()
         ui->widgetSearchAndReplace->setVisible(false);
         ui->widgetOpenUI->setVisible(false);
         ui->widgetCreateWidget->setVisible(true);
+        ui->splitter->setHideHandle(false);
+        ui->splitter->setHeight(ui->widgetCreateWidget->minimumSizeHint().height());
     }
 }
 
@@ -154,6 +157,8 @@ void SeptemberEditor::closeOrShowOpenUI()
 
         m_clickedButton.openUI = false;
         ui->widgetOpenUI->setVisible(false);
+        if(m_clickedButton.openUI == false && m_clickedButton.createWidget == false)
+            ui->splitter->setHideHandle(true);
     }
     else
     {
@@ -170,6 +175,8 @@ void SeptemberEditor::closeOrShowOpenUI()
         ui->widgetSearchAndReplace->setVisible(false);
         ui->widgetCreateWidget->setVisible(false);
         ui->widgetOpenUI->setVisible(true);
+        ui->splitter->setHideHandle(false);
+        ui->splitter->setHeight(ui->widgetOpenUI->minimumSizeHint().height());
     }
 }
 
