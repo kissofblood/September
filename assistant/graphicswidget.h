@@ -22,7 +22,7 @@
 class GraphicsWidget : public QGraphicsItem
 {
 public:
-    GraphicsWidget(QWidget* wgt, QGraphicsItem* parent = nullptr);
+    GraphicsWidget(QWidget* wgt, const QPointF& point, QGraphicsItem* parent = nullptr);
     ~GraphicsWidget() override;
 
     QRectF boundingRect() const override;

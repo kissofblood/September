@@ -1,12 +1,13 @@
 #include "graphicswidget.h"
 
-GraphicsWidget::GraphicsWidget(QWidget* wgt, QGraphicsItem* parent) : QGraphicsItem(parent)
-    , m_rectWidget(3, 3, wgt->width() + 3, wgt->height() + 3)
+GraphicsWidget::GraphicsWidget(QWidget* wgt, const QPointF& point, QGraphicsItem* parent) : QGraphicsItem(parent)
+    , m_rectWidget(point.x() + 3, point.y() + 3, wgt->width() + 3, wgt->height() + 3)
 {
     m_effect->setColor(QColor(103, 157, 205));
     m_effect->setStrength(0);
     m_proxyWidget->setWidget(wgt);
-    m_proxyWidget->setPos(5, 5);
+    QPointF pointWgt = m_rectWidget.topLeft();
+    m_proxyWidget->setPos(pointWgt.x() + 2, pointWgt.y() + 2);
     m_proxyWidget->setGraphicsEffect(m_effect);
 
     m_rectTopLeft->setCursor(Qt::SizeFDiagCursor);
