@@ -32,7 +32,7 @@ private:
     class WidgetScene : public QGraphicsScene
     {
     public:
-        WidgetScene(qreal x, qreal y, qreal widht, qreal height, QObject* parent = nullptr);
+        WidgetScene(qreal x, qreal y, qreal widht, qreal height, WidgetStyle* parent = nullptr);
         ~WidgetScene() override = default;
 
     private:
@@ -53,6 +53,7 @@ private:
     QVector<GraphicsWidget*>    m_deleteGraphicsWgt_;
 
     QWidget* createWidget(const QString& name);
+    QWidget* setLayoutWidget(const QVector<QWidget*>& vecWgt, const QSize& size);
     void distinguishRect(const QRectF& rect);
     bool containsWidget(const QPointF& point);
 };

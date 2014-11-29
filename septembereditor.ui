@@ -182,7 +182,7 @@
          <enum>Qt::Vertical</enum>
         </property>
         <widget class="CoreEditor" name="plainTextEdit"/>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="WidgetStyle" name="widgetCreateWidget" native="true"/>
@@ -301,6 +301,13 @@
     <property name="title">
      <string>Настройки</string>
     </property>
+    <addaction name="action_3"/>
+    <addaction name="action_5"/>
+    <addaction name="separator"/>
+    <addaction name="action_11"/>
+    <addaction name="separator"/>
+    <addaction name="action_16"/>
+    <addaction name="action_September"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -452,6 +459,31 @@
   <action name="mnZoomOut">
    <property name="text">
     <string>Уменьшить размер шрифта</string>
+   </property>
+  </action>
+  <action name="action_3">
+   <property name="text">
+    <string>Показать строку состояния</string>
+   </property>
+  </action>
+  <action name="action_5">
+   <property name="text">
+    <string>Показывать путь в заголовке окна</string>
+   </property>
+  </action>
+  <action name="action_11">
+   <property name="text">
+    <string>Полноэкранный режим</string>
+   </property>
+  </action>
+  <action name="action_16">
+   <property name="text">
+    <string>Комбинации клавиш</string>
+   </property>
+  </action>
+  <action name="action_September">
+   <property name="text">
+    <string>Настроить September</string>
    </property>
   </action>
  </widget>

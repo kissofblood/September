@@ -55,7 +55,7 @@ void WidgetStyle::selectWidget()
 
     QPointF visibleTopLeft = ui->view->mapToScene(ui->view->viewport()->geometry()).boundingRect().topLeft();
     m_graphicsWgt_.push_back(new GraphicsWidget(widget, visibleTopLeft));
-    m_graphicsWgt_.back()->setStyleSheet(m_editor->styleSheet());
+    m_graphicsWgt_.back()->setStyleSheet(m_editor->getStyleSheet());
     m_scene->addItem(m_graphicsWgt_.back());
 }
 
@@ -85,8 +85,8 @@ QWidget* WidgetStyle::createWidget(const QString& name)
     if(name == "CheckBox")
     {
         QCheckBox* box = new QCheckBox("CheckBox");
-        box->resize(97, 24);
-        return box;
+        box->setObjectName("CheckBox");
+        return setLayoutWidget({ box }, { 100, 30 });
     }
     else if(name == "ComboBox")
     {
@@ -94,94 +94,102 @@ QWidget* WidgetStyle::createWidget(const QString& name)
         box->addItem("Item1");
         box->addItem("Item3");
         box->addItem("Item3");
-        box->resize(78, 26);
-        return box;
+        box->setObjectName("ComboBox");
+        return setLayoutWidget({ box }, { 70, 30 });
     }
     else if(name == "DateEdit")
     {
         QDateEdit* date = new QDateEdit;
-        date->resize(105, 30);
-        return date;
+        date->setObjectName("DateEdit");
+        return setLayoutWidget({ date }, { 110, 40 });
     }
     else if(name == "DateTimeEdit")
     {
         QDateTimeEdit* date = new QDateTimeEdit;
-        date->resize(155, 27);
-        return date;
+        date->setObjectName("DateTimeEdit");
+        return setLayoutWidget({ date }, { 160, 30 });
     }
     else if(name == "Dialog")
     {
         QDialog* dialog = new QDialog;
-        dialog->resize(150, 100);
-        return dialog;
+        dialog->setObjectName("Dialog");
+        return setLayoutWidget({ dialog }, { 160, 110 });
     }
-    else if(name == "DockWidget")
+    else if(name == "DockWidget") //?
     {
         QDockWidget* widget = new QDockWidget;
+        widget->setObjectName("DockWidget");
         widget->resize(61, 22);
         return widget;
     }
     else if(name == "DoubleSpinBox")
     {
         QDoubleSpinBox* box = new QDoubleSpinBox;
-        box->resize(80, 38);
-        return box;
+        box->setObjectName("DoubleSpinBox");
+        return setLayoutWidget({ box }, { 90, 40 });
     }
     else if(name == "Frame") //??
     {
         QFrame* frame = new QFrame;
+        frame->setObjectName("Frame");
         frame->resize(150, 100);
         return frame;
     }
     else if(name == "GroupBox")
     {
         QGroupBox* box = new QGroupBox("GroupBox");
-        box->resize(150, 100);
-        return box;
+        box->setObjectName("GroupBox");
+        return setLayoutWidget({ box }, { 160, 110 });
     }
     else if(name == "Label")
     {
         QLabel* label = new QLabel("Label");
-        label->resize(37, 18);
-        return label;
+        label->setObjectName("Label");
+        return setLayoutWidget({ label }, { 40, 20});
     }
     else if(name == "LineEdit")
     {
         QLineEdit* line = new QLineEdit;
-        line->resize(27, 26);
-        return line;
+        line->setObjectName("LineEdit");
+        return setLayoutWidget({ line }, { 30, 30 });
     }
     else if(name == "ListView") //??
     {
         QListView* view = new QListView;
+        view->setObjectName("ListView");
         view->resize(71, 71);
         return view;
     }
-    else if(name == "ListWidget") //??
+    else if(name == "ListWidget")
     {
-        QListWidget* widget = new QListWidget;
-        widget->resize(71, 71);
-        return widget;
+        QListWidget* list = new QListWidget;
+        list->setObjectName("ListWidget");
+        for(int i = 0; i < 20; i++)
+            list->addItem(QString("Item %1").arg(i));
+        return setLayoutWidget({ list }, { 80, 80 });
     }
     else if(name == "MainWindow")
     {
         QMainWindow* window = new QMainWindow;
-        window->resize(150, 100);
-        return window;
+        window->setObjectName("MainWindow");
+        return setLayoutWidget({ window }, { 160, 110 });
     }
-    else if(name == "Menu") //??
+    else if(name == "Menu")
     {
-        QMenu* menu = new QMenu;
-        menu->addMenu("Menu1");
-        menu->addMenu("Menu2");
-        menu->addSeparator();
-        menu->addMenu("Menu3");
-        menu->resize(150, 100);
-        return menu;
+        QMenu* parentMenu = new QMenu;
+        parentMenu->setObjectName("Menu");
+        parentMenu->addMenu("Menu1");
+        QMenu* menu1 = parentMenu->addMenu("Menu2");
+        menu1->addMenu("Menu1");
+        menu1->addMenu("Menu2");
+        parentMenu->addSeparator();
+        parentMenu->addMenu("Menu3");
+        return setLayoutWidget({ parentMenu }, { 160, 110 });
     }
     else if(name == "MenuBar")
     {
         QMenuBar* bar = new QMenuBar;
+        bar->setObjectName("QMenuBar");
         QMenu* menu1 = bar->addMenu("MenuBar1");
         menu1->addMenu("Menu1");
         menu1->addSeparator();
@@ -194,13 +202,12 @@ QWidget* WidgetStyle::createWidget(const QString& name)
         menu3->addMenu("Menu1");
         menu3->addSeparator();
         menu3->addMenu("Menu2");
-        bar->resize(270, 50);
-        return bar;
+        return setLayoutWidget({ bar }, { 280, 60 });
     }
     else if(name == "ProgressBar")
     {
         QProgressBar* bar = new QProgressBar;
-        bar->resize(100, 20);
+        bar->setObjectName("ProgressBar");
         bar->setRange(0, 100);
         bar->setValue(0);
 
@@ -213,98 +220,101 @@ QWidget* WidgetStyle::createWidget(const QString& name)
                 bar->setValue(bar->value() + 1);
         });
         timer->start(100);
-        return bar;
+        return setLayoutWidget({ bar }, { 110, 30 });
     }
     else if(name == "PushButton")
     {
         QPushButton* button = new QPushButton("PushButton");
-        button->resize(91, 26);
-        return button;
+        button->setObjectName("PushButton");
+        return setLayoutWidget({ button }, { 125, 30 });
     }
     else if(name == "RadioButton")
     {
         QRadioButton* button = new QRadioButton("RadioButton");
-        button->resize(112, 24);
-        return button;
+        button->setObjectName("RadioButton");
+        return setLayoutWidget({ button }, { 125, 30 });
     }
     else if(name == "ScrollBar")
     {
         QScrollBar* barH = new QScrollBar(Qt::Horizontal);
         QScrollBar* barV = new QScrollBar(Qt::Vertical);
-        QHBoxLayout* box = new QHBoxLayout;
-        box->addWidget(barH);
-        box->addWidget(barV);
-
-        QWidget* widget = new QWidget;
-        widget->resize(200, 100);
-        widget->setLayout(box);
-        return widget;
+        barH->setObjectName("ScrollBarH");
+        barV->setObjectName("ScrollBarV");
+        return setLayoutWidget({ barH, barV }, { 200, 100 });
     }
     else if(name == "Slider")
     {
         QSlider* sliderH = new QSlider(Qt::Horizontal);
         QSlider* sliderV = new QSlider(Qt::Vertical);
-        QHBoxLayout* box = new QHBoxLayout;
-        box->addWidget(sliderH);
-        box->addWidget(sliderV);
-
-        QWidget* widget = new QWidget;
-        widget->resize(200, 100);
-        widget->setLayout(box);
-        return widget;
+        sliderH->setObjectName("SliderH");
+        sliderV->setObjectName("SliderV");
+        return setLayoutWidget({ sliderH, sliderV }, { 200, 100 });
     }
     else if(name == "SpinBox")
     {
-        QSpinBox* box = new QSpinBox;
-        box->resize(51, 27);
-        return box;
+        QSpinBox* spinBox = new QSpinBox;
+        spinBox->setObjectName("SpinBox");
+        return setLayoutWidget({ spinBox }, { 60, 35 });
     }
-    else if(name == "Splitter") // ?
+    else if(name == "Splitter")
     {
-        QSplitter* splitter = new QSplitter(Qt::Vertical);
-        splitter->addWidget(new QPushButton("PushButton1"));
-        splitter->addWidget(new QPushButton("PushButton2"));
-        splitter->resize(200, 100);
-        return splitter;
+        QSplitter* splitterV = new QSplitter(Qt::Vertical);
+        QSplitter* splitterH = new QSplitter(Qt::Horizontal);
+        splitterV->setObjectName("SplitterV");
+        splitterH->setObjectName("SplitterH");
+        splitterV->addWidget(new QPushButton("PushButton1"));
+        splitterV->addWidget(new QPushButton("PushButton2"));
+        splitterH->addWidget(splitterV);
+        splitterH->addWidget(new QPushButton("PushButton3"));
+        return setLayoutWidget({ splitterH }, { 250, 110 });
     }
     else if(name == "TabWidget")
     {
         QTabWidget* tab = new QTabWidget;
         tab->addTab(new QWidget, "Widget1");
         tab->addTab(new QWidget, "Widget2");
-        tab->resize(200, 100);
-        return tab;
+        tab->addTab(new QWidget, "Widget3");
+        tab->setObjectName("TabWidget");
+        return setLayoutWidget({ tab }, { 210, 110 });
     }
     else if(name == "TableView") //?
     {
         QTableView* view = new QTableView;
+        view->setObjectName("TableView");
         view->resize(200, 100);
         return view;
     }
-    else if(name == "TableWidget") //?
+    else if(name == "TableWidget")
     {
-        QTableWidget* widget = new QTableWidget;
-        widget->resize(200, 100);
-        return widget;
+        const int n = 100;
+        QStringList list = { "one", "two", "three" };
+        QTableWidget* table = new QTableWidget(n, n);
+        table->setObjectName("TableWidget");
+        table->setHorizontalHeaderLabels(list);
+        table->setVerticalHeaderLabels(list);
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < n; j++)
+                table->setItem(i, j, new QTableWidgetItem(QString("%1, %2").arg(i).arg(j)));
+        return setLayoutWidget({ table }, { 210, 110 });
     }
     else if(name == "TextEdit")
     {
         QTextEdit* text = new QTextEdit;
-        text->resize(71, 71);
-        return text;
+        text->setObjectName("TextEdit");
+        return setLayoutWidget({ text }, { 80, 80 });
     }
     else if(name == "TimeEdit")
     {
         QTimeEdit* time = new QTimeEdit;
-        time->resize(74, 26);
-        return time;
+        time->setObjectName("TimeEdit");
+        return setLayoutWidget({ time }, { 80, 80 });
     }
     else if(name == "ToolButton")
     {
         QToolButton* button = new QToolButton;
         button->setText("ToolButton");
-        button->resize(92, 25);
-        return button;
+        button->setObjectName("ToolButton");
+        return setLayoutWidget({ button }, { 95, 25 });
     }
     else if(name == "ToolBox")
     {
@@ -312,28 +322,52 @@ QWidget* WidgetStyle::createWidget(const QString& name)
         box->addItem(new QWidget, "Widget1");
         box->addItem(new QWidget, "Widget2");
         box->addItem(new QWidget, "Widget3");
-        box->resize(100, 170);
-        return box;
+        box->setObjectName("ToolBox");
+        return setLayoutWidget({ box }, { 110, 180 });
     }
-    else if(name == "TreeView")
+    else if(name == "TreeView") //?
     {
         QTreeView* tree = new QTreeView;
+        tree->setObjectName("TreeView");
         tree->resize(200, 100);
         return tree;
     }
     else if(name == "TreeWidget")
     {
         QTreeWidget* tree = new QTreeWidget;
-        tree->resize(200, 100);
-        return tree;
+        tree->setObjectName("TreeWidget");
+        tree->setHeaderLabels({ "Folders", "Used Space" });
+        QTreeWidgetItem* item = new QTreeWidgetItem(tree);
+        item->setText(0, "Local Disk");
+        for(int i = 1; i < 20; i++)
+        {
+            QTreeWidgetItem* dir = new QTreeWidgetItem(item);
+            dir->setText(0, "Directory" + QString::number(i));
+            dir->setText(1, QString::number(i) + "MB");
+        }
+        tree->setItemExpanded(item, true);
+        return setLayoutWidget({ tree }, { 210, 110 });
     }
     else if(name == "Widget")
     {
         QWidget* widget = new QWidget;
-        widget->resize(200, 100);
-        return widget;
+        widget->setObjectName("Widget");
+        return setLayoutWidget({ widget }, { 210, 110 });
     }
     return nullptr;
+}
+
+QWidget* WidgetStyle::setLayoutWidget(const QVector<QWidget*>& vecWgt, const QSize& size)
+{
+    QWidget* parentWgt = new QWidget;
+    parentWgt->resize(size);
+
+    QHBoxLayout* box = new QHBoxLayout;
+    for(QWidget* wgt : vecWgt)
+        box->addWidget(wgt);
+    box->setMargin(2);
+    parentWgt->setLayout(box);
+    return parentWgt;
 }
 
 void WidgetStyle::distinguishRect(const QRectF& rect)
@@ -364,8 +398,8 @@ bool WidgetStyle::containsWidget(const QPointF& point)
     return false;
 }
 
-WidgetStyle::WidgetScene::WidgetScene(qreal x, qreal y, qreal widht, qreal height, QObject* parent) : QGraphicsScene(x, y, widht, height, parent)
-    , m_wgtStyle(qobject_cast<WidgetStyle*>(parent))
+WidgetStyle::WidgetScene::WidgetScene(qreal x, qreal y, qreal widht, qreal height, WidgetStyle* parent) : QGraphicsScene(x, y, widht, height, parent)
+    , m_wgtStyle(parent)
 { }
 
 void WidgetStyle::WidgetScene::mousePressEvent(QGraphicsSceneMouseEvent* event)

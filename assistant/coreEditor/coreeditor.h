@@ -49,6 +49,7 @@ public:
     void setFormatNumber(const QTextCharFormat& charFormat);
     void checkingCodeQss();
     void appendText(const QString& text);
+    QString getStyleSheet() const;
 
 signals:
     void updateStyleSheet(const QString& text);

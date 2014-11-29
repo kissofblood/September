@@ -26,7 +26,6 @@ public:
     explicit SeptemberEditor(QWidget* parent = nullptr);
     ~SeptemberEditor() override;
 
-    QString styleSheet() const;
     QTextDocument* getDocument() const;
     void setPositionCursor(const QTextCursor& cursor);
 
@@ -36,6 +35,11 @@ private slots:
     void closeOrShowCreateWidget();
     void closeOrShowOpenUI();
     void openFile();
+
+    void qwer()
+    {
+        closeOrShowCreateWidget();
+    }
 
 private:
     struct ClickedButton

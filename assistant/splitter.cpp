@@ -11,13 +11,13 @@ void Splitter::setHideHandle(bool value)
     if(!value)
     {
         this->setHandleWidth(10);
-        this->handle(1)->setCursor(Qt::SplitVCursor);
+        this->handle(1)->setEnabled(true);
     }
     else
     {
         this->moveSplitter(this->size().height(), 0);
         this->setHandleWidth(0);
-        this->handle(1)->setCursor(Qt::ArrowCursor);
+        this->handle(1)->setEnabled(false);
     }
 }
 

@@ -35,7 +35,7 @@ void WidgetUiStyle::openUI()
         m_bufferUi->open(QIODevice::ReadOnly);
 
         QWidget* widget = QUiLoader().load(m_bufferUi);
-        widget->setStyleSheet(m_editor->styleSheet());
+        widget->setStyleSheet(m_editor->getStyleSheet());
         m_sceneView = new QGraphicsScene(0, 0, widget->width(), widget->height());
         ui->view->setScene(m_sceneView);
         m_sceneView->addWidget(widget);
@@ -49,7 +49,7 @@ void WidgetUiStyle::showFull()
         return;
     m_bufferUi->seek(0);
     m_showFull->setViewWidgetUi(m_bufferUi);
-    m_showFull->setStyleSheetDialog(m_editor->styleSheet());
+    m_showFull->setStyleSheetDialog(m_editor->getStyleSheet());
     m_showFull->showMaximized();
 }
 

@@ -54,7 +54,14 @@ QRectF GraphicsWidget::boundingRectToScene()
 { return this->mapToScene(boundingRect()).boundingRect(); }
 
 void GraphicsWidget::setStyleSheet(const QString& styleSheet)
-{ m_proxyWidget->widget()->setStyleSheet(styleSheet); }
+{
+    for(QObject* obj : m_proxyWidget->widget()->children())
+        if(!obj->objectName().isEmpty())
+        {
+            QWidget* wgt = qobject_cast<QWidget*>(obj);
+            wgt->setStyleSheet(styleSheet);
+        }
+}
 
 void GraphicsWidget::resizeRect(const QPointF& p, Rect* r)
 {

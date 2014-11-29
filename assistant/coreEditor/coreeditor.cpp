@@ -111,6 +111,9 @@ void CoreEditor::appendText(const QString& text)
         m_blockNumberError_.push_back(false);
 }
 
+QString CoreEditor::getStyleSheet() const
+{ return this->document()->toPlainText(); }
+
 void CoreEditor::updateLineNumberAreaWidth()
 { this->setViewportMargins(lineNumberAreaWidth(), 0, 0, 1); }
 
