@@ -29,6 +29,9 @@ WidgetStyle::WidgetStyle(QWidget* parent) : QWidget(parent),
 WidgetStyle::~WidgetStyle()
 { delete ui; }
 
+void WidgetStyle::setFocusLineEdit()
+{ ui->lineEdit->setFocus(); }
+
 void WidgetStyle::filterListWidget()
 {
     QString text = ui->lineEdit->text();

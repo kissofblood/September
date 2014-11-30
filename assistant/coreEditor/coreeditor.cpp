@@ -114,6 +114,36 @@ void CoreEditor::appendText(const QString& text)
 QString CoreEditor::getStyleSheet() const
 { return this->document()->toPlainText(); }
 
+void CoreEditor::selectTextSearch(const QTextCursor& cursor, const QTextCharFormat& format)
+{
+    auto iter = m_selectTextSearch_.find(cursor.blockNumber());
+    if(iter != m_selectTextSearch_.end())
+        iter->push_back(std::make_tuple(cursor, format, false));
+    else
+        m_selectTextSearch_.insert(cursor.blockNumber(), { std::make_tuple(cursor, format, false) });
+}
+
+void CoreEditor::replaceSelectTextSearch(const QTextCursor& cursor, const QTextCharFormat& formatNew, const QTextCharFormat& formatOld)
+{
+    for(auto& select : m_selectTextSearch_[cursor.blockNumber()])
+    {
+        QTextCursor cursorOld;
+        QTextCharFormat format;
+        bool selectFlag;
+        std::tie(cursorOld, format, selectFlag) = select;
+        if(selectFlag)
+            select = std::make_tuple(cursorOld, formatOld, false);
+        else if(cursorOld == cursor)
+            select = std::make_tuple(cursor, formatNew, true);
+    }
+}
+
+void CoreEditor::clearSelectTextSearch()
+{
+    m_selectTextSearch_.clear();
+    highlightCurrentLine();
+}
+
 void CoreEditor::updateLineNumberAreaWidth()
 { this->setViewportMargins(lineNumberAreaWidth(), 0, 0, 1); }
 
@@ -122,12 +152,23 @@ void CoreEditor::highlightCurrentLine()
     QList<QTextEdit::ExtraSelection> extraSelections;
     if(!this->isReadOnly())
     {
-        QTextEdit::ExtraSelection selection;
-        selection.format.setBackground(m_lineColor);
-        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
-        selection.cursor = this->textCursor();
-        selection.cursor.clearSelection();
-        extraSelections.append(selection);
+        QTextEdit::ExtraSelection selectionLine;
+        selectionLine.format.setBackground(m_lineColor);
+        selectionLine.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selectionLine.cursor = this->textCursor();
+        selectionLine.cursor.clearSelection();
+        extraSelections.push_back(selectionLine);
+
+        for(auto& select : m_selectTextSearch_[this->textCursor().blockNumber()])
+        {
+            QTextCursor cursor;
+            QTextCharFormat format;
+            std::tie(cursor, format, std::ignore) = select;
+            QTextEdit::ExtraSelection selectionSearch;
+            selectionSearch.format = format;
+            selectionSearch.cursor = cursor;
+            extraSelections.push_back(selectionSearch);
+        }
     }
     this->setExtraSelections(extraSelections);
 }

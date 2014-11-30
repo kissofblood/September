@@ -26,20 +26,12 @@ public:
     explicit SeptemberEditor(QWidget* parent = nullptr);
     ~SeptemberEditor() override;
 
-    QTextDocument* getDocument() const;
-    void setPositionCursor(const QTextCursor& cursor);
-
 private slots:
     void closeOrShowListFile();
     void closeOrShowWidgetSearchAndReplace();
     void closeOrShowCreateWidget();
     void closeOrShowOpenUI();
     void openFile();
-
-    void qwer()
-    {
-        closeOrShowCreateWidget();
-    }
 
 private:
     struct ClickedButton

@@ -11,7 +11,7 @@ public:
     ~Splitter() override = default;
 
     void setHeight(int h);
-    void setHideHandle(bool value);
+    void setVisibleHandle(bool value);
 };
 
 #endif // SPLITTER_H

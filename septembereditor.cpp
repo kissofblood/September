@@ -9,7 +9,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->widgetCreateWidget->setVisible(false);
     ui->widgetOpenUI->setVisible(false);
     ui->listDocument->setVisible(false);
-    ui->splitter->setHideHandle(true);
+    ui->splitter->setVisibleHandle(false);
     ui->mnNew->setShortcut(QKeySequence::New);
     ui->mnOpen->setShortcut(QKeySequence::Open);
     ui->mnQuit->setShortcut(QKeySequence::Quit);
@@ -59,12 +59,6 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
 SeptemberEditor::~SeptemberEditor()
 { delete ui; }
 
-QTextDocument* SeptemberEditor::getDocument() const
-{ return ui->plainTextEdit->document(); }
-
-void SeptemberEditor::setPositionCursor(const QTextCursor& cursor)
-{ ui->plainTextEdit->setTextCursor(cursor); }
-
 void SeptemberEditor::closeOrShowListFile()
 {
     QPushButton* button = qobject_cast<QPushButton*>(this->sender());
@@ -93,6 +87,8 @@ void SeptemberEditor::closeOrShowWidgetSearchAndReplace()
     {
         m_clickedButton.searchAndReplace = false;
         ui->widgetSearchAndReplace->setVisible(false);
+        ui->widgetSearchAndReplace->cleanResultSearch();
+        ui->plainTextEdit->clearSelectTextSearch();
         ui->plainTextEdit->setFocus();
     }
     else
@@ -107,7 +103,7 @@ void SeptemberEditor::closeOrShowWidgetSearchAndReplace()
         ui->widgetSearchAndReplace->setFocusEditSearch();
         ui->mnCreateWidget->setChecked(false);
         ui->mnOpenUi->setChecked(false);
-        ui->splitter->setHideHandle(true);
+        ui->splitter->setVisibleHandle(false);
     }
 }
 
@@ -121,8 +117,10 @@ void SeptemberEditor::closeOrShowCreateWidget()
 
         m_clickedButton.createWidget = false;
         ui->widgetCreateWidget->setVisible(false);
+        ui->plainTextEdit->clearSelectTextSearch();
+        ui->plainTextEdit->setFocus();
         if(m_clickedButton.openUI == false && m_clickedButton.createWidget == false)
-            ui->splitter->setHideHandle(true);
+            ui->splitter->setVisibleHandle(false);
     }
     else
     {
@@ -137,9 +135,11 @@ void SeptemberEditor::closeOrShowCreateWidget()
         m_clickedButton.searchAndReplace = false;
         m_clickedButton.openUI = false;
         ui->widgetSearchAndReplace->setVisible(false);
+        ui->widgetSearchAndReplace->cleanResultSearch();
         ui->widgetOpenUI->setVisible(false);
         ui->widgetCreateWidget->setVisible(true);
-        ui->splitter->setHideHandle(false);
+        ui->widgetCreateWidget->setFocusLineEdit();
+        ui->splitter->setVisibleHandle(true);
         ui->splitter->setHeight(ui->widgetCreateWidget->minimumSizeHint().height());
     }
 }
@@ -154,8 +154,10 @@ void SeptemberEditor::closeOrShowOpenUI()
 
         m_clickedButton.openUI = false;
         ui->widgetOpenUI->setVisible(false);
+        ui->plainTextEdit->clearSelectTextSearch();
+        ui->plainTextEdit->setFocus();
         if(m_clickedButton.openUI == false && m_clickedButton.createWidget == false)
-            ui->splitter->setHideHandle(true);
+            ui->splitter->setVisibleHandle(false);
     }
     else
     {
@@ -170,9 +172,10 @@ void SeptemberEditor::closeOrShowOpenUI()
         m_clickedButton.searchAndReplace = false;
         m_clickedButton.createWidget = false;
         ui->widgetSearchAndReplace->setVisible(false);
+        ui->widgetSearchAndReplace->cleanResultSearch();
         ui->widgetCreateWidget->setVisible(false);
         ui->widgetOpenUI->setVisible(true);
-        ui->splitter->setHideHandle(false);
+        ui->splitter->setVisibleHandle(true);
         ui->splitter->setHeight(ui->widgetOpenUI->minimumSizeHint().height());
     }
 }

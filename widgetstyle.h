@@ -21,6 +21,8 @@ public:
     explicit WidgetStyle(QWidget* parent = nullptr);
     ~WidgetStyle() override;
 
+    void setFocusLineEdit();
+
 private slots:
     void filterListWidget();
     void selectWidget();

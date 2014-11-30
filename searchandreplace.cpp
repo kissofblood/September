@@ -3,7 +3,7 @@
 
 SearchAndReplace::SearchAndReplace(QWidget* parent) : QWidget(parent),
     ui(new Ui::SearchAndReplace),
-    m_editor(qobject_cast<SeptemberEditor*>(parent->parent()))
+    m_editor(parent->parent()->findChild<CoreEditor*>())
 {
     ui->setupUi(this);
     ui->btnNext->setShortcut(Qt::CTRL + Qt::Key_Up);
@@ -21,6 +21,16 @@ SearchAndReplace::SearchAndReplace(QWidget* parent) : QWidget(parent),
     this->connect(ui->checkRegister,    &QCheckBox::stateChanged,    this, &SearchAndReplace::setRegister);
     this->connect(ui->checkRegEx,       &QCheckBox::stateChanged,    this, &SearchAndReplace::setRegExp);
     this->connect(ui->checkReplaceAll,  &QCheckBox::stateChanged,    this, &SearchAndReplace::setReplaceTextAll);
+    this->connect(ui->editSearch, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        if(text.isEmpty())
+        {
+            QPalette pal = ui->editSearch->palette();
+            pal.setColor(ui->editSearch->backgroundRole(), Qt::transparent);
+            ui->editSearch->setPalette(pal);
+            m_editor->clearSelectTextSearch();
+        }
+    });
 }
 
 SearchAndReplace::~SearchAndReplace()
@@ -29,30 +39,32 @@ SearchAndReplace::~SearchAndReplace()
 void SearchAndReplace::setFocusEditSearch()
 { ui->editSearch->setFocus(); }
 
-void SearchAndReplace::searchText()
+void SearchAndReplace::cleanResultSearch()
 {
-    QString textSearch = ui->editSearch->text();
-
     for(auto& pair : m_textCharFormatUndo_)
     {
         pair.second.setBackground(Qt::transparent);
         pair.first.mergeCharFormat(pair.second);
     }
     m_textCharFormatUndo_.clear();
+}
+
+void SearchAndReplace::searchText()
+{
+    m_editor->clearSelectTextSearch();
+    QString textSearch = ui->editSearch->text();
+    cleanResultSearch();
     if(textSearch.isEmpty())
         return;
 
-    QTextCursor highlightCursor(m_editor->getDocument());
-    QTextCursor cursor(m_editor->getDocument());
-
-    cursor.beginEditBlock();
+    QTextCursor highlightCursor(m_editor->document());
 
     QTextCharFormat colorFormat = highlightCursor.charFormat();
     colorFormat.setBackground(QBrush(QColor(85, 85, 0)));
     while(!highlightCursor.isNull() && !highlightCursor.atEnd())
     {
         if(!m_isRegExp)
-            highlightCursor = m_editor->getDocument()->find(textSearch, highlightCursor, m_findFlag);
+            highlightCursor = m_editor->document()->find(textSearch, highlightCursor, m_findFlag);
         else
         {
             QRegExp regExp(R"()" + textSearch + R"()");
@@ -60,40 +72,44 @@ void SearchAndReplace::searchText()
                 regExp.setCaseSensitivity(Qt::CaseInsensitive);
             else
                 regExp.setCaseSensitivity(Qt::CaseSensitive);
-            highlightCursor = m_editor->getDocument()->find(regExp, highlightCursor);
+            highlightCursor = m_editor->document()->find(regExp, highlightCursor);
         }
 
         if(!highlightCursor.isNull())
         {
             m_textCharFormatUndo_.push_back({ highlightCursor, highlightCursor.charFormat() });
+            m_editor->selectTextSearch(highlightCursor, highlightCursor.charFormat());
             highlightCursor.movePosition(QTextCursor::WordRight, QTextCursor::KeepAnchor, 0);
             highlightCursor.mergeCharFormat(colorFormat);
         }
     }
 
-    cursor.endEditBlock();
     m_posCursor = -1;
-    if(!m_textCharFormatUndo_.empty())
+    QPalette pal = ui->editSearch->palette();
+    if(m_textCharFormatUndo_.empty())
+        pal.setColor(ui->editSearch->backgroundRole(), QColor(Qt::red).lighter(180));
+    else
     {
-        QTextCursor cursorFirst(m_editor->getDocument());
-        cursorFirst.setPosition(m_textCharFormatUndo_[0].first.position());
-        m_editor->setPositionCursor(cursor);
+        nextSearchText();
+        pal.setColor(ui->editSearch->backgroundRole(), Qt::transparent);
     }
+
+    ui->editSearch->setPalette(pal);
 }
 
 void SearchAndReplace::nextSearchText()
 {
     if(m_textCharFormatUndo_.empty())
         return;
-    QTextCursor cursor(m_editor->getDocument());
+    QTextCursor cursor(m_editor->document());
     if(m_posCursor < 0)
         m_posCursor = -1;
     m_posCursor += 1;
     if(m_posCursor < m_textCharFormatUndo_.size())
     {
+        selectTextSearch();
         cursor.setPosition(m_textCharFormatUndo_[m_posCursor].first.position());
-        m_editor->setPositionCursor(cursor);
-
+        m_editor->setTextCursor(cursor);
     }
     else
     {
@@ -103,8 +119,9 @@ void SearchAndReplace::nextSearchText()
         if(m_btnOk == m_msgBox->clickedButton())
         {
             m_posCursor = 0;
+            selectTextSearch();
             cursor.setPosition(m_textCharFormatUndo_[m_posCursor].first.position());
-            m_editor->setPositionCursor(cursor);
+            m_editor->setTextCursor(cursor);
         }
     }
 }
@@ -113,14 +130,15 @@ void SearchAndReplace::prevSearchText()
 {
     if(m_textCharFormatUndo_.empty())
         return;
-    QTextCursor cursor(m_editor->getDocument());
+    QTextCursor cursor(m_editor->document());
     if(m_posCursor >= m_textCharFormatUndo_.size() || m_posCursor == -1)
         m_posCursor = m_textCharFormatUndo_.size();
     m_posCursor -= 1;
     if(m_posCursor >= 0)
     {
+        selectTextSearch();
         cursor.setPosition(m_textCharFormatUndo_[m_posCursor].first.position());
-        m_editor->setPositionCursor(cursor);
+        m_editor->setTextCursor(cursor);
     }
     else
     {
@@ -130,8 +148,9 @@ void SearchAndReplace::prevSearchText()
         if(m_btnOk == m_msgBox->clickedButton())
         {
             m_posCursor = m_textCharFormatUndo_.size() - 1;
+            selectTextSearch();
             cursor.setPosition(m_textCharFormatUndo_[m_posCursor].first.position());
-            m_editor->setPositionCursor(cursor);
+            m_editor->setTextCursor(cursor);
         }
     }
 }
@@ -185,4 +204,13 @@ void SearchAndReplace::replaceText()
         pos = m_textCharFormatUndo_.size() - 1;
     m_textCharFormatUndo_[pos].first.removeSelectedText();
     m_textCharFormatUndo_[pos].first.insertText(text);
+}
+
+void SearchAndReplace::selectTextSearch()
+{
+    QTextCharFormat format = m_textCharFormatUndo_[m_posCursor].second;
+    format.setBackground(QBrush(QColor(160, 160, 160)));
+    format.setForeground(QBrush(QColor(12, 12, 12)));
+    m_editor->replaceSelectTextSearch(m_textCharFormatUndo_[m_posCursor].first, format, m_textCharFormatUndo_[m_posCursor].second);
+
 }

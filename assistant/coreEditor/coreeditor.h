@@ -27,6 +27,7 @@
 #include <QFont>
 #include <string>
 #include <QTextDocument>
+#include <tuple>
 
 #include <QtWidgets>
 
@@ -49,6 +50,9 @@ public:
     void setFormatNumber(const QTextCharFormat& charFormat);
     void checkingCodeQss();
     void appendText(const QString& text);
+    void selectTextSearch(const QTextCursor& cursor, const QTextCharFormat& format);
+    void replaceSelectTextSearch(const QTextCursor& cursor, const QTextCharFormat& formatNew, const QTextCharFormat& formatOld);
+    void clearSelectTextSearch();
     QString getStyleSheet() const;
 
 signals:
@@ -90,6 +94,7 @@ private:
     QVector<bool>       m_blockNumberError_;
     bool                m_visibleLineNumberAre  = true;
     int                 m_zoomDocument          = 12;
+    QHash<int, QVector<std::tuple<QTextCursor, QTextCharFormat, bool>>> m_selectTextSearch_;
 
     int lineNumberAreaWidth();
     void lineNumberAreaPaintEvent(QPaintEvent* event);
