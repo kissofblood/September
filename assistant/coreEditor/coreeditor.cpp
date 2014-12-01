@@ -115,26 +115,20 @@ QString CoreEditor::getStyleSheet() const
 { return this->document()->toPlainText(); }
 
 void CoreEditor::selectTextSearch(const QTextCursor& cursor, const QTextCharFormat& format)
-{
-    auto iter = m_selectTextSearch_.find(cursor.blockNumber());
-    if(iter != m_selectTextSearch_.end())
-        iter->push_back(std::make_tuple(cursor, format, false));
-    else
-        m_selectTextSearch_.insert(cursor.blockNumber(), { std::make_tuple(cursor, format, false) });
-}
+{ m_selectTextSearch_.insert(cursor.blockNumber(), std::make_tuple(cursor, format, false)); }
 
 void CoreEditor::replaceSelectTextSearch(const QTextCursor& cursor, const QTextCharFormat& formatNew, const QTextCharFormat& formatOld)
 {
-    for(auto& select : m_selectTextSearch_[cursor.blockNumber()])
+    for(auto i = m_selectTextSearch_.find(cursor.blockNumber()); i != m_selectTextSearch_.end(); i++)
     {
         QTextCursor cursorOld;
         QTextCharFormat format;
         bool selectFlag;
-        std::tie(cursorOld, format, selectFlag) = select;
+        std::tie(cursorOld, format, selectFlag) = i.value();
         if(selectFlag)
-            select = std::make_tuple(cursorOld, formatOld, false);
+            i.value() = std::make_tuple(cursorOld, formatOld, false);
         else if(cursorOld == cursor)
-            select = std::make_tuple(cursor, formatNew, true);
+            i.value() = std::make_tuple(cursor, formatNew, true);
     }
 }
 
@@ -159,11 +153,11 @@ void CoreEditor::highlightCurrentLine()
         selectionLine.cursor.clearSelection();
         extraSelections.push_back(selectionLine);
 
-        for(auto& select : m_selectTextSearch_[this->textCursor().blockNumber()])
+        for(auto i = m_selectTextSearch_.find(this->textCursor().blockNumber()); i != m_selectTextSearch_.end(); i++)
         {
             QTextCursor cursor;
             QTextCharFormat format;
-            std::tie(cursor, format, std::ignore) = select;
+            std::tie(cursor, format, std::ignore) = i.value();
             QTextEdit::ExtraSelection selectionSearch;
             selectionSearch.format = format;
             selectionSearch.cursor = cursor;

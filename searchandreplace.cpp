@@ -39,21 +39,18 @@ SearchAndReplace::~SearchAndReplace()
 void SearchAndReplace::setFocusEditSearch()
 { ui->editSearch->setFocus(); }
 
-void SearchAndReplace::cleanResultSearch()
+void SearchAndReplace::clearResultSearch()
 {
-    for(auto& pair : m_textCharFormatUndo_)
-    {
-        pair.second.setBackground(Qt::transparent);
-        pair.first.mergeCharFormat(pair.second);
-    }
-    m_textCharFormatUndo_.clear();
+    clearTextCharFormatUndo();
+    ui->editReplace->clear();
+    ui->editSearch->clear();
 }
 
 void SearchAndReplace::searchText()
 {
     m_editor->clearSelectTextSearch();
     QString textSearch = ui->editSearch->text();
-    cleanResultSearch();
+    clearTextCharFormatUndo();
     if(textSearch.isEmpty())
         return;
 
@@ -213,4 +210,14 @@ void SearchAndReplace::selectTextSearch()
     format.setForeground(QBrush(QColor(12, 12, 12)));
     m_editor->replaceSelectTextSearch(m_textCharFormatUndo_[m_posCursor].first, format, m_textCharFormatUndo_[m_posCursor].second);
 
+}
+
+void SearchAndReplace::clearTextCharFormatUndo()
+{
+    for(auto& pair : m_textCharFormatUndo_)
+    {
+        pair.second.setBackground(Qt::transparent);
+        pair.first.mergeCharFormat(pair.second);
+    }
+    m_textCharFormatUndo_.clear();
 }

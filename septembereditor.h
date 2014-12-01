@@ -32,6 +32,7 @@ private slots:
     void closeOrShowCreateWidget();
     void closeOrShowOpenUI();
     void openFile();
+    void lineWrap(bool trigger);
 
 private:
     struct ClickedButton

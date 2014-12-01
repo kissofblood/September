@@ -287,15 +287,24 @@
     <property name="title">
      <string>Вид</string>
     </property>
-    <addaction name="action"/>
-    <addaction name="action_2"/>
-    <addaction name="separator"/>
-    <addaction name="separator"/>
-    <addaction name="action_17"/>
-    <addaction name="mnNumberLine"/>
-    <addaction name="separator"/>
-    <addaction name="mnZoomIn"/>
-    <addaction name="mnZoomOut"/>
+    <widget class="QMenu" name="mnShowWidget">
+     <property name="title">
+      <string>Показать</string>
+     </property>
+     <addaction name="mnListDocument"/>
+     <addaction name="mnCreateWidget"/>
+     <addaction name="mnOpenUi"/>
+    </widget>
+   <addaction name="action"/>
+   <addaction name="action_2"/>
+   <addaction name="separator"/>
+   <addaction name="mnShowWidget"/>
+   <addaction name="separator"/>
+   <addaction name="mnLineWrap"/>
+   <addaction name="mnNumberLine"/>
+   <addaction name="separator"/>
+   <addaction name="mnZoomIn"/>
+   <addaction name="mnZoomOut"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -441,7 +450,7 @@
     <string>Показать &quot;Открыть UI&quot;</string>
    </property>
   </action>
-  <action name="action_17">
+  <action name="mnLineWrap">
    <property name="text">
     <string>Динамический перенос строк</string>
    </property>

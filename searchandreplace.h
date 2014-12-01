@@ -30,7 +30,7 @@ public:
     ~SearchAndReplace() override;
 
     void setFocusEditSearch();
-    void cleanResultSearch();
+    void clearResultSearch();
 
 private slots:
     void searchText();
@@ -42,17 +42,18 @@ private slots:
     void replaceText();
 
 private:
-    Ui::SearchAndReplace    *ui                 = nullptr;
-    CoreEditor              *m_editor           = nullptr;
-    QMessageBox             *m_msgBox           = new QMessageBox(this);
-    QPushButton             *m_btnOk            = nullptr;
-    QFlags<QTextDocument::FindFlag> m_findFlag  = QTextDocument::FindWholeWords;
-    QVector<QPair<QTextCursor, QTextCharFormat>> m_textCharFormatUndo_;
+    Ui::SearchAndReplace            *ui                 = nullptr;
+    CoreEditor                      *m_editor           = nullptr;
+    QMessageBox                     *m_msgBox           = new QMessageBox(this);
+    QPushButton                     *m_btnOk            = nullptr;
+    QFlags<QTextDocument::FindFlag> m_findFlag          = QTextDocument::FindWholeWords;
+    QVector<QPair<QTextCursor, QTextCharFormat>>        m_textCharFormatUndo_;
     int     m_posCursor     = 0;
     bool    m_isRegExp      = false;
     bool    m_isReplaceAll  = false;
 
     void selectTextSearch();
+    void clearTextCharFormatUndo();
 };
 
 #endif // SEARCHANDREPLACE_H

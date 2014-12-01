@@ -27,7 +27,10 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->mnOpenUi->setCheckable(true);
     ui->mnNumberLine->setCheckable(true);
     ui->mnNumberLine->setChecked(true);
+    ui->mnLineWrap->setCheckable(true);
+    ui->mnLineWrap->setChecked(true);
     ui->mnNumberLine->setShortcut(Qt::CTRL + Qt::Key_L);
+    ui->mnLineWrap->setShortcut(Qt::Key_F10);
     ui->mnListDocument->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Q);
     ui->mnCreateWidget->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_W);
     ui->mnOpenUi->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_E);
@@ -54,6 +57,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnNumberLine,   &QAction::triggered, ui->plainTextEdit, &CoreEditor::setVisibleLineNimberArea);
     this->connect(ui->mnZoomIn,     &QAction::triggered, ui->plainTextEdit, &CoreEditor::zoomDocIn);
     this->connect(ui->mnZoomOut,    &QAction::triggered, ui->plainTextEdit, &CoreEditor::zoomDocOut);
+    this->connect(ui->mnLineWrap,   &QAction::triggered, this, &SeptemberEditor::lineWrap);
 }
 
 SeptemberEditor::~SeptemberEditor()
@@ -87,7 +91,7 @@ void SeptemberEditor::closeOrShowWidgetSearchAndReplace()
     {
         m_clickedButton.searchAndReplace = false;
         ui->widgetSearchAndReplace->setVisible(false);
-        ui->widgetSearchAndReplace->cleanResultSearch();
+        ui->widgetSearchAndReplace->clearResultSearch();
         ui->plainTextEdit->clearSelectTextSearch();
         ui->plainTextEdit->setFocus();
     }
@@ -96,6 +100,7 @@ void SeptemberEditor::closeOrShowWidgetSearchAndReplace()
         m_clickedButton.searchAndReplace = true;
         m_clickedButton.createWidget = false;
         m_clickedButton.openUI = false;
+        ui->splitter->setVisibleHandle(false);
         ui->btnOpenUi->setDown(false);
         ui->widgetCreateWidget->setVisible(false);
         ui->widgetOpenUI->setVisible(false);
@@ -103,7 +108,6 @@ void SeptemberEditor::closeOrShowWidgetSearchAndReplace()
         ui->widgetSearchAndReplace->setFocusEditSearch();
         ui->mnCreateWidget->setChecked(false);
         ui->mnOpenUi->setChecked(false);
-        ui->splitter->setVisibleHandle(false);
     }
 }
 
@@ -135,7 +139,7 @@ void SeptemberEditor::closeOrShowCreateWidget()
         m_clickedButton.searchAndReplace = false;
         m_clickedButton.openUI = false;
         ui->widgetSearchAndReplace->setVisible(false);
-        ui->widgetSearchAndReplace->cleanResultSearch();
+        ui->widgetSearchAndReplace->clearResultSearch();
         ui->widgetOpenUI->setVisible(false);
         ui->widgetCreateWidget->setVisible(true);
         ui->widgetCreateWidget->setFocusLineEdit();
@@ -172,7 +176,7 @@ void SeptemberEditor::closeOrShowOpenUI()
         m_clickedButton.searchAndReplace = false;
         m_clickedButton.createWidget = false;
         ui->widgetSearchAndReplace->setVisible(false);
-        ui->widgetSearchAndReplace->cleanResultSearch();
+        ui->widgetSearchAndReplace->clearResultSearch();
         ui->widgetCreateWidget->setVisible(false);
         ui->widgetOpenUI->setVisible(true);
         ui->splitter->setVisibleHandle(true);
@@ -182,7 +186,7 @@ void SeptemberEditor::closeOrShowOpenUI()
 
 void SeptemberEditor::openFile()
 {
-    QString path = QFileDialog::getOpenFileName(this, QString("Open file"), QString(), QString("*.qss"));
+    QString path = QFileDialog::getOpenFileName(this, "Open file", QString(), "*.qss");
     if(path.isEmpty())
         return;
 
@@ -197,4 +201,12 @@ void SeptemberEditor::openFile()
         ui->plainTextEdit->blockCount();
     }
     file.close();
+}
+
+void SeptemberEditor::lineWrap(bool trigger)
+{
+    if(trigger)
+        ui->plainTextEdit->setLineWrapMode(QPlainTextEdit::WidgetWidth);
+    else
+        ui->plainTextEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
 }

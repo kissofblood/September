@@ -94,7 +94,7 @@ private:
     QVector<bool>       m_blockNumberError_;
     bool                m_visibleLineNumberAre  = true;
     int                 m_zoomDocument          = 12;
-    QHash<int, QVector<std::tuple<QTextCursor, QTextCharFormat, bool>>> m_selectTextSearch_;
+    QMultiHash<int, std::tuple<QTextCursor, QTextCharFormat, bool>> m_selectTextSearch_;
 
     int lineNumberAreaWidth();
     void lineNumberAreaPaintEvent(QPaintEvent* event);
