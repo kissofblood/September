@@ -10,7 +10,6 @@ class SettingSeptember;
 class SettingSeptember : public QDialog
 {
     Q_OBJECT
-
 public:
     explicit SettingSeptember(QWidget* parent = nullptr);
     ~SettingSeptember() override;

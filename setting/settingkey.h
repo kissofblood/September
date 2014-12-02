@@ -2,6 +2,8 @@
 #define SETTINGKEY_H
 
 #include <QDialog>
+#include <QWidget>
+#include <QPushButton>
 
 namespace Ui {
 class SettingKey;
@@ -13,6 +15,9 @@ class SettingKey : public QDialog
 public:
     explicit SettingKey(QWidget* parent = nullptr);
     ~SettingKey() override;
+
+private slots:
+    void visibleGrpScheme();
 
 private:
     Ui::SettingKey *ui = nullptr;
