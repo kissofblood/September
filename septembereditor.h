@@ -39,6 +39,8 @@ private slots:
     void fullScreen(bool trigger);
     void pathFile(bool trigger);
     void setStatusBar();
+    void saveFile();
+    void saveFileAs();
 
 private:
     struct ClickedButton

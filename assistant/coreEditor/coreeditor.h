@@ -53,7 +53,6 @@ public:
     void selectTextSearch(const QTextCursor& cursor, const QTextCharFormat& format);
     void replaceSelectTextSearch(const QTextCursor& cursor, const QTextCharFormat& formatNew, const QTextCharFormat& formatOld);
     void clearSelectTextSearch();
-    QString getStyleSheet() const;
 
 signals:
     void updateStyleSheet(const QString& text);

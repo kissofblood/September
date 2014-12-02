@@ -12,6 +12,9 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->splitter->setVisibleHandle(false);
     ui->mnNew->setShortcut(QKeySequence::New);
     ui->mnOpen->setShortcut(QKeySequence::Open);
+    ui->mnSave->setShortcut(QKeySequence::Save);
+    ui->mnSaveAs->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_L);
+    ui->mnSaveAll->setShortcut(Qt::CTRL + Qt::Key_L);
     ui->mnQuit->setShortcut(QKeySequence::Quit);
 
     ui->mnUndo->setShortcut(QKeySequence::Undo);
@@ -29,7 +32,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->mnNumberLine->setChecked(true);
     ui->mnLineWrap->setCheckable(true);
     ui->mnLineWrap->setChecked(true);
-    ui->mnNumberLine->setShortcut(Qt::CTRL + Qt::Key_L);
+    ui->mnNumberLine->setShortcut(Qt::Key_F11);
     ui->mnLineWrap->setShortcut(Qt::Key_F10);
     ui->mnListDocument->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Q);
     ui->mnCreateWidget->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_W);
@@ -55,6 +58,8 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->btnOpenUi,            &QPushButton::clicked, this, &SeptemberEditor::closeOrShowOpenUI);
     this->connect(ui->barBtnOpenFile,       &QPushButton::clicked, this, &SeptemberEditor::openFile);
     this->connect(ui->mnOpen,           &QAction::triggered,    this, &SeptemberEditor::openFile);
+    this->connect(ui->mnSave,           &QAction::triggered,    this, &SeptemberEditor::saveFile);
+    this->connect(ui->mnSaveAs,         &QAction::triggered,    this, &SeptemberEditor::saveFileAs);
     this->connect(ui->mnQuit,           &QAction::triggered,    qApp, &QApplication::quit);
     this->connect(ui->mnUndo,           &QAction::triggered,    ui->plainTextEdit, &CoreEditor::undo);
     this->connect(ui->mnRedo,           &QAction::triggered,    ui->plainTextEdit, &CoreEditor::redo);
@@ -261,5 +266,45 @@ void SeptemberEditor::setStatusBar()
     ui->lblStatusBar->setText(QString("Строка: %1 из %2 Столбец: %3")
                                 .arg(QString::number(currentCursor.blockNumber() + 1))
                                 .arg(QString::number(ui->plainTextEdit->blockCount()))
-                                .arg(QString::number(currentCursor.positionInBlock() + 1)));
+                              .arg(QString::number(currentCursor.positionInBlock() + 1)));
 }
+
+void SeptemberEditor::saveFile()
+{
+    QString path;
+    if(m_fileInfo.exists())
+        path = m_fileInfo.filePath();
+    else
+    {
+        path = QFileDialog::getSaveFileName(this, "Save file", QString(), "*.qss");
+        if(path.isEmpty())
+            return;
+        if(!path.contains(QRegExp(R"(.+\.qss)")))
+            path += ".qss";
+        m_fileInfo.setFile(path);
+    }
+    QFile file(path);
+    if(file.open(QIODevice::WriteOnly))
+    {
+        file.write(ui->plainTextEdit->toPlainText().toUtf8());
+        pathFile(m_visiblePathFile);
+    }
+    file.close();
+}
+
+void SeptemberEditor::saveFileAs()
+{
+    QString path = QFileDialog::getSaveFileName(this, "Save file", QString(), "*.qss");
+    if(path.isEmpty())
+        return;
+    if(!path.contains(QRegExp(R"(.+\.qss)")))
+        path += ".qss";
+    m_fileInfo.setFile(path);
+
+    QFile file(path);
+    if(file.open(QIODevice::WriteOnly))
+    {
+        file.write(ui->plainTextEdit->toPlainText().toUtf8());
+        pathFile(m_visiblePathFile);
+    }
+    file.close();}

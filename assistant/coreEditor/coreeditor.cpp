@@ -111,9 +111,6 @@ void CoreEditor::appendText(const QString& text)
         m_blockNumberError_.push_back(false);
 }
 
-QString CoreEditor::getStyleSheet() const
-{ return this->document()->toPlainText(); }
-
 void CoreEditor::selectTextSearch(const QTextCursor& cursor, const QTextCharFormat& format)
 { m_selectTextSearch_.insert(cursor.blockNumber(), std::make_tuple(cursor, format, false)); }
 

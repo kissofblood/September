@@ -58,7 +58,7 @@ void WidgetStyle::selectWidget()
 
     QPointF visibleTopLeft = ui->view->mapToScene(ui->view->viewport()->geometry()).boundingRect().topLeft();
     m_graphicsWgt_.push_back(new GraphicsWidget(widget, visibleTopLeft));
-    m_graphicsWgt_.back()->setStyleSheet(m_editor->getStyleSheet());
+    m_graphicsWgt_.back()->setStyleSheet(m_editor->document()->toPlainText());
     m_scene->addItem(m_graphicsWgt_.back());
 }
 

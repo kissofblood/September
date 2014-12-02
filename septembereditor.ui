@@ -264,9 +264,9 @@
     <addaction name="mnOpen"/>
     <addaction name="action_4"/>
     <addaction name="separator"/>
-    <addaction name="action_6"/>
-    <addaction name="action_7"/>
-    <addaction name="action_8"/>
+    <addaction name="mnSave"/>
+    <addaction name="mnSaveAs"/>
+    <addaction name="mnSaveAll"/>
     <addaction name="separator"/>
     <addaction name="action_10"/>
     <addaction name="separator"/>
@@ -352,17 +352,17 @@
     <string>Отрыть файлы</string>
    </property>
   </action>
-  <action name="action_6">
+  <action name="mnSave">
    <property name="text">
     <string>Сохранить</string>
    </property>
   </action>
-  <action name="action_7">
+  <action name="mnSaveAs">
    <property name="text">
     <string>Сохранить как</string>
    </property>
   </action>
-  <action name="action_8">
+  <action name="mnSaveAll">
    <property name="text">
     <string>Сохранить все</string>
    </property>
