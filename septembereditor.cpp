@@ -37,6 +37,18 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->mnZoomIn->setShortcut(QKeySequence::ZoomIn);
     ui->mnZoomOut->setShortcut(QKeySequence::ZoomOut);
 
+    ui->mnStatusBar->setCheckable(true);
+    ui->mnStatusBar->setChecked(true);
+    ui->mnFullScreen->setCheckable(true);
+    ui->mnFullScreen->setChecked(false);
+    ui->mnPathFile->setCheckable(true);
+    ui->mnPathFile->setChecked(false);
+    ui->mnStatusBar->setShortcut(Qt::ALT + Qt::Key_F5);
+    ui->mnPathFile->setShortcut(Qt::ALT + Qt::Key_F6);
+    ui->mnSettingKey->setShortcut(Qt::CTRL + Qt::ALT + Qt::Key_K);
+    ui->mnSettingSeptember->setShortcut(Qt::CTRL + Qt::ALT + Qt::Key_S);
+    ui->mnFullScreen->setShortcut(QKeySequence::FullScreen);
+
     this->connect(ui->btnCloseListFile,     &QPushButton::clicked, this, &SeptemberEditor::closeOrShowListFile);
     this->connect(ui->btnSearchAndReplace,  &QPushButton::clicked, this, &SeptemberEditor::closeOrShowWidgetSearchAndReplace);
     this->connect(ui->btnCreateWidget,      &QPushButton::clicked, this, &SeptemberEditor::closeOrShowCreateWidget);
@@ -58,6 +70,13 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnZoomIn,     &QAction::triggered, ui->plainTextEdit, &CoreEditor::zoomDocIn);
     this->connect(ui->mnZoomOut,    &QAction::triggered, ui->plainTextEdit, &CoreEditor::zoomDocOut);
     this->connect(ui->mnLineWrap,   &QAction::triggered, this, &SeptemberEditor::lineWrap);
+    this->connect(ui->mnFullScreen, &QAction::triggered, this, &SeptemberEditor::fullScreen);
+    this->connect(ui->mnStatusBar,  &QAction::triggered, std::bind(&QLabel::setVisible, ui->lblStatusBar, std::placeholders::_1));
+    this->connect(ui->mnPathFile,   &QAction::triggered, this, &SeptemberEditor::pathFile);
+    this->connect(ui->mnSettingKey, &QAction::triggered, m_settingKey, &SettingKey::show);
+    this->connect(ui->mnSettingSeptember, &QAction::triggered, m_settingSeptember, &SettingSeptember::show);
+    this->connect(ui->plainTextEdit,      &CoreEditor::cursorPositionChanged, this, &SeptemberEditor::setStatusBar);
+    this->setWindowTitle("Безымянный -- September");
 }
 
 SeptemberEditor::~SeptemberEditor()
@@ -199,6 +218,8 @@ void SeptemberEditor::openFile()
         ui->plainTextEdit->setTextCursor(cursorFirst);
         ui->plainTextEdit->checkingCodeQss();
         ui->plainTextEdit->blockCount();
+        m_fileInfo.setFile(path);
+        pathFile(m_visiblePathFile);
     }
     file.close();
 }
@@ -209,4 +230,36 @@ void SeptemberEditor::lineWrap(bool trigger)
         ui->plainTextEdit->setLineWrapMode(QPlainTextEdit::WidgetWidth);
     else
         ui->plainTextEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
+}
+
+void SeptemberEditor::fullScreen(bool trigger)
+{
+    if(trigger)
+        this->showFullScreen();
+    else
+        this->showMaximized();
+}
+
+void SeptemberEditor::pathFile(bool trigger)
+{
+    m_visiblePathFile = trigger;
+    if(!m_fileInfo.isFile())
+    {
+        this->setWindowTitle("Безымянный -- September");
+        return;
+    }
+
+    if(trigger)
+        this->setWindowTitle(m_fileInfo.filePath() + " -- September");
+    else
+        this->setWindowTitle(m_fileInfo.fileName() + " -- September");
+}
+
+void SeptemberEditor::setStatusBar()
+{
+    QTextCursor currentCursor = ui->plainTextEdit->textCursor();
+    ui->lblStatusBar->setText(QString("Строка: %1 из %2 Столбец: %3")
+                                .arg(QString::number(currentCursor.blockNumber() + 1))
+                                .arg(QString::number(ui->plainTextEdit->blockCount()))
+                                .arg(QString::number(currentCursor.positionInBlock() + 1)));
 }

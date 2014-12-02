@@ -22,7 +22,9 @@ SOURCES += main.cpp\
     assistant/coreEditor/highlighter.cpp \
     assistant/graphicswidget.cpp \
     assistant/coreEditor/observercodeqss.cpp \
-    assistant/splitter.cpp
+    assistant/splitter.cpp \
+    setting/settingkey.cpp \
+    setting/settingseptember.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \
@@ -34,12 +36,16 @@ HEADERS  += septembereditor.h \
     assistant/graphicswidget.h \
     assistant/keywords.h \
     assistant/coreEditor/observercodeqss.h \
-    assistant/splitter.h
+    assistant/splitter.h \
+    setting/settingkey.h \
+    setting/settingseptember.h
 
 FORMS    += septembereditor.ui \
     widgetstyle.ui \
     widgetuistyle.ui \
-    searchandreplace.ui
+    searchandreplace.ui \
+    setting/settingkey.ui \
+    setting/settingseptember.ui
 
 RESOURCES += \
     qssKeyWords/resource.qrc

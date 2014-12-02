@@ -1,6 +1,8 @@
 #ifndef SEPTEMBEREDITOR_H
 #define SEPTEMBEREDITOR_H
 
+#include "setting/settingkey.h"
+#include "setting/settingseptember.h"
 #include <QMainWindow>
 #include <QString>
 #include <QWidget>
@@ -14,6 +16,7 @@
 #include <QFile>
 #include <QIODevice>
 #include <functional>
+#include <QString>
 
 namespace Ui {
 class SeptemberEditor;
@@ -33,6 +36,9 @@ private slots:
     void closeOrShowOpenUI();
     void openFile();
     void lineWrap(bool trigger);
+    void fullScreen(bool trigger);
+    void pathFile(bool trigger);
+    void setStatusBar();
 
 private:
     struct ClickedButton
@@ -42,7 +48,11 @@ private:
         bool openUI             = false;
     };
     Ui::SeptemberEditor         *ui = nullptr;
+    SettingKey                  *m_settingKey       = new SettingKey(this);
+    SettingSeptember            *m_settingSeptember = new SettingSeptember(this);
     ClickedButton               m_clickedButton;
+    QFileInfo                   m_fileInfo;
+    bool                        m_visiblePathFile   = false;
 };
 
 #endif // SEPTEMBEREDITOR_H
