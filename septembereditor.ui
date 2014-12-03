@@ -78,171 +78,161 @@
      </widget>
     </item>
     <item row="1" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QPushButton" name="btnCloseListFile">
-          <property name="minimumSize">
-           <size>
-            <width>20</width>
-            <height>100</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>20</width>
-            <height>100</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <kerning>false</kerning>
-           </font>
-          </property>
-          <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
-          </property>
-          <property name="contextMenuPolicy">
-           <enum>Qt::DefaultContextMenu</enum>
-          </property>
-          <property name="acceptDrops">
-           <bool>false</bool>
-          </property>
-          <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
-          </property>
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
-          <property name="inputMethodHints">
-           <set>Qt::ImhNone</set>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="autoRepeat">
-           <bool>false</bool>
-          </property>
-          <property name="autoExclusive">
-           <bool>false</bool>
-          </property>
-          <property name="autoDefault">
-           <bool>false</bool>
-          </property>
-          <property name="default">
-           <bool>false</bool>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>258</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QListWidget" name="listDocument">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QPushButton" name="btnCloseListFile">
         <property name="minimumSize">
          <size>
-          <width>120</width>
-          <height>0</height>
+          <width>20</width>
+          <height>100</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>120</width>
-          <height>16777215</height>
+          <width>20</width>
+          <height>100</height>
          </size>
         </property>
+        <property name="font">
+         <font>
+          <kerning>false</kerning>
+         </font>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::DefaultContextMenu</enum>
+        </property>
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhNone</set>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="autoRepeat">
+         <bool>false</bool>
+        </property>
+        <property name="autoExclusive">
+         <bool>false</bool>
+        </property>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
+        <property name="default">
+         <bool>false</bool>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
        </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>258</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>
     <item row="1" column="1">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="Splitter" name="splitter">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <widget class="CoreEditor" name="plainTextEdit"/>
-        <widget class="QWidget" name="layoutWidget">
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <widget class="Splitter" name="splitterList">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QListWidget" name="listDocument">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QWidget" name="">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="Splitter" name="splitterEdit">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <widget class="CoreEditor" name="plainTextEdit"/>
+          <widget class="QWidget" name="layoutWidget">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="WidgetStyle" name="widgetCreateWidget" native="true"/>
+            </item>
+            <item>
+             <widget class="WidgetUiStyle" name="widgetOpenUI" native="true"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblStatusBar">
+          <property name="text">
+           <string>Строка: 1 из 1 Столбец: 1</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="SearchAndReplace" name="widgetSearchAndReplace" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <zorder>splitterEdit</zorder>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="WidgetStyle" name="widgetCreateWidget" native="true"/>
+           <widget class="QPushButton" name="btnSearchAndReplace">
+            <property name="text">
+             <string>Поиск и замена</string>
+            </property>
+           </widget>
           </item>
           <item>
-           <widget class="WidgetUiStyle" name="widgetOpenUI" native="true"/>
+           <widget class="QPushButton" name="btnCreateWidget">
+            <property name="text">
+             <string>Widget</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnOpenUi">
+            <property name="text">
+             <string>UI</string>
+            </property>
+           </widget>
           </item>
          </layout>
-        </widget>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="lblStatusBar">
-        <property name="text">
-         <string>Строка: 1 из 1 Столбец: 1</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="SearchAndReplace" name="widgetSearchAndReplace" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <widget class="QPushButton" name="btnSearchAndReplace">
-          <property name="text">
-           <string>Поиск и замена</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnCreateWidget">
-          <property name="text">
-           <string>Widget</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnOpenUi">
-          <property name="text">
-           <string>UI</string>
-          </property>
-         </widget>
         </item>
        </layout>
-      </item>
-     </layout>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>

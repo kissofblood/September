@@ -6,6 +6,9 @@ Splitter::Splitter(QWidget* parent) : QSplitter(parent)
 void Splitter::setHeight(int h)
 { this->moveSplitter(h, 1); }
 
+void Splitter::setWidth(int w)
+{ this->moveSplitter(w, 1); }
+
 void Splitter::setVisibleHandle(bool value)
 {
     if(value)
