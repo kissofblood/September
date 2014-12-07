@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1005</width>
-    <height>559</height>
+    <width>828</width>
+    <height>416</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -156,10 +156,22 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QListWidget" name="listDocument">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
+      <widget class="QWidget" name="">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="ListFileView" name="fileListView">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="TreeFileView" name="fileTreeView"/>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="">
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -168,8 +180,14 @@
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <widget class="CoreEditor" name="plainTextEdit"/>
-          <widget class="QWidget" name="layoutWidget">
+          <widget class="QWidget" name="horizontalLayoutWidget">
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <widget class="CoreEditor" name="plainTextEdit"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
              <widget class="WidgetStyle" name="widgetCreateWidget" native="true"/>
@@ -179,13 +197,6 @@
             </item>
            </layout>
           </widget>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="lblStatusBar">
-          <property name="text">
-           <string>Строка: 1 из 1 Столбец: 1</string>
-          </property>
          </widget>
         </item>
         <item>
@@ -202,7 +213,13 @@
             <height>16777215</height>
            </size>
           </property>
-          <zorder>splitterEdit</zorder>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblStatusBar">
+          <property name="text">
+           <string>Строка: 1 из 1 Столбец: 1</string>
+          </property>
          </widget>
         </item>
         <item>
@@ -241,7 +258,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1005</width>
+     <width>828</width>
      <height>23</height>
     </rect>
    </property>
@@ -249,7 +266,7 @@
     <property name="title">
      <string>Файл</string>
     </property>
-    <addaction name="mnNew"/>
+    <addaction name="mnNewFile"/>
     <addaction name="separator"/>
     <addaction name="mnOpen"/>
     <addaction name="action_4"/>
@@ -288,7 +305,7 @@
      <property name="title">
       <string>Показать</string>
      </property>
-     <addaction name="mnListDocument"/>
+     <addaction name="mnListFile"/>
      <addaction name="mnCreateWidget"/>
      <addaction name="mnOpenUi"/>
     </widget>
@@ -327,7 +344,7 @@
    <addaction name="menu_3"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="mnNew">
+  <action name="mnNewFile">
    <property name="text">
     <string>Создать</string>
    </property>
@@ -432,7 +449,7 @@
     <string>Следующий документ</string>
    </property>
   </action>
-  <action name="mnListDocument">
+  <action name="mnListFile">
    <property name="text">
     <string>Показать &quot;Список документов&quot;</string>
    </property>
@@ -523,6 +540,16 @@
    <extends>QSplitter</extends>
    <header>assistant/splitter.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ListFileView</class>
+   <extends>QListView</extends>
+   <header>assistant/fileView/listfileview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TreeFileView</class>
+   <extends>QTreeView</extends>
+   <header>assistant/fileView/treefileview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

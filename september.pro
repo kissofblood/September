@@ -24,7 +24,10 @@ SOURCES += main.cpp\
     assistant/coreEditor/observercodeqss.cpp \
     assistant/splitter.cpp \
     setting/settingkey.cpp \
-    setting/settingseptember.cpp
+    setting/settingseptember.cpp \
+    assistant/fileView/listfileview.cpp \
+    assistant/fileView/treefileview.cpp \
+    assistant/fileView/listfilemodel.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \
@@ -34,11 +37,14 @@ HEADERS  += septembereditor.h \
     assistant/coreEditor/coreeditor.h \
     assistant/coreEditor/highlighter.h \
     assistant/graphicswidget.h \
-    assistant/keywords.h \
     assistant/coreEditor/observercodeqss.h \
     assistant/splitter.h \
     setting/settingkey.h \
-    setting/settingseptember.h
+    setting/settingseptember.h \
+    assistant/fileView/listfileview.h \
+    assistant/fileView/treefileview.h \
+    assistant/common.h \
+    assistant/fileView/listfilemodel.h
 
 FORMS    += septembereditor.ui \
     widgetstyle.ui \

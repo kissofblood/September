@@ -1,7 +1,7 @@
 #ifndef COREEDITOR_H
 #define COREEDITOR_H
 
-#include "assistant/keywords.h"
+#include "assistant/common.h"
 #include "highlighter.h"
 #include "observercodeqss.h"
 #include <QWidget>

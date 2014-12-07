@@ -9,7 +9,7 @@ void Splitter::setHeight(int h)
 void Splitter::setWidth(int w)
 { this->moveSplitter(w, 1); }
 
-void Splitter::setVisibleHandle(bool value)
+void Splitter::setVisibleHeightHandle(bool value)
 {
     if(value)
     {
@@ -19,7 +19,25 @@ void Splitter::setVisibleHandle(bool value)
     }
     else
     {
+        qDebug()<<this->size();
         this->moveSplitter(this->size().height(), 0);
+        this->setHandleWidth(0);
+        this->handle(1)->setCursor(Qt::ArrowCursor);
+        this->handle(1)->setEnabled(false);
+    }
+}
+
+void Splitter::setVisibleWidthHandle(bool value)
+{
+    if(value)
+    {
+        this->setHandleWidth(10);
+        this->handle(1)->setCursor(Qt::SplitHCursor);
+        this->handle(1)->setEnabled(true);
+    }
+    else
+    {
+        this->moveSplitter(0, 1);
         this->setHandleWidth(0);
         this->handle(1)->setCursor(Qt::ArrowCursor);
         this->handle(1)->setEnabled(false);

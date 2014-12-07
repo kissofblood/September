@@ -48,6 +48,7 @@ void SearchAndReplace::clearResultSearch()
 
 void SearchAndReplace::searchText()
 {
+    m_editor = this->parent()->findChild<CoreEditor*>();
     m_editor->clearSelectTextSearch();
     QString textSearch = ui->editSearch->text();
     clearTextCharFormatUndo();

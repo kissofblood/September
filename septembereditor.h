@@ -3,6 +3,7 @@
 
 #include "setting/settingkey.h"
 #include "setting/settingseptember.h"
+#include "assistant/fileView/listfilemodel.h"
 #include <QMainWindow>
 #include <QString>
 #include <QWidget>
@@ -17,6 +18,7 @@
 #include <QIODevice>
 #include <functional>
 #include <QString>
+#include <QDirModel>
 
 namespace Ui {
 class SeptemberEditor;
@@ -41,6 +43,11 @@ private slots:
     void setStatusBar();
     void saveFile();
     void saveFileAs();
+    void newFile(const QString& name = "Безымянный");
+    void switchTreeFileView();
+    void switchListFileView();
+    void closeFile(int row);
+    void selectFile(const QModelIndex& index);
 
 private:
     struct ClickedButton
@@ -49,9 +56,10 @@ private:
         bool createWidget       = false;
         bool openUI             = false;
     };
-    Ui::SeptemberEditor         *ui = nullptr;
+    Ui::SeptemberEditor         *ui                 = nullptr;
     SettingKey                  *m_settingKey       = new SettingKey(this);
     SettingSeptember            *m_settingSeptember = new SettingSeptember(this);
+    ListFileModel               *m_listModel        = new ListFileModel(this);
     ClickedButton               m_clickedButton;
     QFileInfo                   m_fileInfo;
     bool                        m_visiblePathFile   = false;

@@ -1,7 +1,7 @@
 #ifndef WIDGETSTYLE_H
 #define WIDGETSTYLE_H
 
-#include "assistant/keywords.h"
+#include "assistant/common.h"
 #include "assistant/graphicswidget.h"
 #include "assistant/coreEditor/coreeditor.h"
 #include <QWidget>
@@ -22,6 +22,8 @@ public:
     ~WidgetStyle() override;
 
     void setFocusLineEdit();
+    QGraphicsScene* getScene() const;
+    void setScene(QGraphicsScene* scene);
 
 private slots:
     void filterListWidget();

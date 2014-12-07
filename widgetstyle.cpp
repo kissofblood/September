@@ -6,7 +6,7 @@ WidgetStyle::WidgetStyle(QWidget* parent) : QWidget(parent),
     m_editor(parent->parent()->findChild<CoreEditor*>())
 {
     ui->setupUi(this);
-    for(auto& str : KeyWords::keyWordsFromFile("listOfStylableWidgets"))
+    for(auto& str : Common::keyWordsFromFile("listOfStylableWidgets"))
         if(str != "QAbstractScrollArea" && str != "QColumnView" && str != "QDialogButtonBox"
            && str != "QHeaderView" && str != "QMessageBox" && str != "QSizeGrip"
             && str != "QStatusBar" && str != "QTabBar" && str != "QToolBar"
@@ -32,6 +32,18 @@ WidgetStyle::~WidgetStyle()
 void WidgetStyle::setFocusLineEdit()
 { ui->lineEdit->setFocus(); }
 
+QGraphicsScene* WidgetStyle::getScene() const
+{ return m_scene; }
+
+void WidgetStyle::setScene(QGraphicsScene* scene)
+{
+    if(scene != m_scene)
+    {
+        m_scene = dynamic_cast<WidgetScene*>(scene);
+        m_scene->update();
+    }
+}
+
 void WidgetStyle::filterListWidget()
 {
     QString text = ui->lineEdit->text();
@@ -46,6 +58,7 @@ void WidgetStyle::filterListWidget()
 
 void WidgetStyle::selectWidget()
 {
+    m_editor = this->parent()->parent()->findChild<CoreEditor*>();
     QListWidgetItem* item = ui->listWidget->currentItem();
     if(item == nullptr)
         return;

@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QSplitter>
 
+#include <QDebug>
 class Splitter : public QSplitter
 {
 public:
@@ -12,7 +13,8 @@ public:
 
     void setHeight(int h);
     void setWidth(int w);
-    void setVisibleHandle(bool value);
+    void setVisibleHeightHandle(bool value);
+    void setVisibleWidthHandle(bool value);
 };
 
 #endif // SPLITTER_H

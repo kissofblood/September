@@ -4,11 +4,11 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
     , m_lineColor(26, 21, 21)
     , m_otherTextColor(170, 170, 170)
 {
-    QStringList properties = KeyWords::keyWordsFromFile("listOfProperties") + KeyWords::keyWordsFromFile("listOfIcons");
-    QStringList pseudo = KeyWords::keyWordsFromFile("listOfPseudo-States");
-    QStringList widgets =  KeyWords::keyWordsFromFile("listOfStylableWidgets");
-    QStringList sub = KeyWords::keyWordsFromFile("listOfSub-Controls");
-    QStringList other = KeyWords::keyWordsFromFile("other");
+    QStringList properties = Common::keyWordsFromFile("listOfProperties") + Common::keyWordsFromFile("listOfIcons");
+    QStringList pseudo = Common::keyWordsFromFile("listOfPseudo-States");
+    QStringList widgets =  Common::keyWordsFromFile("listOfStylableWidgets");
+    QStringList sub = Common::keyWordsFromFile("listOfSub-Controls");
+    QStringList other = Common::keyWordsFromFile("other");
     m_highlighter = new Highlighter(properties, pseudo, widgets, sub, other, this->document());
     m_observerCode = new ObserverCodeQss(properties, pseudo, widgets, sub, other, this);
     m_completer->setWidget(this);
@@ -36,6 +36,7 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
     this->connect(this, &QPlainTextEdit::textChanged, this, [this]()
     { emit updateStyleSheet(this->document()->toPlainText()); });
     this->setFocus();
+    this->setObjectName("plainTextEdit");
 
     updateLineNumberAreaWidth();
     highlightCurrentLine();
