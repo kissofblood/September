@@ -68,31 +68,23 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnSave,           &QAction::triggered,    this, &SeptemberEditor::saveFile);
     this->connect(ui->mnSaveAs,         &QAction::triggered,    this, &SeptemberEditor::saveFileAs);
     this->connect(ui->mnQuit,           &QAction::triggered,    qApp, &QApplication::quit);
-    this->connect(ui->mnUndo,           &QAction::triggered,    ui->plainTextEdit, &CoreEditor::undo);
-    this->connect(ui->mnRedo,           &QAction::triggered,    ui->plainTextEdit, &CoreEditor::redo);
-    this->connect(ui->mnCut,            &QAction::triggered,    ui->plainTextEdit, &CoreEditor::cut);
-    this->connect(ui->mnCopy,           &QAction::triggered,    ui->plainTextEdit, &CoreEditor::copy);
-    this->connect(ui->mnPaste,          &QAction::triggered,    ui->plainTextEdit, &CoreEditor::paste);
-    this->connect(ui->mnSelectAll,      &QAction::triggered,    ui->plainTextEdit, &CoreEditor::selectAll);
     this->connect(ui->mnSearchReplace,  &QAction::triggered,    this, &SeptemberEditor::closeOrShowWidgetSearchAndReplace);
     this->connect(ui->mnListFile,     &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowListFile, this));
     this->connect(ui->mnCreateWidget, &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowCreateWidget, this));
     this->connect(ui->mnOpenUi,       &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowOpenUI, this));
-    this->connect(ui->mnNumberLine,   &QAction::triggered, ui->plainTextEdit, &CoreEditor::setVisibleLineNimberArea);
-    this->connect(ui->mnZoomIn,     &QAction::triggered, ui->plainTextEdit, &CoreEditor::zoomDocIn);
-    this->connect(ui->mnZoomOut,    &QAction::triggered, ui->plainTextEdit, &CoreEditor::zoomDocOut);
     this->connect(ui->mnLineWrap,   &QAction::triggered, this, &SeptemberEditor::lineWrap);
     this->connect(ui->mnFullScreen, &QAction::triggered, this, &SeptemberEditor::fullScreen);
     this->connect(ui->mnStatusBar,  &QAction::triggered, std::bind(&QLabel::setVisible, ui->lblStatusBar, std::placeholders::_1));
     this->connect(ui->mnPathFile,   &QAction::triggered, this, &SeptemberEditor::pathFile);
     this->connect(ui->mnSettingKey, &QAction::triggered, m_settingKey, &SettingKey::show);
     this->connect(ui->mnSettingSeptember, &QAction::triggered, m_settingSeptember, &SettingSeptember::show);
-    this->connect(ui->plainTextEdit,      &CoreEditor::cursorPositionChanged, this, &SeptemberEditor::setStatusBar);
     this->connect(ui->fileListView, &ListFileView::switchTree, this, &SeptemberEditor::switchTreeFileView);
     this->connect(ui->fileTreeView, &TreeFileView::switchList, this, &SeptemberEditor::switchListFileView);
     this->connect(ui->fileListView, &ListFileView::clickedCloseFile, this, &SeptemberEditor::closeFile);
     this->connect(ui->fileListView, &ListFileView::clicked, this, &SeptemberEditor::selectFile);
     this->setWindowTitle("Безымянный1 -- September");
+
+    connectionCoreEditor(ui->plainTextEdit);
 }
 
 SeptemberEditor::~SeptemberEditor()
@@ -350,9 +342,9 @@ void SeptemberEditor::newFile(const QString& name)
     static int count = 2;
     CoreEditor* editor = new CoreEditor(this);
     if(name == "Безымянный")
-        m_listModel->addItem("Безымянный " + QString::number(count++), editor, ui->widgetCreateWidget->getScene(), nullptr);
+        m_listModel->addItem("Безымянный " + QString::number(count++), editor, ui->widgetCreateWidget->createScene(), nullptr);
     else
-        m_listModel->addItem(name, editor, ui->widgetCreateWidget->getScene(), nullptr);
+        m_listModel->addItem(name, editor, ui->widgetCreateWidget->createScene(), nullptr);
     ui->fileListView->setCurrentIndex(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
     selectFile(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
 }
@@ -376,12 +368,12 @@ void SeptemberEditor::closeFile(int row)
     CoreEditor* coreEditor      = nullptr;
     if(m_listModel->rowCount() == 1)
     {
-        std::tie(coreEditor, sceneStyle, sceneUI) = m_listModel->getItem(0);
+        std::tie(coreEditor, sceneStyle, sceneUI) = m_listModel->getItem(row);
         ui->plainTextEdit = new CoreEditor;
+        connectionCoreEditor(ui->plainTextEdit);
+        ui->widgetCreateWidget->setScene(ui->widgetCreateWidget->createScene());
         ui->horizontalLayout_8->removeWidget(coreEditor);
         ui->horizontalLayout_8->addWidget(ui->plainTextEdit);
-        m_listModel->removeRow(row);
-        coreEditor->deleteLater();
         m_listModel->addItem("Безымянный 1", ui->plainTextEdit, ui->widgetCreateWidget->getScene(), nullptr);
     }
     else
@@ -392,9 +384,10 @@ void SeptemberEditor::closeFile(int row)
             selectFile(m_listModel->getModelIndex(row + 1));
         else if(index != -1)
             selectFile(m_listModel->getModelIndex(row - 1));
-        m_listModel->removeItem(row);
-        coreEditor->deleteLater();
     }
+    m_listModel->removeItem(row);
+    coreEditor->deleteLater();
+    sceneStyle->deleteLater();
 }
 
 void SeptemberEditor::selectFile(const QModelIndex& index)
@@ -406,10 +399,28 @@ void SeptemberEditor::selectFile(const QModelIndex& index)
     if(select == ui->plainTextEdit)
         return;
     ui->horizontalLayout_8->removeWidget(ui->plainTextEdit);
+    for(auto& dis : m_connectionCoreEditor) this->disconnect(dis);
+    m_connectionCoreEditor.clear();
+
     ui->plainTextEdit->setParent(this);
     ui->plainTextEdit = select;
     ui->horizontalLayout_8->addWidget(ui->plainTextEdit);
     ui->plainTextEdit->setFocus();
     ui->widgetCreateWidget->setScene(sceneStyle);
+    connectionCoreEditor(ui->plainTextEdit);
 }
 
+void SeptemberEditor::connectionCoreEditor(CoreEditor* coreEditor)
+{
+    m_connectionCoreEditor.push_back(this->connect(ui->mnUndo,           &QAction::triggered,    coreEditor, &CoreEditor::undo));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnRedo,           &QAction::triggered,    coreEditor, &CoreEditor::redo));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnCut,            &QAction::triggered,    coreEditor, &CoreEditor::cut));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnCopy,           &QAction::triggered,    coreEditor, &CoreEditor::copy));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnPaste,          &QAction::triggered,    coreEditor, &CoreEditor::paste));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnSelectAll,      &QAction::triggered,    coreEditor, &CoreEditor::selectAll));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnZoomIn,         &QAction::triggered, coreEditor, &CoreEditor::zoomDocIn));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnZoomOut,        &QAction::triggered, coreEditor, &CoreEditor::zoomDocOut));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnNumberLine,     &QAction::triggered, coreEditor, &CoreEditor::setVisibleLineNimberArea));
+    m_connectionCoreEditor.push_back(this->connect(coreEditor,   &CoreEditor::cursorPositionChanged, this, &SeptemberEditor::setStatusBar));
+    m_connectionCoreEditor.push_back(this->connect(coreEditor,   &CoreEditor::updateStyleSheet, ui->widgetCreateWidget, &WidgetStyle::setStyleSheetWidget));
+}

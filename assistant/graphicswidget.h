@@ -19,14 +19,17 @@
 #include <QColor>
 #include <QString>
 
+#include <QDebug>
 class GraphicsWidget : public QGraphicsItem
 {
 public:
+    explicit GraphicsWidget(QGraphicsItem* parent = nullptr);
     GraphicsWidget(QWidget* wgt, const QPointF& point, QGraphicsItem* parent = nullptr);
     ~GraphicsWidget() override;
 
     QRectF boundingRect() const override;
     bool contains(const QPointF& point) const override;
+    bool containsWidget(const QPointF& point) const;
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = nullptr) override;
     void selectWidget(bool value);
     QRectF boundingRectToScene();

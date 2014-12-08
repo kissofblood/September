@@ -62,7 +62,10 @@ private:
     ListFileModel               *m_listModel        = new ListFileModel(this);
     ClickedButton               m_clickedButton;
     QFileInfo                   m_fileInfo;
+    QVector<QMetaObject::Connection> m_connectionCoreEditor;
     bool                        m_visiblePathFile   = false;
+
+    void connectionCoreEditor(CoreEditor* coreEditor);
 };
 
 #endif // SEPTEMBEREDITOR_H

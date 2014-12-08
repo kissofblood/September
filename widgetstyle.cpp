@@ -2,8 +2,7 @@
 #include "ui_widgetstyle.h"
 
 WidgetStyle::WidgetStyle(QWidget* parent) : QWidget(parent),
-    ui(new Ui::WidgetStyle),
-    m_editor(parent->parent()->findChild<CoreEditor*>())
+    ui(new Ui::WidgetStyle)
 {
     ui->setupUi(this);
     for(auto& str : Common::keyWordsFromFile("listOfStylableWidgets"))
@@ -18,12 +17,12 @@ WidgetStyle::WidgetStyle(QWidget* parent) : QWidget(parent),
         }
 
     ui->view->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    ui->view->setScene(m_scene);
 
     this->connect(ui->lineEdit,     &QLineEdit::textChanged,    this, &WidgetStyle::filterListWidget);
     this->connect(ui->btnAddWidget, &QPushButton::clicked,      this, &WidgetStyle::selectWidget);
     this->connect(ui->btnWidgetRemove, &QPushButton::clicked,   this, &WidgetStyle::deleteWidget);
     this->connect(ui->btnClear,     &QPushButton::clicked,      this, &WidgetStyle::clearScene);
-    this->connect(m_editor, &CoreEditor::updateStyleSheet, this, &WidgetStyle::setStyleSheetWidget);
 }
 
 WidgetStyle::~WidgetStyle()
@@ -35,13 +34,17 @@ void WidgetStyle::setFocusLineEdit()
 QGraphicsScene* WidgetStyle::getScene() const
 { return m_scene; }
 
+QGraphicsScene* WidgetStyle::createScene()
+{
+    m_scene = new WidgetScene(0, 0, 5000, 5000, this);
+    return m_scene;
+}
+
 void WidgetStyle::setScene(QGraphicsScene* scene)
 {
-    if(scene != m_scene)
-    {
-        m_scene = dynamic_cast<WidgetScene*>(scene);
-        m_scene->update();
-    }
+    m_scene = static_cast<WidgetScene*>(scene);
+    ui->view->setScene(m_scene);
+    m_deleteGraphicsWgt_.clear();
 }
 
 void WidgetStyle::filterListWidget()
@@ -58,21 +61,21 @@ void WidgetStyle::filterListWidget()
 
 void WidgetStyle::selectWidget()
 {
-    m_editor = this->parent()->parent()->findChild<CoreEditor*>();
+    CoreEditor* coreEditor = this->parent()->parent()->findChild<CoreEditor*>();
+    if(coreEditor != m_editor)
+    {
+        m_editor = coreEditor;
+        this->connect(m_editor, &CoreEditor::updateStyleSheet, this, &WidgetStyle::setStyleSheetWidget);
+    }
     QListWidgetItem* item = ui->listWidget->currentItem();
     if(item == nullptr)
         return;
     QWidget* widget = createWidget(item->text());
-    if(m_scene == nullptr)
-    {
-        m_scene = new WidgetScene(0, 0, 5000, 5000, this);
-        ui->view->setScene(m_scene);
-    }
-
     QPointF visibleTopLeft = ui->view->mapToScene(ui->view->viewport()->geometry()).boundingRect().topLeft();
-    m_graphicsWgt_.push_back(new GraphicsWidget(widget, visibleTopLeft));
-    m_graphicsWgt_.back()->setStyleSheet(m_editor->document()->toPlainText());
-    m_scene->addItem(m_graphicsWgt_.back());
+    GraphicsWidget* wgt = new GraphicsWidget(widget, visibleTopLeft);
+    wgt->setStyleSheet(m_editor->document()->toPlainText());
+    m_scene->addItem(wgt);
+    m_scene->addItemWidget(wgt);
 }
 
 void WidgetStyle::deleteWidget()
@@ -80,21 +83,25 @@ void WidgetStyle::deleteWidget()
     for(GraphicsWidget* wgt : m_deleteGraphicsWgt_)
     {
         m_scene->removeItem(wgt);
-        m_graphicsWgt_.erase(qFind(m_graphicsWgt_.begin(), m_graphicsWgt_.end(), wgt));
-        delete wgt;
+        delete m_scene->removeWidget(wgt);
     }
     m_deleteGraphicsWgt_.clear();
 }
 
 void WidgetStyle::clearScene()
 {
-    m_scene->deleteLater();
-    m_scene = nullptr;
-    m_graphicsWgt_.clear();
+    m_scene->clear();
+    m_scene->clearWidget();
+    m_deleteGraphicsWgt_.clear();
 }
 
 void WidgetStyle::setStyleSheetWidget(const QString& style)
-{ std::for_each(m_graphicsWgt_.begin(), m_graphicsWgt_.end(), std::bind(&GraphicsWidget::setStyleSheet, std::placeholders::_1, style)); }
+{
+    if(style.isEmpty())
+        return;
+    for(GraphicsWidget* wgt : m_scene->getItemWidget())
+        wgt->setStyleSheet(style);
+}
 
 QWidget* WidgetStyle::createWidget(const QString& name)
 {
@@ -389,7 +396,7 @@ QWidget* WidgetStyle::setLayoutWidget(const QVector<QWidget*>& vecWgt, const QSi
 void WidgetStyle::distinguishRect(const QRectF& rect)
 {
     m_deleteGraphicsWgt_.clear();
-    for(GraphicsWidget* wgt : m_graphicsWgt_)
+    for(GraphicsWidget* wgt : m_scene->getItemWidget())
     {
         if(rect.intersects(wgt->boundingRectToScene()))
         {
@@ -408,15 +415,33 @@ void WidgetStyle::distinguishRect(const QRectF& rect)
 
 bool WidgetStyle::containsWidget(const QPointF& point)
 {
-    for(GraphicsWidget* wgt : m_graphicsWgt_)
+    for(GraphicsWidget* wgt : m_scene->getItemWidget())
         if(wgt->contains(point))
             return true;
     return false;
 }
 
 WidgetStyle::WidgetScene::WidgetScene(qreal x, qreal y, qreal widht, qreal height, WidgetStyle* parent) : QGraphicsScene(x, y, widht, height, parent)
-    , m_wgtStyle(parent)
+  , m_wgtStyle(parent)
 { }
+
+void WidgetStyle::WidgetScene::addItemWidget(GraphicsWidget* wgt)
+{ m_graphicsWgt_.push_back(wgt); }
+
+QList<GraphicsWidget*> WidgetStyle::WidgetScene::getItemWidget() const
+{ return m_graphicsWgt_; }
+
+GraphicsWidget* WidgetStyle::WidgetScene::removeWidget(GraphicsWidget* wgt)
+{
+    auto iter = qFind(m_graphicsWgt_.begin(), m_graphicsWgt_.end(), wgt);
+    if(iter == m_graphicsWgt_.end())
+        return nullptr;
+    m_graphicsWgt_.erase(iter);
+    return *iter;
+}
+
+void WidgetStyle::WidgetScene::clearWidget()
+{ m_graphicsWgt_.clear(); }
 
 void WidgetStyle::WidgetScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
