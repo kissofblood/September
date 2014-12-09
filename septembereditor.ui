@@ -40,7 +40,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="barBtnPrefFile">
+        <widget class="QPushButton" name="barBtnPrevFile">
          <property name="text">
           <string>Предыдущий документ</string>
          </property>
@@ -309,8 +309,8 @@
      <addaction name="mnCreateWidget"/>
      <addaction name="mnOpenUi"/>
     </widget>
-    <addaction name="action"/>
-    <addaction name="action_2"/>
+    <addaction name="mnNextFile"/>
+    <addaction name="mnPrevFile"/>
     <addaction name="separator"/>
     <addaction name="mnShowWidget"/>
     <addaction name="separator"/>
@@ -439,12 +439,12 @@
     <string>Поиск/замена</string>
    </property>
   </action>
-  <action name="action">
+  <action name="mnNextFile">
    <property name="text">
     <string>Предыдущий документ</string>
    </property>
   </action>
-  <action name="action_2">
+  <action name="mnPrevFile">
    <property name="text">
     <string>Следующий документ</string>
    </property>

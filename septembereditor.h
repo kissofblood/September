@@ -50,6 +50,8 @@ private slots:
     void selectFile(const QModelIndex& index);
     void closeFileOther();
     void closeFileAll();
+    void nextFile();
+    void prevFile();
 
 private:
     struct ClickedButton

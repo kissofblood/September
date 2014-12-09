@@ -43,6 +43,8 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->mnListFile->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Q);
     ui->mnCreateWidget->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_W);
     ui->mnOpenUi->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_E);
+    ui->mnNextFile->setShortcut(Qt::ALT + Qt::Key_Right);
+    ui->mnPrevFile->setShortcut(Qt::ALT + Qt::Key_Left);
     ui->mnZoomIn->setShortcut(QKeySequence::ZoomIn);
     ui->mnZoomOut->setShortcut(QKeySequence::ZoomOut);
 
@@ -66,6 +68,8 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->barBtnOpenFile,       &QPushButton::clicked, this, &SeptemberEditor::openFile);
     this->connect(ui->barBtnSaveFile,       &QPushButton::clicked, this, &SeptemberEditor::saveFile);
     this->connect(ui->barBtnSaveAsFile,     &QPushButton::clicked, this, &SeptemberEditor::saveFileAs);
+    this->connect(ui->barBtnNextFile,       &QPushButton::clicked, this, &SeptemberEditor::nextFile);
+    this->connect(ui->barBtnPrevFile,       &QPushButton::clicked, this, &SeptemberEditor::prevFile);
     this->connect(ui->mnNewFile,        &QAction::triggered,    this, std::bind(&SeptemberEditor::newFile, this, "Безымянный"));
     this->connect(ui->mnOpen,           &QAction::triggered,    this, &SeptemberEditor::openFile);
     this->connect(ui->mnSave,           &QAction::triggered,    this, &SeptemberEditor::saveFile);
@@ -76,6 +80,8 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
         if(row != -1)
             closeFile(row);
     });
+    this->connect(ui->mnNextFile,       &QAction::triggered,    this, &SeptemberEditor::nextFile);
+    this->connect(ui->mnPrevFile,       &QAction::triggered,    this, &SeptemberEditor::prevFile);
     this->connect(ui->mnCloseFileOther, &QAction::triggered,    this, &SeptemberEditor::closeFileOther);
     this->connect(ui->mnCloseFileAll,   &QAction::triggered,    this, &SeptemberEditor::closeFileAll);
     this->connect(ui->mnQuit,           &QAction::triggered,    qApp, &QApplication::quit);
@@ -356,7 +362,6 @@ void SeptemberEditor::newFile(const QString& name)
         m_listModel->addItem("Безымянный " + QString::number(++m_countUnnamedFile), editor, ui->widgetCreateWidget->createScene(), ui->widgetOpenUI->createBufferUi());
     else
         m_listModel->addItem(name, editor, ui->widgetCreateWidget->createScene(), ui->widgetOpenUI->createBufferUi());
-    ui->fileListView->setCurrentIndex(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
     selectFile(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
 }
 
@@ -423,15 +428,16 @@ void SeptemberEditor::selectFile(const QModelIndex& index)
     ui->plainTextEdit->setFocus();
     ui->widgetCreateWidget->setScene(sceneStyle);
     ui->widgetOpenUI->setBufferUi(bufferUI);
+    ui->fileListView->setCurrentIndex(index);
     connectionCoreEditor(ui->plainTextEdit);
 }
 
 void SeptemberEditor::closeFileOther()
 {
-    int row = ui->fileListView->currentIndex().row();
-    if(row != -1)
+    int currentRow = ui->fileListView->currentIndex().row();
+    if(currentRow != -1)
     {
-        CoreEditor* editor = std::get<0>(m_listModel->getItem(row));
+        CoreEditor* editor = std::get<0>(m_listModel->getItem(currentRow));
         forever
         {
             int rowCount = m_listModel->rowCount() - 1;
@@ -455,6 +461,38 @@ void SeptemberEditor::closeFileAll()
             closeFile(0);
     }
     closeFile(0);
+}
+
+void SeptemberEditor::nextFile()
+{
+    if(m_listModel->rowCount() == 1)
+        return;
+
+    int currentRow = ui->fileListView->currentIndex().row();
+    if(currentRow != -1)
+    {
+        currentRow += 1;
+        if(currentRow < m_listModel->rowCount())
+            selectFile(m_listModel->getModelIndex(currentRow));
+        else
+            selectFile(m_listModel->getModelIndex(0));
+    }
+}
+
+void SeptemberEditor::prevFile()
+{
+    if(m_listModel->rowCount() == 1)
+        return;
+
+    int currentRow = ui->fileListView->currentIndex().row();
+    if(currentRow != -1)
+    {
+        currentRow -= 1;
+        if(currentRow >= 0)
+            selectFile(m_listModel->getModelIndex(currentRow));
+        else
+            selectFile(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
+    }
 }
 
 void SeptemberEditor::connectionCoreEditor(CoreEditor* coreEditor)
