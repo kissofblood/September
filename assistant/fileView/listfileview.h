@@ -23,7 +23,6 @@ signals:
 
 private:
     QMenu       *m_menu     = nullptr;
-    QMenu       *m_menuList = nullptr;
 
     void contextMenuEvent(QContextMenuEvent* event) override;
 };

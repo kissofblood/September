@@ -201,13 +201,10 @@ std::string::iterator ObserverCodeQss::CheckingCodeQss::getIterator() const
 
 void ObserverCodeQss::CheckingCodeQss::compareCh(const char& ch)
 {
-    while(true)
+    forever
     {
         if(m_iterFirst == m_iterLast)
-        {
-            m_iterFirst = m_iterLast;
             break;
-        }
         else if(*m_iterFirst == ch)
             break;
         m_iterFirst += 1;
@@ -219,10 +216,7 @@ void ObserverCodeQss::CheckingCodeQss::compareStr(const std::string& str)
     for(std::size_t i = 0; i < str.length(); i++)
     {
         if(m_iterFirst == m_iterLast)
-        {
-            m_iterFirst = m_iterLast;
             break;
-        }
         else
             m_iterFirst += 1;
     }

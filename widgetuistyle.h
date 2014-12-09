@@ -4,16 +4,19 @@
 #include "assistant/coreEditor/coreeditor.h"
 #include <QWidget>
 #include <QDialog>
-#include <QPushButton>
 #include <QBuffer>
-#include <QtUiTools/QUiLoader>
-#include <QList>
-#include <QGraphicsItem>
-#include <QGraphicsProxyWidget>
-#include <QGraphicsScene>
 #include <QString>
-
-#include <QtWidgets>
+#include <QPushButton>
+#include <QGraphicsScene>
+#include <QFileDialog>
+#include <QFile>
+#include <QIODevice>
+#include <QHBoxLayout>
+#include <QBoxLayout>
+#include <QGraphicsProxyWidget>
+#include <QGraphicsItem>
+#include <QList>
+#include <QtUiTools/QUiLoader>
 
 namespace Ui {
 class WidgetUiStyle;
@@ -26,10 +29,16 @@ public:
     explicit WidgetUiStyle(QWidget* parent = nullptr);
     ~WidgetUiStyle() override;
 
+    QBuffer* getBufferUi() const;
+    QBuffer* createBufferUi();
+    void setBufferUi(QBuffer* buffer);
+
+public slots:
+    void setStyleSheetWidget(const QString& style);
+
 private slots:
     void openUI();
     void showFull();
-    void setStyleSheetWidget(const QString& style);
 
 private:
     class ShowFullWidgetUi : public QDialog
@@ -47,10 +56,12 @@ private:
     };
 
     Ui::WidgetUiStyle       *ui             = nullptr;
-    QGraphicsScene          *m_sceneView    = nullptr;
-    QBuffer                 *m_bufferUi     = nullptr;
+    QGraphicsScene          *m_scene        = new QGraphicsScene(this);
+    QBuffer                 *m_bufferUi     = new QBuffer(this);
     CoreEditor              *m_editor       = nullptr;
     ShowFullWidgetUi        *m_showFull     = new ShowFullWidgetUi(this);
+
+    void createWidgetUi();
 };
 
 #endif // WIDGETUISTYLE_H

@@ -5,9 +5,7 @@ ListFileModel::ListFileModel(QObject* parent) : QAbstractListModel(parent)
 
 QVariant ListFileModel::data(const QModelIndex& index, int role) const
 {
-    if(!index.isValid())
-        return QVariant();
-    if(index.row() >= m_item_.size())
+    if(!index.isValid() || index.row() >= m_item_.size())
         return QVariant();
     if(role == Qt::DisplayRole)
         return m_item_[index.row()].file;
@@ -49,7 +47,7 @@ bool ListFileModel::removeRows(int row, int count, const QModelIndex& parent)
     return false;
 }
 
-void ListFileModel::addItem(const QString& file, CoreEditor* coreEditor, ListFileModel::SceneStyle* sceneStyle, ListFileModel::SceneUI* sceneUI)
+void ListFileModel::addItem(const QString& file, CoreEditor* coreEditor, ListFileModel::SceneStyle* sceneStyle, ListFileModel::BufferUI* sceneUI)
 {
     insertRows(m_item_.size(), 1);
     Item item;
@@ -63,7 +61,7 @@ void ListFileModel::addItem(const QString& file, CoreEditor* coreEditor, ListFil
 void ListFileModel::removeItem(int row)
 { removeRows(row, 1); }
 
-std::tuple<CoreEditor*, ListFileModel::SceneStyle*, ListFileModel::SceneUI*> ListFileModel::getItem(int row) const
+std::tuple<CoreEditor*, ListFileModel::SceneStyle*, ListFileModel::BufferUI*> ListFileModel::getItem(int row) const
 {
     if(row < m_item_.size())
         return std::make_tuple(m_item_[row].coreEditor, m_item_[row].sceneStyle, m_item_[row].sceneUI);

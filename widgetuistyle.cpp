@@ -2,18 +2,38 @@
 #include "ui_widgetuistyle.h"
 
 WidgetUiStyle::WidgetUiStyle(QWidget* parent) : QWidget(parent),
-    ui(new Ui::WidgetUiStyle),
-    m_editor(parent->parent()->findChild<CoreEditor*>())
+    ui(new Ui::WidgetUiStyle)
 {
     ui->setupUi(this);
+    ui->view->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    ui->view->setScene(m_scene);
 
     this->connect(ui->btnOpen,      &QPushButton::clicked, this, &WidgetUiStyle::openUI);
     this->connect(ui->btnShowFull,  &QPushButton::clicked, this, &WidgetUiStyle::showFull);
-    this->connect(m_editor, &CoreEditor::updateStyleSheet, this, &WidgetUiStyle::setStyleSheetWidget);
 }
 
 WidgetUiStyle::~WidgetUiStyle()
 { delete ui; }
+
+QBuffer* WidgetUiStyle::getBufferUi() const
+{ return m_bufferUi; }
+
+QBuffer* WidgetUiStyle::createBufferUi()
+{
+    m_bufferUi = new QBuffer(this);
+    return m_bufferUi;
+}
+
+void WidgetUiStyle::setBufferUi(QBuffer* buffer)
+{
+    m_bufferUi = buffer;
+    m_scene->clear();
+    if(m_bufferUi->isOpen())
+    {
+        m_bufferUi->seek(0);
+        createWidgetUi();
+    }
+}
 
 void WidgetUiStyle::openUI()
 {
@@ -24,33 +44,36 @@ void WidgetUiStyle::openUI()
     QFile file(path);
     if(file.open(QIODevice::ReadOnly))
     {
-        if(m_sceneView != nullptr)
-        {
-            m_bufferUi->close();
-            m_bufferUi->deleteLater();
-            m_sceneView->deleteLater();
-        }
-        m_bufferUi = new QBuffer(this);
+        m_bufferUi->close();
+        m_scene->clear();
+
         m_bufferUi->setData(file.readAll());
         m_bufferUi->open(QIODevice::ReadOnly);
-
-        QWidget* widget = QUiLoader().load(m_bufferUi);
-        widget->setStyleSheet(m_editor->document()->toPlainText());
-        m_sceneView = new QGraphicsScene(0, 0, widget->width(), widget->height());
-        ui->view->setScene(m_sceneView);
-        m_sceneView->addWidget(widget);
+        createWidgetUi();
     }
     file.close();
 }
 
 void WidgetUiStyle::showFull()
 {
-    if(m_bufferUi == nullptr)
+    if(!m_bufferUi->isOpen())
         return;
+
+    m_editor = this->parent()->parent()->findChild<CoreEditor*>();
     m_bufferUi->seek(0);
     m_showFull->setViewWidgetUi(m_bufferUi);
     m_showFull->setStyleSheetDialog(m_editor->document()->toPlainText());
     m_showFull->showMaximized();
+}
+
+void WidgetUiStyle::createWidgetUi()
+{
+    m_editor = this->parent()->parent()->findChild<CoreEditor*>();
+    QWidget* widget = QUiLoader().load(m_bufferUi);
+    widget->resize(this->size());
+    m_scene->setSceneRect(0, 0, widget->width(), widget->height());
+    widget->setStyleSheet(m_editor->document()->toPlainText());
+    m_scene->addWidget(widget);
 }
 
 void WidgetUiStyle::setStyleSheetWidget(const QString& style)
@@ -66,7 +89,7 @@ void WidgetUiStyle::setStyleSheetWidget(const QString& style)
 
 WidgetUiStyle::ShowFullWidgetUi::ShowFullWidgetUi(QWidget* parent) : QDialog(parent)
 {
-    QVBoxLayout* box = new QVBoxLayout;
+    QHBoxLayout* box = new QHBoxLayout;
     box->addWidget(m_close);
     this->setLayout(box);
 

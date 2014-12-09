@@ -19,7 +19,6 @@ void Splitter::setVisibleHeightHandle(bool value)
     }
     else
     {
-        qDebug()<<this->size();
         this->moveSplitter(this->size().height(), 0);
         this->setHandleWidth(0);
         this->handle(1)->setCursor(Qt::ArrowCursor);

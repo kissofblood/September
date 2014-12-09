@@ -42,7 +42,7 @@ QGraphicsScene* WidgetStyle::createScene()
 
 void WidgetStyle::setScene(QGraphicsScene* scene)
 {
-    m_scene = static_cast<WidgetScene*>(scene);
+    m_scene = reinterpret_cast<WidgetScene*>(scene);
     ui->view->setScene(m_scene);
     m_deleteGraphicsWgt_.clear();
 }
@@ -61,12 +61,7 @@ void WidgetStyle::filterListWidget()
 
 void WidgetStyle::selectWidget()
 {
-    CoreEditor* coreEditor = this->parent()->parent()->findChild<CoreEditor*>();
-    if(coreEditor != m_editor)
-    {
-        m_editor = coreEditor;
-        this->connect(m_editor, &CoreEditor::updateStyleSheet, this, &WidgetStyle::setStyleSheetWidget);
-    }
+    m_editor = this->parent()->parent()->findChild<CoreEditor*>();
     QListWidgetItem* item = ui->listWidget->currentItem();
     if(item == nullptr)
         return;

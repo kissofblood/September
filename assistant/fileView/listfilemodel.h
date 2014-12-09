@@ -10,6 +10,7 @@
 #include <QList>
 #include <QGraphicsScene>
 #include <tuple>
+#include <QBuffer>
 
 #include <QtCore>
 
@@ -18,7 +19,7 @@ class ListFileModel : public QAbstractListModel
     Q_OBJECT
 
     using SceneStyle    = QGraphicsScene;
-    using SceneUI       = QGraphicsScene;
+    using BufferUI      = QBuffer;
 public:
     explicit ListFileModel(QObject* parent = nullptr);
     ~ListFileModel() override = default;
@@ -28,9 +29,9 @@ public:
     QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
     bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex()) override;
     bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) override;
-    void addItem(const QString& file, CoreEditor* coreEditor, SceneStyle* sceneStyle, SceneUI* sceneUI);
+    void addItem(const QString& file, CoreEditor* coreEditor, SceneStyle* sceneStyle, BufferUI* sceneUI);
     void removeItem(int row);
-    std::tuple<CoreEditor*, SceneStyle*, SceneUI*> getItem(int row) const;
+    std::tuple<CoreEditor*, SceneStyle*, BufferUI*> getItem(int row) const;
     QModelIndex getModelIndex(int row) const;
 
 private:
@@ -41,9 +42,9 @@ private:
         QString         file;
         CoreEditor      *coreEditor = nullptr;
         SceneStyle      *sceneStyle = nullptr;
-        SceneUI         *sceneUI    = nullptr;
+        BufferUI        *sceneUI    = nullptr;
     };
-    QList<Item>     m_item_;
+    QList<Item> m_item_;
 };
 
 #endif // LISTFILEMODEL_H

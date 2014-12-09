@@ -43,7 +43,7 @@ private slots:
     void setStatusBar();
     void saveFile();
     void saveFileAs();
-    void newFile(const QString& name = "Безымянный");
+    void newFile(const QString& name);
     void switchTreeFileView();
     void switchListFileView();
     void closeFile(int row);

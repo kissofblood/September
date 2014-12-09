@@ -1,8 +1,5 @@
 #include "graphicswidget.h"
 
-GraphicsWidget::GraphicsWidget(QGraphicsItem* parent) : GraphicsWidget(parent)
-{ }
-
 GraphicsWidget::GraphicsWidget(QWidget* wgt, const QPointF& point, QGraphicsItem* parent) : QGraphicsItem(parent)
     , m_rectWidget(point.x() + 3, point.y() + 3, wgt->width() + 3, wgt->height() + 3)
 {
