@@ -275,7 +275,7 @@
     <addaction name="mnSaveAs"/>
     <addaction name="mnSaveAll"/>
     <addaction name="separator"/>
-    <addaction name="action_10"/>
+    <addaction name="mnPrint"/>
     <addaction name="separator"/>
     <addaction name="mnCloseFile"/>
     <addaction name="mnCloseFileOther"/>
@@ -374,7 +374,7 @@
     <string>Сохранить все</string>
    </property>
   </action>
-  <action name="action_10">
+  <action name="mnPrint">
    <property name="text">
     <string>Печать</string>
    </property>

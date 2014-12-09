@@ -18,6 +18,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->mnSave->setShortcut(QKeySequence::Save);
     ui->mnSaveAs->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_L);
     ui->mnSaveAll->setShortcut(Qt::CTRL + Qt::Key_L);
+    ui->mnPrint->setShortcut(QKeySequence::Print);
     ui->mnCloseFile->setShortcut(QKeySequence::Close);
     ui->mnCloseFileOther->setShortcut(Qt::CTRL + Qt::Key_R);
     ui->mnCloseFileAll->setShortcut(Qt::CTRL + Qt::Key_A);
