@@ -156,7 +156,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="ListFileView" name="fileListView">
@@ -173,7 +173,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="Splitter" name="splitterEdit">
@@ -187,7 +187,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="">
+          <widget class="QWidget" name="layoutWidget">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
              <widget class="WidgetStyle" name="widgetCreateWidget" native="true"/>
@@ -277,9 +277,9 @@
     <addaction name="separator"/>
     <addaction name="action_10"/>
     <addaction name="separator"/>
-    <addaction name="action_12"/>
-    <addaction name="action_13"/>
-    <addaction name="action_14"/>
+    <addaction name="mnCloseFile"/>
+    <addaction name="mnCloseFileOther"/>
+    <addaction name="mnCloseFileAll"/>
     <addaction name="separator"/>
     <addaction name="mnQuit"/>
    </widget>
@@ -379,17 +379,17 @@
     <string>Печать</string>
    </property>
   </action>
-  <action name="action_12">
+  <action name="mnCloseFile">
    <property name="text">
     <string>Закрыть</string>
    </property>
   </action>
-  <action name="action_13">
+  <action name="mnCloseFileOther">
    <property name="text">
     <string>Закрыть остальные</string>
    </property>
   </action>
-  <action name="action_14">
+  <action name="mnCloseFileAll">
    <property name="text">
     <string>Закрыть все</string>
    </property>

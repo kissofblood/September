@@ -48,6 +48,8 @@ private slots:
     void switchListFileView();
     void closeFile(int row);
     void selectFile(const QModelIndex& index);
+    void closeFileOther();
+    void closeFileAll();
 
 private:
     struct ClickedButton
@@ -64,6 +66,7 @@ private:
     QFileInfo                   m_fileInfo;
     QVector<QMetaObject::Connection> m_connectionCoreEditor;
     bool                        m_visiblePathFile   = false;
+    int                         m_countUnnamedFile  = 1;
 
     void connectionCoreEditor(CoreEditor* coreEditor);
 };

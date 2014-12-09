@@ -18,6 +18,9 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->mnSave->setShortcut(QKeySequence::Save);
     ui->mnSaveAs->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_L);
     ui->mnSaveAll->setShortcut(Qt::CTRL + Qt::Key_L);
+    ui->mnCloseFile->setShortcut(QKeySequence::Close);
+    ui->mnCloseFileOther->setShortcut(Qt::CTRL + Qt::Key_R);
+    ui->mnCloseFileAll->setShortcut(Qt::CTRL + Qt::Key_A);
     ui->mnQuit->setShortcut(QKeySequence::Quit);
 
     ui->mnUndo->setShortcut(QKeySequence::Undo);
@@ -67,6 +70,14 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnOpen,           &QAction::triggered,    this, &SeptemberEditor::openFile);
     this->connect(ui->mnSave,           &QAction::triggered,    this, &SeptemberEditor::saveFile);
     this->connect(ui->mnSaveAs,         &QAction::triggered,    this, &SeptemberEditor::saveFileAs);
+    this->connect(ui->mnCloseFile,      &QAction::triggered,    this, [this]()
+    {
+        int row = ui->fileListView->currentIndex().row();
+        if(row != -1)
+            closeFile(row);
+    });
+    this->connect(ui->mnCloseFileOther, &QAction::triggered,    this, &SeptemberEditor::closeFileOther);
+    this->connect(ui->mnCloseFileAll,   &QAction::triggered,    this, &SeptemberEditor::closeFileAll);
     this->connect(ui->mnQuit,           &QAction::triggered,    qApp, &QApplication::quit);
     this->connect(ui->mnSearchReplace,  &QAction::triggered,    this, &SeptemberEditor::closeOrShowWidgetSearchAndReplace);
     this->connect(ui->mnListFile,     &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowListFile, this));
@@ -339,10 +350,10 @@ void SeptemberEditor::saveFileAs()
 
 void SeptemberEditor::newFile(const QString& name)
 {
-    static int count = 2;
     CoreEditor* editor = new CoreEditor(this);
+    editor->setVisible(false);
     if(name == "Безымянный")
-        m_listModel->addItem("Безымянный " + QString::number(count++), editor, ui->widgetCreateWidget->createScene(), ui->widgetOpenUI->createBufferUi());
+        m_listModel->addItem("Безымянный " + QString::number(++m_countUnnamedFile), editor, ui->widgetCreateWidget->createScene(), ui->widgetOpenUI->createBufferUi());
     else
         m_listModel->addItem(name, editor, ui->widgetCreateWidget->createScene(), ui->widgetOpenUI->createBufferUi());
     ui->fileListView->setCurrentIndex(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
@@ -376,6 +387,7 @@ void SeptemberEditor::closeFile(int row)
         ui->horizontalLayout_8->removeWidget(coreEditor);
         ui->horizontalLayout_8->addWidget(ui->plainTextEdit);
         m_listModel->addItem("Безымянный 1", ui->plainTextEdit, ui->widgetCreateWidget->getScene(), ui->widgetOpenUI->getBufferUi());
+        m_countUnnamedFile = 1;
     }
     else
     {
@@ -406,11 +418,43 @@ void SeptemberEditor::selectFile(const QModelIndex& index)
 
     ui->plainTextEdit->setParent(this);
     ui->plainTextEdit = select;
+    ui->plainTextEdit->setVisible(true);
     ui->horizontalLayout_8->addWidget(ui->plainTextEdit);
     ui->plainTextEdit->setFocus();
     ui->widgetCreateWidget->setScene(sceneStyle);
     ui->widgetOpenUI->setBufferUi(bufferUI);
     connectionCoreEditor(ui->plainTextEdit);
+}
+
+void SeptemberEditor::closeFileOther()
+{
+    int row = ui->fileListView->currentIndex().row();
+    if(row != -1)
+    {
+        CoreEditor* editor = std::get<0>(m_listModel->getItem(row));
+        forever
+        {
+            int rowCount = m_listModel->rowCount() - 1;
+            if(rowCount == 0)
+                break;
+            else if(editor == std::get<0>(m_listModel->getItem(rowCount)))
+                closeFile(rowCount - 1);
+            else
+                closeFile(rowCount);
+        }
+    }
+}
+
+void SeptemberEditor::closeFileAll()
+{
+    forever
+    {
+        if(m_listModel->rowCount() == 1)
+            break;
+        else
+            closeFile(0);
+    }
+    closeFile(0);
 }
 
 void SeptemberEditor::connectionCoreEditor(CoreEditor* coreEditor)
