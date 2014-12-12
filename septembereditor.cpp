@@ -10,6 +10,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->widgetOpenUI->setVisible(false);
     ui->fileListView->setModel(m_listModel);
     m_listModel->addItem("Безымянный 1", ui->plainTextEdit, ui->widgetCreateWidget->getScene(), ui->widgetOpenUI->getBufferUi());
+    m_fileInfo.setFile("Безымянный 1");
     ui->fileListView->setCurrentIndex(m_listModel->getModelIndex(0));
     ui->splitterEdit->setVisibleHeightHandle(false);
 
@@ -75,6 +76,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnOpen,           &QAction::triggered,    this, &SeptemberEditor::openFile);
     this->connect(ui->mnSave,           &QAction::triggered,    this, &SeptemberEditor::saveFile);
     this->connect(ui->mnSaveAs,         &QAction::triggered,    this, &SeptemberEditor::saveFileAs);
+    this->connect(ui->mnPrint,          &QAction::triggered,    this, &SeptemberEditor::printFile);
     this->connect(ui->mnCloseFile,      &QAction::triggered,    this, [this]()
     {
         int row = ui->fileListView->currentIndex().row();
@@ -480,6 +482,20 @@ void SeptemberEditor::prevFile()
         else
             selectFile(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
     }
+}
+
+void SeptemberEditor::printFile()
+{
+    QPrinter print(QPrinter::HighResolution);
+    QString filename = m_fileInfo.filePath().isEmpty() ? m_fileInfo.fileName() : m_fileInfo.filePath();
+    if(filename.contains(QRegExp(R"(.+\.qss)")))
+        filename.remove(filename.length() - 4, 4);
+    filename += ".pdf";
+    print.setOutputFileName(filename);
+    print.setOutputFormat(QPrinter::PdfFormat);
+    QPrintDialog dialog(&print, this);
+    if(dialog.exec() == QDialog::Accepted)
+        ui->plainTextEdit->document()->print(&print);
 }
 
 void SeptemberEditor::connectionCoreEditor(CoreEditor* coreEditor)

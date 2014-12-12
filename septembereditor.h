@@ -20,6 +20,8 @@
 #include <QString>
 #include <QDirModel>
 
+#include <QtPrintSupport>
+
 namespace Ui {
 class SeptemberEditor;
 }
@@ -50,6 +52,7 @@ private slots:
     void closeFileAll();
     void nextFile();
     void prevFile();
+    void printFile();
 
 private:
     struct ClickedButton

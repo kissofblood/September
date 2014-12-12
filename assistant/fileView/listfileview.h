@@ -6,19 +6,17 @@
 #include <QListView>
 #include <QMenu>
 #include <QContextMenuEvent>
-#include <QStandardItemModel>
-
-#include <QtWidgets>
+#include <QModelIndex>
+#include <QAction>
 
 class ListFileView : public QListView
 {
     Q_OBJECT
 public:
     explicit ListFileView(QWidget* parent = nullptr);
-    ~ListFileView() override;
+    ~ListFileView() override = default;
 
 signals:
-    void switchTree();
     void clickedCloseFile(int row);
 
 private:

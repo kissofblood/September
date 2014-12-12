@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui uitools
+QT       += core gui uitools printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
