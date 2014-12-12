@@ -7,17 +7,14 @@
 #include <QVariant>
 #include <QModelIndex>
 #include <QString>
-#include <QList>
 #include <QGraphicsScene>
-#include <tuple>
 #include <QBuffer>
-
-#include <QtCore>
+#include <QList>
+#include <QFileInfo>
+#include <tuple>
 
 class ListFileModel : public QAbstractListModel
 {
-    Q_OBJECT
-
     using SceneStyle    = QGraphicsScene;
     using BufferUI      = QBuffer;
 public:
@@ -39,7 +36,7 @@ private:
     {
         Item() = default;
 
-        QString         file;
+        QFileInfo       file;
         CoreEditor      *coreEditor = nullptr;
         SceneStyle      *sceneStyle = nullptr;
         BufferUI        *sceneUI    = nullptr;

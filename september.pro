@@ -26,7 +26,6 @@ SOURCES += main.cpp\
     setting/settingkey.cpp \
     setting/settingseptember.cpp \
     assistant/fileView/listfileview.cpp \
-    assistant/fileView/treefileview.cpp \
     assistant/fileView/listfilemodel.cpp
 
 HEADERS  += septembereditor.h \
@@ -42,7 +41,6 @@ HEADERS  += septembereditor.h \
     setting/settingkey.h \
     setting/settingseptember.h \
     assistant/fileView/listfileview.h \
-    assistant/fileView/treefileview.h \
     assistant/common.h \
     assistant/fileView/listfilemodel.h
 

@@ -8,10 +8,10 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->widgetSearchAndReplace->setVisible(false);
     ui->widgetCreateWidget->setVisible(false);
     ui->widgetOpenUI->setVisible(false);
-    ui->fileTreeView->setVisible(false);
     ui->fileListView->setModel(m_listModel);
     m_listModel->addItem("Безымянный 1", ui->plainTextEdit, ui->widgetCreateWidget->getScene(), ui->widgetOpenUI->getBufferUi());
     ui->fileListView->setCurrentIndex(m_listModel->getModelIndex(0));
+    ui->splitterEdit->setVisibleHeightHandle(false);
 
     ui->mnNewFile->setShortcut(QKeySequence::New);
     ui->mnOpen->setShortcut(QKeySequence::Open);
@@ -96,8 +96,6 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnPathFile,   &QAction::triggered, this, &SeptemberEditor::pathFile);
     this->connect(ui->mnSettingKey, &QAction::triggered, m_settingKey, &SettingKey::show);
     this->connect(ui->mnSettingSeptember, &QAction::triggered, m_settingSeptember, &SettingSeptember::show);
-    this->connect(ui->fileListView, &ListFileView::switchTree, this, &SeptemberEditor::switchTreeFileView);
-    this->connect(ui->fileTreeView, &TreeFileView::switchList, this, &SeptemberEditor::switchListFileView);
     this->connect(ui->fileListView, &ListFileView::clickedCloseFile, this, &SeptemberEditor::closeFile);
     this->connect(ui->fileListView, &ListFileView::clicked, this, &SeptemberEditor::selectFile);
     this->setWindowTitle("Безымянный1 -- September");
@@ -256,13 +254,13 @@ void SeptemberEditor::openFile()
             {
                 ui->plainTextEdit->appendText(file.readAll());
                 m_listModel->removeItem(0);
-                m_listModel->addItem(m_fileInfo.fileName(), ui->plainTextEdit, ui->widgetCreateWidget->getScene(), ui->widgetOpenUI->getBufferUi());
+                m_listModel->addItem(path, ui->plainTextEdit, ui->widgetCreateWidget->getScene(), ui->widgetOpenUI->getBufferUi());
                 ui->fileListView->setCurrentIndex(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
             }
         }
         else
         {
-            newFile(m_fileInfo.fileName());
+            newFile(path);
             selectFile(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
             ui->plainTextEdit->appendText(file.readAll());
         }
@@ -364,18 +362,6 @@ void SeptemberEditor::newFile(const QString& name)
     else
         m_listModel->addItem(name, editor, ui->widgetCreateWidget->createScene(), ui->widgetOpenUI->createBufferUi());
     selectFile(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
-}
-
-void SeptemberEditor::switchTreeFileView()
-{
-    ui->fileListView->setVisible(false);
-    ui->fileTreeView->setVisible(true);
-}
-
-void SeptemberEditor::switchListFileView()
-{
-    ui->fileTreeView->setVisible(false);
-    ui->fileListView->setVisible(true);
 }
 
 void SeptemberEditor::closeFile(int row)

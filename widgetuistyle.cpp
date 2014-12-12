@@ -89,7 +89,7 @@ void WidgetUiStyle::setStyleSheetWidget(const QString& style)
 
 WidgetUiStyle::ShowFullWidgetUi::ShowFullWidgetUi(QWidget* parent) : QDialog(parent)
 {
-    QHBoxLayout* box = new QHBoxLayout;
+    QVBoxLayout* box = new QVBoxLayout;
     box->addWidget(m_close);
     this->setLayout(box);
 

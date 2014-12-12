@@ -8,7 +8,9 @@ QVariant ListFileModel::data(const QModelIndex& index, int role) const
     if(!index.isValid() || index.row() >= m_item_.size())
         return QVariant();
     if(role == Qt::DisplayRole)
-        return m_item_[index.row()].file;
+        return m_item_[index.row()].file.fileName();
+    else if(role == Qt::ToolTipRole)
+        return m_item_[index.row()].file.filePath();
     return QVariant();
 }
 
@@ -51,7 +53,7 @@ void ListFileModel::addItem(const QString& file, CoreEditor* coreEditor, ListFil
 {
     insertRows(m_item_.size(), 1);
     Item item;
-    item.file = file;
+    item.file.setFile(file);
     item.coreEditor = coreEditor;
     item.sceneStyle = sceneStyle;
     item.sceneUI = sceneUI;

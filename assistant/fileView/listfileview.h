@@ -22,7 +22,7 @@ signals:
     void clickedCloseFile(int row);
 
 private:
-    QMenu       *m_menu     = nullptr;
+    QMenu       *m_menu     = new QMenu(this);
 
     void contextMenuEvent(QContextMenuEvent* event) override;
 };

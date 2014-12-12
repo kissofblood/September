@@ -12,6 +12,7 @@
 #include <QFile>
 #include <QIODevice>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QBoxLayout>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsItem>

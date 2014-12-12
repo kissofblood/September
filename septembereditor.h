@@ -44,8 +44,6 @@ private slots:
     void saveFile();
     void saveFileAs();
     void newFile(const QString& name);
-    void switchTreeFileView();
-    void switchListFileView();
     void closeFile(int row);
     void selectFile(const QModelIndex& index);
     void closeFileOther();
