@@ -1,7 +1,6 @@
 #ifndef LISTFILEVIEW_H
 #define LISTFILEVIEW_H
 
-#include "assistant/common.h"
 #include <QWidget>
 #include <QListView>
 #include <QMenu>

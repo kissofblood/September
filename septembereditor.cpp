@@ -9,8 +9,8 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->widgetCreateWidget->setVisible(false);
     ui->widgetOpenUI->setVisible(false);
     ui->fileListView->setModel(m_listModel);
-    m_listModel->addItem("Безымянный 1", ui->plainTextEdit, ui->widgetCreateWidget->getScene(), ui->widgetOpenUI->getBufferUi());
-    m_fileInfo.setFile("Безымянный 1");
+    m_listModel->addItem("Безымянный_1", ui->plainTextEdit, ui->widgetCreateWidget->getScene(), ui->widgetOpenUI->getBufferUi());
+    m_fileInfo.setFile("Безымянный_1");
     ui->fileListView->setCurrentIndex(m_listModel->getModelIndex(0));
     ui->splitterEdit->setVisibleHeightHandle(false);
 
@@ -100,7 +100,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnSettingSeptember, &QAction::triggered, m_settingSeptember, &SettingSeptember::show);
     this->connect(ui->fileListView, &ListFileView::clickedCloseFile, this, &SeptemberEditor::closeFile);
     this->connect(ui->fileListView, &ListFileView::clicked, this, &SeptemberEditor::selectFile);
-    this->setWindowTitle("Безымянный1 -- September");
+    this->setWindowTitle("Безымянный_1 -- September");
 
     connectionCoreEditor(ui->plainTextEdit);
 }
@@ -293,12 +293,6 @@ void SeptemberEditor::fullScreen(bool trigger)
 void SeptemberEditor::pathFile(bool trigger)
 {
     m_visiblePathFile = trigger;
-    if(!m_fileInfo.isFile())
-    {
-        this->setWindowTitle("Безымянный -- September");
-        return;
-    }
-
     if(trigger)
         this->setWindowTitle(m_fileInfo.filePath() + " -- September");
     else
@@ -360,7 +354,7 @@ void SeptemberEditor::newFile(const QString& name)
     CoreEditor* editor = new CoreEditor(this);
     editor->setVisible(false);
     if(name == "Безымянный")
-        m_listModel->addItem("Безымянный " + QString::number(++m_countUnnamedFile), editor, ui->widgetCreateWidget->createScene(), ui->widgetOpenUI->createBufferUi());
+        m_listModel->addItem("Безымянный_" + QString::number(++m_countUnnamedFile), editor, ui->widgetCreateWidget->createScene(), ui->widgetOpenUI->createBufferUi());
     else
         m_listModel->addItem(name, editor, ui->widgetCreateWidget->createScene(), ui->widgetOpenUI->createBufferUi());
     selectFile(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
@@ -373,19 +367,19 @@ void SeptemberEditor::closeFile(int row)
     CoreEditor* coreEditor      = nullptr;
     if(m_listModel->rowCount() == 1)
     {
-        std::tie(coreEditor, sceneStyle, bufferUI) = m_listModel->getItem(row);
+        std::tie(std::ignore, coreEditor, sceneStyle, bufferUI) = m_listModel->getItem(row);
         ui->plainTextEdit = new CoreEditor;
         connectionCoreEditor(ui->plainTextEdit);
         ui->widgetCreateWidget->setScene(ui->widgetCreateWidget->createScene());
         ui->widgetOpenUI->setBufferUi(ui->widgetOpenUI->createBufferUi());
         ui->horizontalLayout_8->removeWidget(coreEditor);
         ui->horizontalLayout_8->addWidget(ui->plainTextEdit);
-        m_listModel->addItem("Безымянный 1", ui->plainTextEdit, ui->widgetCreateWidget->getScene(), ui->widgetOpenUI->getBufferUi());
+        m_listModel->addItem("Безымянный_1", ui->plainTextEdit, ui->widgetCreateWidget->getScene(), ui->widgetOpenUI->getBufferUi());
         m_countUnnamedFile = 1;
     }
     else
     {
-        std::tie(coreEditor, sceneStyle, bufferUI) = m_listModel->getItem(row);
+        std::tie(std::ignore, coreEditor, sceneStyle, bufferUI) = m_listModel->getItem(row);
         int index = ui->horizontalLayout_8->indexOf(coreEditor);
         if(row == 0 && index != -1)
             selectFile(m_listModel->getModelIndex(row + 1));
@@ -403,7 +397,7 @@ void SeptemberEditor::selectFile(const QModelIndex& index)
     QGraphicsScene* sceneStyle  = nullptr;
     QBuffer* bufferUI           = nullptr;
     CoreEditor* select          = nullptr;
-    std::tie(select, sceneStyle, bufferUI) = m_listModel->getItem(index.row());
+    std::tie(m_fileInfo, select, sceneStyle, bufferUI) = m_listModel->getItem(index.row());
     if(select == ui->plainTextEdit)
         return;
     ui->horizontalLayout_8->removeWidget(ui->plainTextEdit);
@@ -419,6 +413,7 @@ void SeptemberEditor::selectFile(const QModelIndex& index)
     ui->widgetOpenUI->setBufferUi(bufferUI);
     ui->fileListView->setCurrentIndex(index);
     connectionCoreEditor(ui->plainTextEdit);
+    pathFile(m_visiblePathFile);
 }
 
 void SeptemberEditor::closeFileOther()
@@ -426,13 +421,13 @@ void SeptemberEditor::closeFileOther()
     int currentRow = ui->fileListView->currentIndex().row();
     if(currentRow != -1)
     {
-        CoreEditor* editor = std::get<0>(m_listModel->getItem(currentRow));
+        CoreEditor* editor = std::get<1>(m_listModel->getItem(currentRow));
         forever
         {
             int rowCount = m_listModel->rowCount() - 1;
             if(rowCount == 0)
                 break;
-            else if(editor == std::get<0>(m_listModel->getItem(rowCount)))
+            else if(editor == std::get<1>(m_listModel->getItem(rowCount)))
                 closeFile(rowCount - 1);
             else
                 closeFile(rowCount);
@@ -487,7 +482,7 @@ void SeptemberEditor::prevFile()
 void SeptemberEditor::printFile()
 {
     QPrinter print(QPrinter::HighResolution);
-    QString filename = m_fileInfo.filePath().isEmpty() ? m_fileInfo.fileName() : m_fileInfo.filePath();
+    QString filename = m_fileInfo.filePath();
     if(filename.contains(QRegExp(R"(.+\.qss)")))
         filename.remove(filename.length() - 4, 4);
     filename += ".pdf";

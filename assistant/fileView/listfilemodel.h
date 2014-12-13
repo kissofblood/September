@@ -28,7 +28,7 @@ public:
     bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) override;
     void addItem(const QString& file, CoreEditor* coreEditor, SceneStyle* sceneStyle, BufferUI* sceneUI);
     void removeItem(int row);
-    std::tuple<CoreEditor*, SceneStyle*, BufferUI*> getItem(int row) const;
+    std::tuple<QFileInfo, CoreEditor*, SceneStyle*, BufferUI*> getItem(int row) const;
     QModelIndex getModelIndex(int row) const;
 
 private:

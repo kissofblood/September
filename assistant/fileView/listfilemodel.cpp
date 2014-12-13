@@ -63,11 +63,11 @@ void ListFileModel::addItem(const QString& file, CoreEditor* coreEditor, ListFil
 void ListFileModel::removeItem(int row)
 { removeRows(row, 1); }
 
-std::tuple<CoreEditor*, ListFileModel::SceneStyle*, ListFileModel::BufferUI*> ListFileModel::getItem(int row) const
+std::tuple<QFileInfo, CoreEditor*, ListFileModel::SceneStyle*, ListFileModel::BufferUI*> ListFileModel::getItem(int row) const
 {
     if(row < m_item_.size())
-        return std::make_tuple(m_item_[row].coreEditor, m_item_[row].sceneStyle, m_item_[row].sceneUI);
-    return std::make_tuple(nullptr, nullptr, nullptr);
+        return std::make_tuple(m_item_[row].file, m_item_[row].coreEditor, m_item_[row].sceneStyle, m_item_[row].sceneUI);
+    return std::make_tuple(QFileInfo(), nullptr, nullptr, nullptr);
 }
 
 QModelIndex ListFileModel::getModelIndex(int row) const
