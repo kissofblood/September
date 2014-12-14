@@ -1,6 +1,8 @@
 #include "settingkey.h"
 #include "ui_settingkey.h"
 
+SettingKey* SettingKey::m_singleton = nullptr;
+
 SettingKey::SettingKey(QWidget* parent) : QDialog(parent),
     ui(new Ui::SettingKey)
 {
@@ -26,7 +28,14 @@ SettingKey::SettingKey(QWidget* parent) : QDialog(parent),
 SettingKey::~SettingKey()
 { delete ui; }
 
-void SettingKey::addItem(const QString& group, const QString& text)
+SettingKey* SettingKey::instance(QWidget* parent)
+{
+    if(m_singleton == nullptr)
+        m_singleton = new SettingKey(parent);
+    return m_singleton;
+}
+
+void SettingKey::addItem(const QString& group, const QString& name, const QString& key)
 {
     if(ui->cmbGroup->findText(group) == -1)
     {
@@ -34,8 +43,8 @@ void SettingKey::addItem(const QString& group, const QString& text)
         m_groupRow_.insert(group, QVector<int>());
     }
     ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
-    ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0, new QTableWidgetItem(text));
-    ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 1, new QTableWidgetItem);
+    ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0, new QTableWidgetItem(name));
+    ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 1, new QTableWidgetItem(key));
     m_groupRow_[group].push_back(ui->tableWidget->rowCount() - 1);
 }
 

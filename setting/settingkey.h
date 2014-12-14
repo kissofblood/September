@@ -21,11 +21,14 @@ class SettingKey;
 class SettingKey : public QDialog
 {
     Q_OBJECT
-public:
+private:
     explicit SettingKey(QWidget* parent = nullptr);
     ~SettingKey() override;
 
-    void addItem(const QString& group, const QString& text);
+public:
+    static SettingKey* instance(QWidget* parent = nullptr);
+
+    void addItem(const QString& group, const QString& name, const QString& key = QString());
 
 private slots:
     void visibleGrpScheme();
@@ -56,6 +59,7 @@ private:
         void keyPressEvent(QKeyEvent* event) override;
     };
 
+    static SettingKey               *m_singleton;
     Ui::SettingKey                  *ui         = nullptr;
     BoxKey                          *m_boxKey   = new BoxKey(this);
     QHash<QString, QVector<int>>    m_groupRow_;

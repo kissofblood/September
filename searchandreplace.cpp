@@ -31,6 +31,9 @@ SearchAndReplace::SearchAndReplace(QWidget* parent) : QWidget(parent),
             m_editor->clearSelectTextSearch();
         }
     });
+
+    m_settingKey->addItem("Поиск и Замена", ui->btnNext->text(), ui->btnNext->shortcut().toString());
+    m_settingKey->addItem("Поиск и Замена", ui->btnPrev->text(), ui->btnPrev->shortcut().toString());
 }
 
 SearchAndReplace::~SearchAndReplace()

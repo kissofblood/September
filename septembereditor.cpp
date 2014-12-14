@@ -101,12 +101,48 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->fileListView, &ListFileView::clickedCloseFile, this, &SeptemberEditor::closeFile);
     this->connect(ui->fileListView, &ListFileView::clicked, this, &SeptemberEditor::selectFile);
     this->setWindowTitle("Безымянный_1 -- September");
-
     connectionCoreEditor();
+
+
+    m_settingKey->addItem("September", ui->mnNewFile->text(), ui->mnNewFile->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnOpen->text(), ui->mnOpen->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnSave->text(), ui->mnSave->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnSaveAs->text(), ui->mnSaveAs->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnSaveAll->text(), ui->mnSaveAll->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnPrint->text(), ui->mnPrint->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnCloseFile->text(), ui->mnCloseFile->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnCloseFileOther->text(), ui->mnCloseFileOther->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnCloseFileOther->text(), ui->mnCloseFileOther->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnCloseFileAll->text(), ui->mnCloseFileAll->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnQuit->text(), ui->mnQuit->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnUndo->text(), ui->mnUndo->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnRedo->text(), ui->mnRedo->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnCut->text(), ui->mnCut->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnCopy->text(), ui->mnCopy->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnPaste->text(), ui->mnPaste->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnSelectAll->text(), ui->mnSelectAll->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnSearchReplace->text(), ui->mnSearchReplace->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnPrevFile->text(), ui->mnPrevFile->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnNextFile->text(), ui->mnNextFile->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnListFile->text(), ui->mnListFile->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnCreateWidget->text(), ui->mnCreateWidget->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnOpenUi->text(), ui->mnOpenUi->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnLineWrap->text(), ui->mnLineWrap->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnNumberLine->text(), ui->mnNumberLine->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnZoomIn->text(), ui->mnZoomIn->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnZoomOut->text(), ui->mnZoomOut->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnStatusBar->text(), ui->mnStatusBar->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnPathFile->text(), ui->mnPathFile->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnFullScreen->text(), ui->mnFullScreen->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnSettingKey->text(), ui->mnSettingKey->shortcut().toString());
+    m_settingKey->addItem("September", ui->mnSettingSeptember->text(), ui->mnSettingSeptember->shortcut().toString());
 }
 
 SeptemberEditor::~SeptemberEditor()
-{ delete ui; }
+{
+    delete ui;
+    m_settingKey->deleteLater();
+}
 
 void SeptemberEditor::closeOrShowListFile()
 {

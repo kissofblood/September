@@ -62,7 +62,7 @@ private:
         bool openUI             = false;
     };
     Ui::SeptemberEditor         *ui                 = nullptr;
-    SettingKey                  *m_settingKey       = new SettingKey(this);
+    SettingKey                  *m_settingKey       = SettingKey::instance(this);
     SettingSeptember            *m_settingSeptember = new SettingSeptember(this);
     ListFileModel               *m_listModel        = new ListFileModel(this);
     ClickedButton               m_clickedButton;

@@ -2,6 +2,7 @@
 #define SEARCHANDREPLACE_H
 
 #include "assistant/coreEditor/coreeditor.h"
+#include "setting/settingkey.h"
 #include <QWidget>
 #include <QPushButton>
 #include <QLineEdit>
@@ -42,6 +43,7 @@ private slots:
     void replaceText();
 
 private:
+    SettingKey                      *m_settingKey       = SettingKey::instance();
     Ui::SearchAndReplace            *ui                 = nullptr;
     CoreEditor                      *m_editor           = nullptr;
     QMessageBox                     *m_msgBox           = new QMessageBox(this);

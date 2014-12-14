@@ -1,6 +1,7 @@
 #ifndef LISTFILEVIEW_H
 #define LISTFILEVIEW_H
 
+#include "setting/settingkey.h"
 #include <QWidget>
 #include <QListView>
 #include <QMenu>
@@ -19,7 +20,8 @@ signals:
     void clickedCloseFile(int row);
 
 private:
-    QMenu       *m_menu     = new QMenu(this);
+    SettingKey  *m_settingKey   = SettingKey::instance();
+    QMenu       *m_menu         = new QMenu(this);
 
     void contextMenuEvent(QContextMenuEvent* event) override;
 };
