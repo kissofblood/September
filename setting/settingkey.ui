@@ -15,16 +15,31 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLineEdit" name="lineEdit"/>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Искать</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="editSearch"/>
+     </item>
+    </layout>
    </item>
    <item>
-    <widget class="QTreeWidget" name="treeWidget">
-     <column>
-      <property name="text">
-       <string notr="true">1</string>
-      </property>
-     </column>
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Выберите группу</string>
+     </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="cmbGroup"/>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="tableWidget"/>
    </item>
    <item>
     <widget class="QGroupBox" name="grpScheme">

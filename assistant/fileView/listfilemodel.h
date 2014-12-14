@@ -34,8 +34,6 @@ public:
 private:
     struct Item
     {
-        Item() = default;
-
         QFileInfo       file;
         CoreEditor      *coreEditor = nullptr;
         SceneStyle      *sceneStyle = nullptr;

@@ -4,7 +4,6 @@
 #include <QWidget>
 #include <QSplitter>
 
-#include <QDebug>
 class Splitter : public QSplitter
 {
 public:

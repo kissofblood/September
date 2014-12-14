@@ -102,7 +102,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->fileListView, &ListFileView::clicked, this, &SeptemberEditor::selectFile);
     this->setWindowTitle("Безымянный_1 -- September");
 
-    connectionCoreEditor(ui->plainTextEdit);
+    connectionCoreEditor();
 }
 
 SeptemberEditor::~SeptemberEditor()
@@ -369,7 +369,7 @@ void SeptemberEditor::closeFile(int row)
     {
         std::tie(std::ignore, coreEditor, sceneStyle, bufferUI) = m_listModel->getItem(row);
         ui->plainTextEdit = new CoreEditor;
-        connectionCoreEditor(ui->plainTextEdit);
+        connectionCoreEditor();
         ui->widgetCreateWidget->setScene(ui->widgetCreateWidget->createScene());
         ui->widgetOpenUI->setBufferUi(ui->widgetOpenUI->createBufferUi());
         ui->horizontalLayout_8->removeWidget(coreEditor);
@@ -412,7 +412,7 @@ void SeptemberEditor::selectFile(const QModelIndex& index)
     ui->widgetCreateWidget->setScene(sceneStyle);
     ui->widgetOpenUI->setBufferUi(bufferUI);
     ui->fileListView->setCurrentIndex(index);
-    connectionCoreEditor(ui->plainTextEdit);
+    connectionCoreEditor();
     pathFile(m_visiblePathFile);
 }
 
@@ -493,18 +493,18 @@ void SeptemberEditor::printFile()
         ui->plainTextEdit->document()->print(&print);
 }
 
-void SeptemberEditor::connectionCoreEditor(CoreEditor* coreEditor)
+void SeptemberEditor::connectionCoreEditor()
 {
-    m_connectionCoreEditor.push_back(this->connect(ui->mnUndo,           &QAction::triggered,    coreEditor, &CoreEditor::undo));
-    m_connectionCoreEditor.push_back(this->connect(ui->mnRedo,           &QAction::triggered,    coreEditor, &CoreEditor::redo));
-    m_connectionCoreEditor.push_back(this->connect(ui->mnCut,            &QAction::triggered,    coreEditor, &CoreEditor::cut));
-    m_connectionCoreEditor.push_back(this->connect(ui->mnCopy,           &QAction::triggered,    coreEditor, &CoreEditor::copy));
-    m_connectionCoreEditor.push_back(this->connect(ui->mnPaste,          &QAction::triggered,    coreEditor, &CoreEditor::paste));
-    m_connectionCoreEditor.push_back(this->connect(ui->mnSelectAll,      &QAction::triggered,    coreEditor, &CoreEditor::selectAll));
-    m_connectionCoreEditor.push_back(this->connect(ui->mnZoomIn,         &QAction::triggered, coreEditor, &CoreEditor::zoomDocIn));
-    m_connectionCoreEditor.push_back(this->connect(ui->mnZoomOut,        &QAction::triggered, coreEditor, &CoreEditor::zoomDocOut));
-    m_connectionCoreEditor.push_back(this->connect(ui->mnNumberLine,     &QAction::triggered, coreEditor, &CoreEditor::setVisibleLineNimberArea));
-    m_connectionCoreEditor.push_back(this->connect(coreEditor,   &CoreEditor::cursorPositionChanged, this, &SeptemberEditor::setStatusBar));
-    m_connectionCoreEditor.push_back(this->connect(coreEditor,   &CoreEditor::updateStyleSheet, ui->widgetCreateWidget, &WidgetStyle::setStyleSheetWidget));
-    m_connectionCoreEditor.push_back(this->connect(coreEditor,   &CoreEditor::updateStyleSheet, ui->widgetOpenUI,       &WidgetUiStyle::setStyleSheetWidget));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnUndo,           &QAction::triggered,    ui->plainTextEdit, &CoreEditor::undo));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnRedo,           &QAction::triggered,    ui->plainTextEdit, &CoreEditor::redo));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnCut,            &QAction::triggered,    ui->plainTextEdit, &CoreEditor::cut));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnCopy,           &QAction::triggered,    ui->plainTextEdit, &CoreEditor::copy));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnPaste,          &QAction::triggered,    ui->plainTextEdit, &CoreEditor::paste));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnSelectAll,      &QAction::triggered,    ui->plainTextEdit, &CoreEditor::selectAll));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnZoomIn,         &QAction::triggered, ui->plainTextEdit, &CoreEditor::zoomDocIn));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnZoomOut,        &QAction::triggered, ui->plainTextEdit, &CoreEditor::zoomDocOut));
+    m_connectionCoreEditor.push_back(this->connect(ui->mnNumberLine,     &QAction::triggered, ui->plainTextEdit, &CoreEditor::setVisibleLineNimberArea));
+    m_connectionCoreEditor.push_back(this->connect(ui->plainTextEdit,   &CoreEditor::cursorPositionChanged, this, &SeptemberEditor::setStatusBar));
+    m_connectionCoreEditor.push_back(this->connect(ui->plainTextEdit,   &CoreEditor::updateStyleSheet, ui->widgetCreateWidget, &WidgetStyle::setStyleSheetWidget));
+    m_connectionCoreEditor.push_back(this->connect(ui->plainTextEdit,   &CoreEditor::updateStyleSheet, ui->widgetOpenUI,       &WidgetUiStyle::setStyleSheetWidget));
 }

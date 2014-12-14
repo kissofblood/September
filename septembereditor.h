@@ -71,7 +71,7 @@ private:
     bool                        m_visiblePathFile   = false;
     int                         m_countUnnamedFile  = 1;
 
-    void connectionCoreEditor(CoreEditor* coreEditor);
+    void connectionCoreEditor();
 };
 
 #endif // SEPTEMBEREDITOR_H
