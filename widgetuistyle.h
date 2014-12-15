@@ -1,7 +1,7 @@
 #ifndef WIDGETUISTYLE_H
 #define WIDGETUISTYLE_H
 
-#include "assistant/coreEditor/coreeditor.h"
+#include "src/coreEditor/coreeditor.h"
 #include <QWidget>
 #include <QDialog>
 #include <QBuffer>

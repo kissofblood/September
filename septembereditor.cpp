@@ -278,13 +278,11 @@ void SeptemberEditor::openFile()
     QFile file(path);
     if(file.open(QIODevice::ReadOnly))
     {
-        m_fileInfo.setFile(path);
-        pathFile(m_visiblePathFile);
         if(m_listModel->rowCount() == 1)
         {
             if(!ui->plainTextEdit->toPlainText().isEmpty())
             {
-                newFile(m_fileInfo.fileName());
+                newFile(path);
                 selectFile(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
                 ui->plainTextEdit->appendText(file.readAll());
             }
@@ -306,6 +304,7 @@ void SeptemberEditor::openFile()
         cursorFirst.setPosition(0);
         ui->plainTextEdit->setTextCursor(cursorFirst);
         ui->plainTextEdit->checkingCodeQss();
+        pathFile(m_visiblePathFile);
     }
     file.close();
 }

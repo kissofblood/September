@@ -27,7 +27,6 @@ private:
 
 public:
     static SettingKey* instance(QWidget* parent = nullptr);
-
     void addItem(const QString& group, const QString& name, const QString& key = QString());
 
 private slots:
@@ -55,7 +54,6 @@ private:
         int             m_row;
 
         void funButton();
-        bool keyModifier(int key);
         void keyPressEvent(QKeyEvent* event) override;
     };
 

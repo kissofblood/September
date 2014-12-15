@@ -58,7 +58,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox"/>
+       <widget class="QComboBox" name="cmbScheme"/>
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_6">

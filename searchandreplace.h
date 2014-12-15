@@ -1,7 +1,7 @@
 #ifndef SEARCHANDREPLACE_H
 #define SEARCHANDREPLACE_H
 
-#include "assistant/coreEditor/coreeditor.h"
+#include "src/coreEditor/coreeditor.h"
 #include "setting/settingkey.h"
 #include <QWidget>
 #include <QPushButton>

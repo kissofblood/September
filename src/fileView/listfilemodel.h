@@ -1,7 +1,7 @@
 #ifndef LISTFILEMODEL_H
 #define LISTFILEMODEL_H
 
-#include "assistant/coreEditor/coreeditor.h"
+#include "src/coreEditor/coreeditor.h"
 #include <QObject>
 #include <QAbstractListModel>
 #include <QVariant>

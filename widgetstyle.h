@@ -1,9 +1,9 @@
 #ifndef WIDGETSTYLE_H
 #define WIDGETSTYLE_H
 
-#include "assistant/common.h"
-#include "assistant/graphicswidget.h"
-#include "assistant/coreEditor/coreeditor.h"
+#include "src/common.h"
+#include "src/graphicswidget.h"
+#include "src/coreEditor/coreeditor.h"
 #include <QWidget>
 #include <algorithm>
 #include <functional>

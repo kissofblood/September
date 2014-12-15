@@ -3,7 +3,7 @@
 
 #include "setting/settingkey.h"
 #include "setting/settingseptember.h"
-#include "assistant/fileView/listfilemodel.h"
+#include "src/fileView/listfilemodel.h"
 #include <QMainWindow>
 #include <QString>
 #include <QWidget>

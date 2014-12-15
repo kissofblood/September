@@ -17,32 +17,32 @@ SOURCES += main.cpp\
     widgetstyle.cpp \
     widgetuistyle.cpp \
     searchandreplace.cpp \
-    assistant/viewwidgetui.cpp \
-    assistant/coreEditor/coreeditor.cpp \
-    assistant/coreEditor/highlighter.cpp \
-    assistant/graphicswidget.cpp \
-    assistant/coreEditor/observercodeqss.cpp \
-    assistant/splitter.cpp \
+    src/viewwidgetui.cpp \
+    src/coreEditor/coreeditor.cpp \
+    src/coreEditor/highlighter.cpp \
+    src/graphicswidget.cpp \
+    src/coreEditor/observercodeqss.cpp \
+    src/splitter.cpp \
     setting/settingkey.cpp \
     setting/settingseptember.cpp \
-    assistant/fileView/listfileview.cpp \
-    assistant/fileView/listfilemodel.cpp
+    src/fileView/listfileview.cpp \
+    src/fileView/listfilemodel.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \
     widgetuistyle.h \
     searchandreplace.h \
-    assistant/viewwidgetui.h \
-    assistant/coreEditor/coreeditor.h \
-    assistant/coreEditor/highlighter.h \
-    assistant/graphicswidget.h \
-    assistant/coreEditor/observercodeqss.h \
-    assistant/splitter.h \
+    src/viewwidgetui.h \
+    src/coreEditor/coreeditor.h \
+    src/coreEditor/highlighter.h \
+    src/graphicswidget.h \
+    src/coreEditor/observercodeqss.h \
+    src/splitter.h \
     setting/settingkey.h \
     setting/settingseptember.h \
-    assistant/fileView/listfileview.h \
-    assistant/common.h \
-    assistant/fileView/listfilemodel.h
+    src/fileView/listfileview.h \
+    src/common.h \
+    src/fileView/listfilemodel.h
 
 FORMS    += septembereditor.ui \
     widgetstyle.ui \

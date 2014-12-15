@@ -517,18 +517,18 @@
   <customwidget>
    <class>CoreEditor</class>
    <extends>QPlainTextEdit</extends>
-   <header>assistant/coreEditor/coreeditor.h</header>
+   <header>src/coreEditor/coreeditor.h</header>
   </customwidget>
   <customwidget>
    <class>Splitter</class>
    <extends>QSplitter</extends>
-   <header>assistant/splitter.h</header>
+   <header>src/splitter.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>ListFileView</class>
    <extends>QListView</extends>
-   <header>assistant/fileView/listfileview.h</header>
+   <header>src/fileView/listfileview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
