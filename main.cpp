@@ -1,9 +1,9 @@
 #include "septembereditor.h"
-#include <QApplication>
+#include <setting/settingapp.h>
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    SettingApp a(argc, argv, "September", "September");
 
     SeptemberEditor w;
     w.showMaximized();

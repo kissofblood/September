@@ -7,7 +7,7 @@ SettingKey::SettingKey(QWidget* parent) : QDialog(parent),
     ui(new Ui::SettingKey)
 {
     ui->setupUi(this);
-    ui->grpScheme->setVisible(false);
+   // ui->grpScheme->setVisible(false);
     ui->tableWidget->setColumnCount(2);
     ui->tableWidget->setHorizontalHeaderLabels({ "Действия", "Комбинация клавиш" });
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -23,6 +23,8 @@ SettingKey::SettingKey(QWidget* parent) : QDialog(parent),
     this->connect(ui->cmbGroup,     &QComboBox::currentTextChanged, this, &SettingKey::hideGroupRow);
     this->connect(ui->editSearch,   &QLineEdit::textChanged, this, &SettingKey::searchRow);
     this->connect(ui->tableWidget,  &QTableWidget::cellDoubleClicked, this, std::bind(&SettingKey::showBoxKey, this, std::placeholders::_1));
+    this->connect(ui->btnCreateScheme, &QPushButton::clicked, m_boxScheme, &BoxScheme::showBoxScheme);
+    this->connect(ui->btnDeleteScheme, &QPushButton::clicked, this, &SettingKey::deleteScheme);
     this->setWindowTitle("Настройка комбинаций клавиш -- September");
 }
 
@@ -120,6 +122,17 @@ void SettingKey::showBoxKey(int row)
     m_boxKey->setFocus();
 }
 
+void SettingKey::deleteScheme()
+{
+    if(QMessageBox::Ok == QMessageBox::information(this,
+                            "Вопрос -- September",
+                            "Удалить схему \"" + ui->cmbScheme->currentText() + "\"",
+                            QMessageBox::Ok, QMessageBox::Cancel))
+    {
+        ui->cmbScheme->removeItem(ui->cmbScheme->currentIndex());
+    }
+}
+
 QString SettingKey::checkingItemKey(const QString& text)
 {
     for(int i = 0; i < ui->tableWidget->rowCount(); i++)
@@ -143,7 +156,7 @@ SettingKey::BoxKey::BoxKey(SettingKey* parent) : QDialog(parent)
     box->addItem(boxButton);
     this->setLayout(box);
     this->setWindowTitle("Назначение клавиш");
-    this->connect(m_button, &QPushButton::clicked, std::bind(&BoxKey::funButton, this));
+    this->connect(m_button, &QPushButton::clicked, this, &BoxKey::funButton);
     this->connect(m_cancel, &QPushButton::clicked, this, &QDialog::close);
 
     m_lblPressKey->setVisible(false);
@@ -309,4 +322,54 @@ void SettingKey::BoxKey::keyPressEvent(QKeyEvent* event)
             m_lblMessage->setText("Предупреждение: клавиша уже назначена для: <b>" + rowText + "</b>");
         m_button->setText("Назначить");
     }
+}
+
+SettingKey::BoxScheme::BoxScheme(SettingKey* parent) : QDialog(parent)
+    , m_settingKey(parent)
+{
+    QHBoxLayout* boxBtn = new QHBoxLayout;
+    boxBtn->addStretch(1);
+    boxBtn->addWidget(m_btnOk);
+    boxBtn->addWidget(m_btnCancel);
+
+    QVBoxLayout* boxV = new QVBoxLayout;
+    boxV->addWidget(new QLabel("Название новой схемы:"));
+    boxV->addWidget(m_edit);
+    boxV->addItem(boxBtn);
+    this->setLayout(boxV);
+    this->setWindowTitle("Название новой схемы -- September");
+    this->connect(m_btnCancel,  &QPushButton::clicked, m_edit, &QLineEdit::clear);
+    this->connect(m_btnCancel,  &QPushButton::clicked, this, &QDialog::close);
+    this->connect(m_btnOk,      &QPushButton::clicked, this, &BoxScheme::newScheme);
+}
+
+void SettingKey::BoxScheme::showBoxScheme()
+{
+    m_edit->setText("Новая схема");
+    m_edit->selectAll();
+    this->show();
+}
+
+void SettingKey::BoxScheme::newScheme()
+{
+    QString scheme = m_edit->text();
+    int countScheme = m_settingKey->ui->cmbScheme->count();
+    for(int i = 0; i < countScheme; i++)
+        if(scheme == m_settingKey->ui->cmbScheme->itemText(i))
+        {
+            for(int j = countScheme - 1; j >= 0; j--)
+            {
+                QString str = m_settingKey->ui->cmbScheme->itemText(j);
+                if(str.contains(scheme))
+                {
+                    scheme += "_" + QString::number(str.remove(0, scheme.length() + 1).toInt() + 1);
+                    break;
+                }
+            }
+            break;
+        }
+    m_settingKey->ui->cmbScheme->addItem(scheme);
+    m_settingKey->ui->cmbScheme->setCurrentIndex(countScheme);
+    m_edit->clear();
+    this->close();
 }

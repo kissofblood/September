@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     setting/settingkey.cpp \
     setting/settingseptember.cpp \
     src/fileView/listfileview.cpp \
-    src/fileView/listfilemodel.cpp
+    src/fileView/listfilemodel.cpp \
+    setting/settingapp.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \
@@ -42,7 +43,8 @@ HEADERS  += septembereditor.h \
     setting/settingseptember.h \
     src/fileView/listfileview.h \
     src/common.h \
-    src/fileView/listfilemodel.h
+    src/fileView/listfilemodel.h \
+    setting/settingapp.h
 
 FORMS    += septembereditor.ui \
     widgetstyle.ui \

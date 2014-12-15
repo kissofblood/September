@@ -61,14 +61,14 @@
        <widget class="QComboBox" name="cmbScheme"/>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_6">
+       <widget class="QPushButton" name="btnCreateScheme">
         <property name="text">
          <string>Создать</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_7">
+       <widget class="QPushButton" name="btnDeleteScheme">
         <property name="text">
          <string>Удалить</string>
         </property>

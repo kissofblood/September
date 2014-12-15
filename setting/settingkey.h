@@ -1,6 +1,7 @@
 #ifndef SETTINGKEY_H
 #define SETTINGKEY_H
 
+#include "settingapp.h"
 #include <QDialog>
 #include <QWidget>
 #include <QPushButton>
@@ -34,6 +35,7 @@ private slots:
     void hideGroupRow(const QString& text);
     void searchRow(const QString& text);
     void showBoxKey(int row);
+    void deleteScheme();
 
 private:
     class BoxKey : public QDialog
@@ -57,9 +59,28 @@ private:
         void keyPressEvent(QKeyEvent* event) override;
     };
 
+    class BoxScheme : public QDialog
+    {
+    public:
+        explicit BoxScheme(SettingKey* parent = nullptr);
+        ~BoxScheme() override = default;
+
+        void showBoxScheme();
+
+    private:
+        SettingKey      *m_settingKey   = nullptr;
+        QPushButton     *m_btnOk        = new QPushButton("OK");
+        QPushButton     *m_btnCancel    = new QPushButton("Отмена");
+        QLineEdit       *m_edit         = new QLineEdit;
+
+        void newScheme();
+    };
+
     static SettingKey               *m_singleton;
-    Ui::SettingKey                  *ui         = nullptr;
-    BoxKey                          *m_boxKey   = new BoxKey(this);
+    SettingApp                      *m_settingApp   = SettingApp::instance();
+    Ui::SettingKey                  *ui             = nullptr;
+    BoxKey                          *m_boxKey       = new BoxKey(this);
+    BoxScheme                       *m_boxScheme    = new BoxScheme(this);
     QHash<QString, QVector<int>>    m_groupRow_;
 
     QString checkingItemKey(const QString& text);
