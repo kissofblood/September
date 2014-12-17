@@ -12,6 +12,9 @@ SearchAndReplace::SearchAndReplace(QWidget* parent) : QWidget(parent),
     m_msgBox->addButton("Нет", QMessageBox::RejectRole);
     m_msgBox->setIcon(QMessageBox::Information);
 
+    m_settingKey->addValue(m_nameGroup, ui->btnNext->text());
+    m_settingKey->addValue(m_nameGroup, ui->btnPrev->text());
+
     this->connect(ui->btnSearch,        &QPushButton::clicked,       this, &SearchAndReplace::searchText);
     this->connect(ui->editSearch,       &QLineEdit::returnPressed,   this, &SearchAndReplace::searchText);
     this->connect(ui->editReplace,      &QLineEdit::returnPressed,   this, &SearchAndReplace::replaceText);
@@ -31,9 +34,21 @@ SearchAndReplace::SearchAndReplace(QWidget* parent) : QWidget(parent),
             m_editor->clearSelectTextSearch();
         }
     });
+    this->connect(m_settingKey, &SettingKey::settingKey, this, [this]()
+    {
+        m_settingKey->readScheme();
+        readSettingKey();
+    });
 
-    m_settingKey->addItem("Поиск и Замена", ui->btnNext->text(), ui->btnNext->shortcut().toString());
-    m_settingKey->addItem("Поиск и Замена", ui->btnPrev->text(), ui->btnPrev->shortcut().toString());
+    m_settingKey->readScheme();
+    if(m_settingKey->containsKey(m_nameGroup, ui->btnNext->text()))
+        readSettingKey();
+    else
+    {
+        m_settingKey->writeKey(m_nameGroup, ui->btnNext->text(), ui->btnNext->shortcut().toString());
+        m_settingKey->writeKey(m_nameGroup, ui->btnPrev->text(), ui->btnPrev->shortcut().toString());
+    }
+
 }
 
 SearchAndReplace::~SearchAndReplace()
@@ -224,4 +239,10 @@ void SearchAndReplace::clearTextCharFormatUndo()
         pair.first.mergeCharFormat(pair.second);
     }
     m_textCharFormatUndo_.clear();
+}
+
+void SearchAndReplace::readSettingKey()
+{
+    ui->btnNext->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->btnNext->text())));
+    ui->btnPrev->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->btnPrev->text())));
 }

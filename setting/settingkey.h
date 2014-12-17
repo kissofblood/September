@@ -4,16 +4,24 @@
 #include "settingapp.h"
 #include <QDialog>
 #include <QWidget>
-#include <QPushButton>
-#include <QVector>
-#include <QHash>
 #include <QString>
-#include <QTableWidgetItem>
-#include <QComboBox>
+#include <QLabel>
+#include <QPushButton>
 #include <QLineEdit>
+#include <QHash>
+#include <QVector>
+#include <QPair>
+#include <QStringList>
+#include <QAbstractItemView>
+#include <QComboBox>
 #include <functional>
-
-#include <QtWidgets>
+#include <QTableWidget>
+#include <QTableWidgetItem>
+#include <QMessageBox>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QKeyEvent>
+#include <QHeaderView>
 
 namespace Ui {
 class SettingKey;
@@ -28,7 +36,15 @@ private:
 
 public:
     static SettingKey* instance(QWidget* parent = nullptr);
-    void addItem(const QString& group, const QString& name, const QString& key = QString());
+    void readScheme();
+    void addValue(const QString& group, const QString& name);
+    void addKey();
+    bool containsKey(const QString& group, const QString& name);
+    void writeKey(const QString& group, const QString& name, const QString& key = QString());
+    QString readKey(const QString& group, const QString& name);
+
+signals:
+    void settingKey();
 
 private slots:
     void visibleGrpScheme();
@@ -36,6 +52,9 @@ private slots:
     void searchRow(const QString& text);
     void showBoxKey(int row);
     void deleteScheme();
+    void selectScheme(const QString& text);
+    void writeSetting();
+    void clearContainer();
 
 private:
     class BoxKey : public QDialog
@@ -82,8 +101,12 @@ private:
     BoxKey                          *m_boxKey       = new BoxKey(this);
     BoxScheme                       *m_boxScheme    = new BoxScheme(this);
     QHash<QString, QVector<int>>    m_groupRow_;
+    QHash<QString, QVector<QPair<QString, QString>>> m_scheme_;
+    QStringList m_removeScheme_;
 
     QString checkingItemKey(const QString& text);
+    void addNameScheme(const QString& scheme);
+    void addItemTable(const QString& group, const QString& name, const QString& key);
 };
 
 #endif // SETTINGKEY_H

@@ -74,9 +74,6 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QComboBox" name="comboBox_2"/>
-      </item>
      </layout>
     </widget>
    </item>
@@ -117,7 +114,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="btnOk">
        <property name="text">
         <string>ОК</string>
        </property>

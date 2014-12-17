@@ -18,6 +18,7 @@
 #include <QRegExp>
 #include <QCheckBox>
 #include <QFlags>
+#include <QKeySequence>
 
 namespace Ui {
 class SearchAndReplace;
@@ -53,9 +54,11 @@ private:
     int     m_posCursor     = 0;
     bool    m_isRegExp      = false;
     bool    m_isReplaceAll  = false;
+    const QString m_nameGroup = { "Поиск и Замена" };
 
     void selectTextSearch();
     void clearTextCharFormatUndo();
+    void readSettingKey();
 };
 
 #endif // SEARCHANDREPLACE_H

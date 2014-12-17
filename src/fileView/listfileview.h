@@ -8,6 +8,8 @@
 #include <QContextMenuEvent>
 #include <QModelIndex>
 #include <QAction>
+#include <QString>
+#include <QKeySequence>
 
 class ListFileView : public QListView
 {
@@ -22,6 +24,7 @@ signals:
 private:
     SettingKey  *m_settingKey   = SettingKey::instance();
     QMenu       *m_menu         = new QMenu(this);
+    const QString m_nameGroup = { "Список документов" };
 
     void contextMenuEvent(QContextMenuEvent* event) override;
 };

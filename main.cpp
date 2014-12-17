@@ -1,5 +1,5 @@
 #include "septembereditor.h"
-#include <setting/settingapp.h>
+#include "setting/settingapp.h"
 
 int main(int argc, char *argv[])
 {

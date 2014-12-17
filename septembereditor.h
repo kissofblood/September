@@ -53,6 +53,7 @@ private slots:
     void nextFile();
     void prevFile();
     void printFile();
+    void showSettingKey();
 
 private:
     struct ClickedButton
@@ -70,8 +71,10 @@ private:
     QVector<QMetaObject::Connection> m_connectionCoreEditor;
     bool                        m_visiblePathFile   = false;
     int                         m_countUnnamedFile  = 1;
+    const QString               m_nameGroup = { "September" };
 
     void connectionCoreEditor();
+    void readSettingKey();
 };
 
 #endif // SEPTEMBEREDITOR_H

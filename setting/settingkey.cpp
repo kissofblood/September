@@ -7,7 +7,7 @@ SettingKey::SettingKey(QWidget* parent) : QDialog(parent),
     ui(new Ui::SettingKey)
 {
     ui->setupUi(this);
-   // ui->grpScheme->setVisible(false);
+    ui->grpScheme->setVisible(false);
     ui->tableWidget->setColumnCount(2);
     ui->tableWidget->setHorizontalHeaderLabels({ "Действия", "Комбинация клавиш" });
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -16,8 +16,9 @@ SettingKey::SettingKey(QWidget* parent) : QDialog(parent),
     ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->cmbGroup->addItem("Все");
-    ui->cmbScheme->addItem("Default");
 
+    this->connect(ui->btnOk,        &QPushButton::clicked, this, &SettingKey::writeSetting);
+    this->connect(ui->btnCancel,    &QPushButton::clicked, this, &SettingKey::clearContainer);
     this->connect(ui->btnCancel,    &QPushButton::clicked, this, &QDialog::close);
     this->connect(ui->btnDetails,   &QPushButton::clicked, this, &SettingKey::visibleGrpScheme);
     this->connect(ui->cmbGroup,     &QComboBox::currentTextChanged, this, &SettingKey::hideGroupRow);
@@ -25,6 +26,7 @@ SettingKey::SettingKey(QWidget* parent) : QDialog(parent),
     this->connect(ui->tableWidget,  &QTableWidget::cellDoubleClicked, this, std::bind(&SettingKey::showBoxKey, this, std::placeholders::_1));
     this->connect(ui->btnCreateScheme, &QPushButton::clicked, m_boxScheme, &BoxScheme::showBoxScheme);
     this->connect(ui->btnDeleteScheme, &QPushButton::clicked, this, &SettingKey::deleteScheme);
+    this->connect(ui->cmbScheme, &QComboBox::currentTextChanged, this, &SettingKey::selectScheme);
     this->setWindowTitle("Настройка комбинаций клавиш -- September");
 }
 
@@ -38,7 +40,28 @@ SettingKey* SettingKey::instance(QWidget* parent)
     return m_singleton;
 }
 
-void SettingKey::addItem(const QString& group, const QString& name, const QString& key)
+void SettingKey::readScheme()
+{
+    QStringList listScheme = m_settingApp->readSettingKey();
+    if(listScheme.isEmpty())
+    {
+        ui->cmbScheme->addItem("Default");
+        m_settingApp->writeSettingKey("Default", 0);
+        m_scheme_.insert("Default", QVector<QPair<QString, QString>>());
+    }
+    else
+    {
+        for(auto& scheme : listScheme)
+        {
+            if(ui->cmbScheme->findText(scheme) == -1)
+                ui->cmbScheme->addItem(scheme);
+            m_scheme_.insert(scheme, QVector<QPair<QString, QString>>());
+        }
+    }
+    ui->cmbScheme->setCurrentText(m_settingApp->readCurrentSettingKey());
+}
+
+void SettingKey::addValue(const QString& group, const QString& name)
 {
     if(ui->cmbGroup->findText(group) == -1)
     {
@@ -47,9 +70,37 @@ void SettingKey::addItem(const QString& group, const QString& name, const QStrin
     }
     ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
     ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0, new QTableWidgetItem(name));
-    ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 1, new QTableWidgetItem(key));
+    ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 1, new QTableWidgetItem);
     m_groupRow_[group].push_back(ui->tableWidget->rowCount() - 1);
 }
+
+void SettingKey::addKey()
+{
+    for(int i = 0; i < ui->cmbScheme->count(); i++)
+        for(int j = 0; j < ui->cmbGroup->count(); j++)
+        {
+            QString group = ui->cmbGroup->itemText(j);
+            if(group != ui->cmbGroup->itemText(0))
+                for(auto& row : m_groupRow_[group])
+                {
+                    QString scheme = ui->cmbScheme->itemText(i);
+                    QString name = ui->tableWidget->item(row, 0)->text();
+                    QString key = m_settingApp->readSettingKey(scheme, group, name);
+                    if(scheme == ui->cmbScheme->currentText())
+                        ui->tableWidget->item(row, 1)->setText(key);
+                    m_scheme_[scheme].push_back({ name, key });
+                }
+        }
+}
+
+bool SettingKey::containsKey(const QString& group, const QString& name)
+{ return m_settingApp->containsSettingKey(ui->cmbScheme->currentText(), group, name);  }
+
+void SettingKey::writeKey(const QString& group, const QString& name, const QString& key)
+{ m_settingApp->writeSettingKey(ui->cmbScheme->currentText(), group, name, key); }
+
+QString SettingKey::readKey(const QString& group, const QString& name)
+{ return m_settingApp->readSettingKey(ui->cmbScheme->currentText(), group, name); }
 
 void SettingKey::visibleGrpScheme()
 {
@@ -69,7 +120,7 @@ void SettingKey::visibleGrpScheme()
 void SettingKey::hideGroupRow(const QString& text)
 {
     static QVector<int> rowHidden;
-    if(text == "Все")
+    if(text == ui->cmbGroup->itemText(0))
     {
         for(int i = 0; i < ui->tableWidget->rowCount(); i++)
             ui->tableWidget->setRowHidden(i, false);
@@ -107,7 +158,7 @@ void SettingKey::searchRow(const QString& text)
     for(int i = 0; i < ui->tableWidget->rowCount(); i++)
     {
         QString currentGroup = ui->cmbGroup->currentText();
-        if(currentGroup == "Все")
+        if(currentGroup == ui->cmbGroup->itemText(0))
             funRowHidden(i);
         else for(auto& rowGroup : m_groupRow_[currentGroup])
             if(rowGroup == i)
@@ -129,8 +180,49 @@ void SettingKey::deleteScheme()
                             "Удалить схему \"" + ui->cmbScheme->currentText() + "\"",
                             QMessageBox::Ok, QMessageBox::Cancel))
     {
+        QString scheme = ui->cmbScheme->currentText();
+        m_removeScheme_.push_back(scheme);
+        m_scheme_.remove(scheme);
         ui->cmbScheme->removeItem(ui->cmbScheme->currentIndex());
     }
+}
+
+void SettingKey::selectScheme(const QString& text)
+{
+    if(text == ui->cmbScheme->itemText(0))
+        ui->btnDeleteScheme->setEnabled(false);
+    else
+        ui->btnDeleteScheme->setEnabled(true);
+    int row = 0;
+    for(auto i = m_scheme_[text].begin(); i != m_scheme_[text].end(); i++)
+    {
+        ui->tableWidget->item(row, 0)->setText(i->first);
+        ui->tableWidget->item(row, 1)->setText(i->second);
+        row += 1;
+    }
+}
+
+void SettingKey::writeSetting()
+{
+    for(auto& schemeRemove : m_removeScheme_)
+        m_settingApp->removeSettingKey(schemeRemove);
+    for(auto i = m_scheme_.begin(); i != m_scheme_.end(); i++)
+        for(auto j = m_groupRow_.begin(); j != m_groupRow_.end(); j++)
+            for(auto& row : j.value())
+                m_settingApp->writeSettingKey(i.key(), j.key(), i.value()[row].first, i.value()[row].second);
+    m_settingApp->writeCurrentSettingKey(ui->cmbScheme->currentText());
+    for(int i = 0; i < ui->cmbScheme->count(); i++)
+        m_settingApp->writeSettingKey(ui->cmbScheme->itemText(i), i);
+    clearContainer();
+    emit settingKey();
+    this->close();
+}
+
+void SettingKey::clearContainer()
+{
+    ui->cmbScheme->clear();
+    m_scheme_.clear();
+    m_removeScheme_.clear();
 }
 
 QString SettingKey::checkingItemKey(const QString& text)
@@ -140,6 +232,36 @@ QString SettingKey::checkingItemKey(const QString& text)
             if(ui->tableWidget->item(i, 1)->text() == text)
                 return ui->tableWidget->item(i, 0)->text();
     return QString();
+}
+
+void SettingKey::addNameScheme(const QString& scheme)
+{
+    ui->cmbScheme->addItem(scheme);
+    int count = ui->cmbScheme->count() - 1;
+    ui->cmbScheme->setCurrentIndex(count);
+    QVector<QPair<QString, QString>> vecRow;
+    for(int i = 0; i < ui->tableWidget->rowCount(); i++)
+    {
+        ui->tableWidget->item(i, 1)->setText(QString());
+        vecRow.push_back({ ui->tableWidget->item(i, 0)->text(), ui->tableWidget->item(i, 1)->text() });
+    }
+    auto iterRemove = qFind(m_removeScheme_.begin(), m_removeScheme_.end(), scheme);
+    if(iterRemove != m_removeScheme_.end())
+        m_removeScheme_.erase(iterRemove);
+    m_scheme_.insert(scheme, vecRow);
+}
+
+void SettingKey::addItemTable(const QString& group, const QString& name, const QString& key)
+{
+    if(ui->cmbGroup->findText(group) == -1)
+    {
+        ui->cmbGroup->addItem(group);
+        m_groupRow_.insert(group, QVector<int>());
+    }
+    ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
+    ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0, new QTableWidgetItem(name));
+    ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 1, new QTableWidgetItem(key));
+    m_groupRow_[group].push_back(ui->tableWidget->rowCount() - 1);
 }
 
 SettingKey::BoxKey::BoxKey(SettingKey* parent) : QDialog(parent)
@@ -172,10 +294,28 @@ void SettingKey::BoxKey::setTextMessage(const QString& text, int row)
 
 void SettingKey::BoxKey::funButton()
 {
+    QString scheme = m_settingKey->ui->cmbScheme->currentText();
+    QString rowText = m_settingKey->ui->tableWidget->item(m_row, 0)->text();
     if(m_button->text() == "Нет")
+    {
         m_settingKey->ui->tableWidget->item(m_row, 1)->setText(QString());
+        for(auto i = m_settingKey->m_scheme_[scheme].begin(); i != m_settingKey->m_scheme_[scheme].end(); i++)
+            if(i->first == rowText)
+            {
+                i->second = QString();
+                break;
+            }
+    }
     else if(m_button->text() == "Назначить")
+    {
         m_settingKey->ui->tableWidget->item(m_row, 1)->setText(m_keyText);
+        for(auto i = m_settingKey->m_scheme_[scheme].begin(); i != m_settingKey->m_scheme_[scheme].end(); i++)
+            if(i->first == rowText)
+            {
+                i->second = m_keyText;
+                break;
+            }
+    }
     this->close();
 }
 
@@ -368,8 +508,7 @@ void SettingKey::BoxScheme::newScheme()
             }
             break;
         }
-    m_settingKey->ui->cmbScheme->addItem(scheme);
-    m_settingKey->ui->cmbScheme->setCurrentIndex(countScheme);
+    m_settingKey->addNameScheme(scheme);
     m_edit->clear();
     this->close();
 }
