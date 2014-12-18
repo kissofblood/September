@@ -87,7 +87,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_5">
+      <widget class="QPushButton" name="btnDefault">
        <property name="text">
         <string>По умолчанию</string>
        </property>

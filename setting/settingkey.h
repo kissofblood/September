@@ -22,6 +22,7 @@
 #include <QVBoxLayout>
 #include <QKeyEvent>
 #include <QHeaderView>
+#include <QCloseEvent>
 
 namespace Ui {
 class SettingKey;
@@ -55,6 +56,7 @@ private slots:
     void selectScheme(const QString& text);
     void writeSetting();
     void clearContainer();
+    void setDefaultScheme();
 
 private:
     class BoxKey : public QDialog
@@ -107,6 +109,7 @@ private:
     QString checkingItemKey(const QString& text);
     void addNameScheme(const QString& scheme);
     void addItemTable(const QString& group, const QString& name, const QString& key);
+    void closeEvent(QCloseEvent*) override;
 };
 
 #endif // SETTINGKEY_H

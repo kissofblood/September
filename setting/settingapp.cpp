@@ -21,6 +21,19 @@ void SettingApp::writeSettingKey(const QString& scheme, const QString& group, co
     m_setting->endGroup();
 }
 
+void SettingApp::writeDefaultSettingKey(const QString& scheme, const QString& group, const QString& name, const QString& key)
+{
+    m_setting->beginGroup("$settingKey");
+        m_setting->beginGroup("$currentScheme");
+            m_setting->beginGroup(scheme);
+                m_setting->beginGroup(group);
+                    m_setting->setValue(name, key);
+                m_setting->endGroup();
+            m_setting->endGroup();
+        m_setting->endGroup();
+    m_setting->endGroup();
+}
+
 void SettingApp::writeSettingKey(const QString& scheme, int pos)
 {
     m_setting->beginGroup("$settingKey");
@@ -62,6 +75,23 @@ QString SettingApp::readSettingKey(const QString& scheme, const QString& group, 
                 QVariant var = m_setting->value(name);
                 if(var.isValid() && !var.isNull())
                     key = var.toString();
+            m_setting->endGroup();
+        m_setting->endGroup();
+    m_setting->endGroup();
+    return key;
+}
+
+QString SettingApp::readDefaultSettingKey(const QString& scheme, const QString& group, const QString& name)
+{
+    QString key = "";
+    m_setting->beginGroup("$settingKey");
+        m_setting->beginGroup("$currentScheme");
+            m_setting->beginGroup(scheme);
+                m_setting->beginGroup(group);
+                QVariant var = m_setting->value(name);
+                if(var.isValid() && !var.isNull())
+                    key = var.toString();
+                m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
     m_setting->endGroup();

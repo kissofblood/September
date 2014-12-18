@@ -20,6 +20,7 @@ SettingKey::SettingKey(QWidget* parent) : QDialog(parent),
     this->connect(ui->btnOk,        &QPushButton::clicked, this, &SettingKey::writeSetting);
     this->connect(ui->btnCancel,    &QPushButton::clicked, this, &SettingKey::clearContainer);
     this->connect(ui->btnCancel,    &QPushButton::clicked, this, &QDialog::close);
+    this->connect(ui->btnDefault,   &QPushButton::clicked, this, &SettingKey::setDefaultScheme);
     this->connect(ui->btnDetails,   &QPushButton::clicked, this, &SettingKey::visibleGrpScheme);
     this->connect(ui->cmbGroup,     &QComboBox::currentTextChanged, this, &SettingKey::hideGroupRow);
     this->connect(ui->editSearch,   &QLineEdit::textChanged, this, &SettingKey::searchRow);
@@ -97,7 +98,11 @@ bool SettingKey::containsKey(const QString& group, const QString& name)
 { return m_settingApp->containsSettingKey(ui->cmbScheme->currentText(), group, name);  }
 
 void SettingKey::writeKey(const QString& group, const QString& name, const QString& key)
-{ m_settingApp->writeSettingKey(ui->cmbScheme->currentText(), group, name, key); }
+{
+    QString scheme = ui->cmbScheme->currentText();
+    m_settingApp->writeSettingKey(scheme, group, name, key);
+    m_settingApp->writeDefaultSettingKey(scheme, group, name, key);
+}
 
 QString SettingKey::readKey(const QString& group, const QString& name)
 { return m_settingApp->readSettingKey(ui->cmbScheme->currentText(), group, name); }
@@ -225,6 +230,17 @@ void SettingKey::clearContainer()
     m_removeScheme_.clear();
 }
 
+void SettingKey::setDefaultScheme()
+{
+    QString scheme = ui->cmbScheme->itemText(0);
+    for(auto i = m_groupRow_.begin(); i != m_groupRow_.end(); i++)
+        for(auto& row : i.value())
+            m_scheme_[scheme][row].second = m_settingApp->readDefaultSettingKey(scheme, i.key(), m_scheme_[scheme][row].first);
+    ui->cmbScheme->setCurrentIndex(0);
+    if(ui->cmbScheme->count() == 1)
+        selectScheme(ui->cmbScheme->currentText());
+}
+
 QString SettingKey::checkingItemKey(const QString& text)
 {
     for(int i = 0; i < ui->tableWidget->rowCount(); i++)
@@ -263,6 +279,9 @@ void SettingKey::addItemTable(const QString& group, const QString& name, const Q
     ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 1, new QTableWidgetItem(key));
     m_groupRow_[group].push_back(ui->tableWidget->rowCount() - 1);
 }
+
+void SettingKey::closeEvent(QCloseEvent*)
+{ clearContainer(); }
 
 SettingKey::BoxKey::BoxKey(SettingKey* parent) : QDialog(parent)
     , m_settingKey(parent)
