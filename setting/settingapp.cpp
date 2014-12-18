@@ -12,10 +12,12 @@ SettingApp* SettingApp::instance()
 
 void SettingApp::writeSettingKey(const QString& scheme, const QString& group, const QString& name, const QString& key)
 {
-    m_setting->beginGroup("$settingKey");
-        m_setting->beginGroup(scheme);
-            m_setting->beginGroup(group);
-                m_setting->setValue(name, key);
+    m_setting->beginGroup("settingKey");
+        m_setting->beginGroup("scheme");
+            m_setting->beginGroup(scheme);
+                m_setting->beginGroup(group);
+                    m_setting->setValue(name, key);
+                m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
     m_setting->endGroup();
@@ -23,8 +25,8 @@ void SettingApp::writeSettingKey(const QString& scheme, const QString& group, co
 
 void SettingApp::writeDefaultSettingKey(const QString& scheme, const QString& group, const QString& name, const QString& key)
 {
-    m_setting->beginGroup("$settingKey");
-        m_setting->beginGroup("$currentScheme");
+    m_setting->beginGroup("settingKey");
+        m_setting->beginGroup("defaultScheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup(group);
                     m_setting->setValue(name, key);
@@ -36,8 +38,8 @@ void SettingApp::writeDefaultSettingKey(const QString& scheme, const QString& gr
 
 void SettingApp::writeSettingKey(const QString& scheme, int pos)
 {
-    m_setting->beginGroup("$settingKey");
-        m_setting->beginWriteArray("$schemes");
+    m_setting->beginGroup("settingKey");
+        m_setting->beginWriteArray("schemes");
             m_setting->setArrayIndex(pos);
             m_setting->setValue("name", scheme);
         m_setting->endArray();
@@ -46,8 +48,8 @@ void SettingApp::writeSettingKey(const QString& scheme, int pos)
 
 void SettingApp::writeCurrentSettingKey(const QString& scheme)
 {
-    m_setting->beginGroup("$settingKey");
-        m_setting->beginGroup("$currentScheme");
+    m_setting->beginGroup("settingKey");
+        m_setting->beginGroup("currentScheme");
             m_setting->setValue("name", scheme);
         m_setting->endGroup();
     m_setting->endGroup();
@@ -56,8 +58,8 @@ void SettingApp::writeCurrentSettingKey(const QString& scheme)
 QString SettingApp::readCurrentSettingKey()
 {
     QString current = "";
-    m_setting->beginGroup("$settingKey");
-        m_setting->beginGroup("$currentScheme");
+    m_setting->beginGroup("settingKey");
+        m_setting->beginGroup("currentScheme");
         QVariant var = m_setting->value("name");
         if(var.isValid() && !var.isNull())
             current = var.toString();
@@ -69,12 +71,14 @@ QString SettingApp::readCurrentSettingKey()
 QString SettingApp::readSettingKey(const QString& scheme, const QString& group, const QString& name)
 {
     QString key = "";
-    m_setting->beginGroup("$settingKey");
-        m_setting->beginGroup(scheme);
-            m_setting->beginGroup(group);
-                QVariant var = m_setting->value(name);
-                if(var.isValid() && !var.isNull())
-                    key = var.toString();
+    m_setting->beginGroup("settingKey");
+        m_setting->beginGroup("scheme");
+            m_setting->beginGroup(scheme);
+                m_setting->beginGroup(group);
+                    QVariant var = m_setting->value(name);
+                    if(var.isValid() && !var.isNull())
+                        key = var.toString();
+                m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
     m_setting->endGroup();
@@ -84,8 +88,8 @@ QString SettingApp::readSettingKey(const QString& scheme, const QString& group, 
 QString SettingApp::readDefaultSettingKey(const QString& scheme, const QString& group, const QString& name)
 {
     QString key = "";
-    m_setting->beginGroup("$settingKey");
-        m_setting->beginGroup("$currentScheme");
+    m_setting->beginGroup("settingKey");
+        m_setting->beginGroup("defaultScheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup(group);
                 QVariant var = m_setting->value(name);
@@ -101,8 +105,8 @@ QString SettingApp::readDefaultSettingKey(const QString& scheme, const QString& 
 QStringList SettingApp::readSettingKey()
 {
     QStringList list;
-    m_setting->beginGroup("$settingKey");
-        int size = m_setting->beginReadArray("$schemes");
+    m_setting->beginGroup("settingKey");
+        int size = m_setting->beginReadArray("schemes");
         for(int i = 0; i < size; i++)
         {
             m_setting->setArrayIndex(i);
@@ -115,19 +119,21 @@ QStringList SettingApp::readSettingKey()
 
 void SettingApp::removeSettingKey(const QString& scheme, const QString& group, const QString& name)
 {
-    m_setting->beginGroup("$settingKey");
-        m_setting->beginGroup(scheme);
-            m_setting->beginGroup(group);
-                m_setting->remove(name);
+    m_setting->beginGroup("settingKey");
+        m_setting->beginGroup("scheme");
+            m_setting->beginGroup(scheme);
+                m_setting->beginGroup(group);
+                    m_setting->remove(name);
+                m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-   m_setting->endGroup();
+    m_setting->endGroup();
 }
 
 void SettingApp::removeSettingKey(const QString& scheme)
 {
-    m_setting->beginGroup("$settingKey");
-        int size = m_setting->beginReadArray("$schemes");
+    m_setting->beginGroup("settingKey");
+        int size = m_setting->beginReadArray("schemes");
         int index = 0;
         for(; index < size; index++)
         {
@@ -143,7 +149,7 @@ void SettingApp::removeSettingKey(const QString& scheme)
         if(index != size)
         {
             QStringList list;
-            m_setting->beginReadArray("$schemes");
+            m_setting->beginReadArray("schemes");
                 for(int i = index + 1; i < size; i++)
                 {
                     m_setting->setArrayIndex(i);
@@ -151,7 +157,7 @@ void SettingApp::removeSettingKey(const QString& scheme)
                     m_setting->remove("name");
                 }
             m_setting->endArray();
-            m_setting->beginWriteArray("$schemes", size - 1);
+            m_setting->beginWriteArray("schemes", size - 1);
                 if(!list.isEmpty())
                     for(int i = index, j = 0; i < size - 1; i++)
                     {
@@ -169,10 +175,12 @@ void SettingApp::removeSettingKey(const QString& scheme)
 bool SettingApp::containsSettingKey(const QString& scheme, const QString& group, const QString& name)
 {
     bool success;
-    m_setting->beginGroup("$settingKey");
-        m_setting->beginGroup(scheme);
-            m_setting->beginGroup(group);
-                success = m_setting->contains(name);
+    m_setting->beginGroup("settingKey");
+        m_setting->beginGroup("scheme");
+            m_setting->beginGroup(scheme);
+                m_setting->beginGroup(group);
+                    success = m_setting->contains(name);
+                m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
     m_setting->endGroup();
