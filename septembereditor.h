@@ -3,24 +3,35 @@
 
 #include "setting/settingkey.h"
 #include "setting/settingseptember.h"
+#include "setting/settingapp.h"
 #include "src/fileView/listfilemodel.h"
 #include <QMainWindow>
-#include <QString>
 #include <QWidget>
+#include <QString>
+#include <QModelIndex>
+#include <QFileInfo>
+#include <QMetaObject>
+#include <QPair>
+#include <QAction>
+#include <QFile>
 #include <QKeySequence>
 #include <QPushButton>
-#include <QPlainTextEdit>
-#include <QAction>
-#include <QTextDocument>
-#include <QTextCursor>
-#include <QFileDialog>
-#include <QFile>
-#include <QIODevice>
 #include <functional>
-#include <QString>
-#include <QDirModel>
+#include <QLabel>
+#include <QFileDialog>
+#include <QIODevice>
+#include <QPlainTextEdit>
+#include <QTextCursor>
+#include <QRegExp>
+#include <QBuffer>
+#include <QGraphicsScene>
+#include <tuple>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintDialog>
+#include <QMessageBox>
+#include <QFileInfoList>
 
-#include <QtPrintSupport>
+#include <QDebug>
 
 namespace Ui {
 class SeptemberEditor;
@@ -54,6 +65,8 @@ private slots:
     void prevFile();
     void printFile();
     void showSettingKey();
+    void clearHistoryFile();
+    void openHistoryFile();
 
 private:
     struct ClickedButton
@@ -66,15 +79,20 @@ private:
     SettingKey                  *m_settingKey       = SettingKey::instance(this);
     SettingSeptember            *m_settingSeptember = new SettingSeptember(this);
     ListFileModel               *m_listModel        = new ListFileModel(this);
+    SettingApp                  *m_settingApp       = SettingApp::instance();
     ClickedButton               m_clickedButton;
     QFileInfo                   m_fileInfo;
-    QVector<QMetaObject::Connection> m_connectionCoreEditor;
+    QVector<QMetaObject::Connection>    m_connectionCoreEditor;
+    QVector<QPair<QAction*, QString>>   m_historyFile_;
     bool                        m_visiblePathFile   = false;
+    bool                        m_visibleLineWrap   = true;
     int                         m_countUnnamedFile  = 1;
-    const QString               m_nameGroup = { "September" };
+    const QString               m_nameGroup         = { "September" };
 
     void connectionCoreEditor();
     void readSettingKey();
+    void readHistoryFile();
+    void writeFile(const QString& path, QFile& file);
 };
 
 #endif // SEPTEMBEREDITOR_H

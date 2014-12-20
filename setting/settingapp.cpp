@@ -57,12 +57,9 @@ void SettingApp::writeCurrentSettingKey(const QString& scheme)
 
 QString SettingApp::readCurrentSettingKey()
 {
-    QString current = "";
     m_setting->beginGroup("settingKey");
         m_setting->beginGroup("currentScheme");
-        QVariant var = m_setting->value("name");
-        if(var.isValid() && !var.isNull())
-            current = var.toString();
+            QString current = m_setting->value("name").toString();
         m_setting->endGroup();
     m_setting->endGroup();
     return current;
@@ -70,14 +67,11 @@ QString SettingApp::readCurrentSettingKey()
 
 QString SettingApp::readSettingKey(const QString& scheme, const QString& group, const QString& name)
 {
-    QString key = "";
     m_setting->beginGroup("settingKey");
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup(group);
-                    QVariant var = m_setting->value(name);
-                    if(var.isValid() && !var.isNull())
-                        key = var.toString();
+                    QString key = m_setting->value(name).toString();
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
@@ -87,14 +81,11 @@ QString SettingApp::readSettingKey(const QString& scheme, const QString& group, 
 
 QString SettingApp::readDefaultSettingKey(const QString& scheme, const QString& group, const QString& name)
 {
-    QString key = "";
     m_setting->beginGroup("settingKey");
         m_setting->beginGroup("defaultScheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup(group);
-                QVariant var = m_setting->value(name);
-                if(var.isValid() && !var.isNull())
-                    key = var.toString();
+                QString key = m_setting->value(name).toString();
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
@@ -185,4 +176,51 @@ bool SettingApp::containsSettingKey(const QString& scheme, const QString& group,
         m_setting->endGroup();
     m_setting->endGroup();
     return success;
+}
+
+void SettingApp::writeHistoryFile(const QString& file)
+{
+    QFileInfoList list = readHistoryFile();
+    clearHistoryFile();
+    for(int i = 0; i < list.size(); i++)
+        if(list[i].filePath() == file)
+        {
+            list.removeAt(i);
+            break;
+        }
+    list.push_front(file);
+    if(list.size() == 6)
+        list.pop_back();
+
+    m_setting->beginGroup("historyFile");
+        m_setting->beginWriteArray("pathFile");
+            for(int i = 0; i < list.size(); i++)
+            {
+                m_setting->setArrayIndex(i);
+                m_setting->setValue("file", list[i].filePath());
+            }
+        m_setting->endArray();
+    m_setting->endGroup();
+}
+
+QFileInfoList SettingApp::readHistoryFile()
+{
+    m_setting->beginGroup("historyFile");
+        int size = m_setting->beginReadArray("pathFile");
+        QFileInfoList list;
+        for(int i = 0; i < size; i++)
+        {
+            m_setting->setArrayIndex(i);
+            list.push_back(m_setting->value("file").toString());
+        }
+        m_setting->endArray();
+    m_setting->endGroup();
+    return qMove(list);
+}
+
+void SettingApp::clearHistoryFile()
+{
+    m_setting->beginGroup("historyFile");
+        m_setting->remove("");
+    m_setting->endGroup();
 }

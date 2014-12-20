@@ -72,3 +72,21 @@ std::tuple<QFileInfo, CoreEditor*, ListFileModel::SceneStyle*, ListFileModel::Bu
 
 QModelIndex ListFileModel::getModelIndex(int row) const
 { return index(row, 0); }
+
+int ListFileModel::containsFile(const QString& file)
+{
+    for(int i = 0; i < m_item_.size(); i++)
+        if(m_item_[i].file.filePath() == file)
+            return i;
+    return -1;
+}
+
+void ListFileModel::replaceFile(const QString& oldFile, const QString& newFile)
+{
+    for(auto& item : m_item_)
+        if(item.file.filePath() == oldFile)
+        {
+            item.file.setFile(newFile);
+            break;
+        }
+}

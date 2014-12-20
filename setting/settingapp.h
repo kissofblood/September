@@ -5,6 +5,7 @@
 #include <QString>
 #include <QSettings>
 #include <QStringList>
+#include <QFileInfoList>
 
 class SettingApp : public QApplication
 {
@@ -13,8 +14,8 @@ public:
     ~SettingApp() override = default;
 
     static SettingApp* instance();
-    void writeSettingKey(const QString& scheme, const QString& group, const QString& name, const QString& key = QString());
-    void writeDefaultSettingKey(const QString& scheme, const QString& group, const QString& name, const QString& key = QString());
+    void writeSettingKey(const QString& scheme, const QString& group, const QString& name, const QString& key);
+    void writeDefaultSettingKey(const QString& scheme, const QString& group, const QString& name, const QString& key);
     void writeSettingKey(const QString& scheme, int pos);
     void writeCurrentSettingKey(const QString& scheme);
     QString readCurrentSettingKey();
@@ -24,9 +25,12 @@ public:
     void removeSettingKey(const QString& scheme, const QString& group, const QString& name);
     void removeSettingKey(const QString& scheme);
     bool containsSettingKey(const QString& scheme, const QString& group, const QString& name);
+    void writeHistoryFile(const QString& file);
+    QFileInfoList readHistoryFile();
+    void clearHistoryFile();
 
 private:
-    QSettings       *m_setting = nullptr;
+    QSettings   *m_setting = nullptr;
 };
 
 #endif // SETTINGAPP_H

@@ -48,7 +48,6 @@ SearchAndReplace::SearchAndReplace(QWidget* parent) : QWidget(parent),
         m_settingKey->writeKey(m_nameGroup, ui->btnNext->text(), ui->btnNext->shortcut().toString());
         m_settingKey->writeKey(m_nameGroup, ui->btnPrev->text(), ui->btnPrev->shortcut().toString());
     }
-
 }
 
 SearchAndReplace::~SearchAndReplace()

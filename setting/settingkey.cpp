@@ -50,14 +50,11 @@ void SettingKey::readScheme()
         m_settingApp->writeSettingKey("Default", 0);
         m_scheme_.insert("Default", QVector<QPair<QString, QString>>());
     }
-    else
+    else for(auto& scheme : listScheme)
     {
-        for(auto& scheme : listScheme)
-        {
-            if(ui->cmbScheme->findText(scheme) == -1)
-                ui->cmbScheme->addItem(scheme);
-            m_scheme_.insert(scheme, QVector<QPair<QString, QString>>());
-        }
+        if(ui->cmbScheme->findText(scheme) == -1)
+            ui->cmbScheme->addItem(scheme);
+        m_scheme_.insert(scheme, QVector<QPair<QString, QString>>());
     }
     ui->cmbScheme->setCurrentText(m_settingApp->readCurrentSettingKey());
 }
@@ -283,6 +280,12 @@ void SettingKey::addItemTable(const QString& group, const QString& name, const Q
 void SettingKey::closeEvent(QCloseEvent*)
 { clearContainer(); }
 
+void SettingKey::keyPressEvent(QKeyEvent* event)
+{
+    if(event->key() == Qt::Key_Escape)
+        this->close();
+}
+
 SettingKey::BoxKey::BoxKey(SettingKey* parent) : QDialog(parent)
     , m_settingKey(parent)
 {
@@ -407,6 +410,9 @@ void SettingKey::BoxKey::keyPressEvent(QKeyEvent* event)
         case Qt::Key_Left:  m_keyText += "Left";    flag = true; break;
         case Qt::Key_Down:  m_keyText += "Down";    flag = true; break;
         case Qt::Key_Right: m_keyText += "Right";   flag = true; break;
+        case Qt::Key_Escape: m_keyText += "Esc";    flag = true; break;
+        case Qt::Key_Plus: m_keyText += '+'; flag = true; break;
+        case Qt::Key_Minus: m_keyText += '-'; flag = true; break;
         default: flag = keyF(key); break;
         }
         return flag;

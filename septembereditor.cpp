@@ -14,6 +14,18 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->fileListView->setCurrentIndex(m_listModel->getModelIndex(0));
     ui->splitterEdit->setVisibleHeightHandle(false);
 
+    ui->mnPathFileHis1->setVisible(false);
+    ui->mnPathFileHis2->setVisible(false);
+    ui->mnPathFileHis3->setVisible(false);
+    ui->mnPathFileHis4->setVisible(false);
+    ui->mnPathFileHis5->setVisible(false);
+    m_historyFile_.push_back({ ui->mnPathFileHis1, QString() });
+    m_historyFile_.push_back({ ui->mnPathFileHis2, QString() });
+    m_historyFile_.push_back({ ui->mnPathFileHis3, QString() });
+    m_historyFile_.push_back({ ui->mnPathFileHis4, QString() });
+    m_historyFile_.push_back({ ui->mnPathFileHis5, QString() });
+    readHistoryFile();
+
     ui->mnNewFile->setShortcut(QKeySequence::New);
     ui->mnOpen->setShortcut(QKeySequence::Open);
     ui->mnSave->setShortcut(QKeySequence::Save);
@@ -61,6 +73,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->mnSettingKey->setShortcut(Qt::CTRL + Qt::ALT + Qt::Key_K);
     ui->mnSettingSeptember->setShortcut(Qt::CTRL + Qt::ALT + Qt::Key_S);
     ui->mnFullScreen->setShortcut(QKeySequence::FullScreen);
+    ui->mnAbout->setShortcut(Qt::SHIFT + Qt::Key_F1);
 
     m_settingKey->addValue(m_nameGroup, ui->mnNewFile->text());
     m_settingKey->addValue(m_nameGroup, ui->mnOpen->text());
@@ -97,6 +110,8 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     m_settingKey->addValue(m_nameGroup, ui->mnSettingKey->text());
     m_settingKey->addValue(m_nameGroup, ui->mnSettingSeptember->text());
 
+    m_settingKey->addValue(m_nameGroup, ui->mnAbout->text());
+
     this->connect(ui->btnCloseListFile,     &QPushButton::clicked, this, &SeptemberEditor::closeOrShowListFile);
     this->connect(ui->btnSearchAndReplace,  &QPushButton::clicked, this, &SeptemberEditor::closeOrShowWidgetSearchAndReplace);
     this->connect(ui->btnCreateWidget,      &QPushButton::clicked, this, &SeptemberEditor::closeOrShowCreateWidget);
@@ -112,6 +127,12 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnSave,           &QAction::triggered,    this, &SeptemberEditor::saveFile);
     this->connect(ui->mnSaveAs,         &QAction::triggered,    this, &SeptemberEditor::saveFileAs);
     this->connect(ui->mnPrint,          &QAction::triggered,    this, &SeptemberEditor::printFile);
+    this->connect(ui->mnClearHistoryFile, &QAction::triggered,  this, &SeptemberEditor::clearHistoryFile);
+    this->connect(ui->mnPathFileHis1, &QAction::triggered, this, &SeptemberEditor::openHistoryFile);
+    this->connect(ui->mnPathFileHis2, &QAction::triggered, this, &SeptemberEditor::openHistoryFile);
+    this->connect(ui->mnPathFileHis3, &QAction::triggered, this, &SeptemberEditor::openHistoryFile);
+    this->connect(ui->mnPathFileHis4, &QAction::triggered, this, &SeptemberEditor::openHistoryFile);
+    this->connect(ui->mnPathFileHis5, &QAction::triggered, this, &SeptemberEditor::openHistoryFile);
     this->connect(ui->mnCloseFile,      &QAction::triggered,    this, [this]()
     {
         int row = ui->fileListView->currentIndex().row();
@@ -123,6 +144,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnCloseFileOther, &QAction::triggered,    this, &SeptemberEditor::closeFileOther);
     this->connect(ui->mnCloseFileAll,   &QAction::triggered,    this, &SeptemberEditor::closeFileAll);
     this->connect(ui->mnQuit,           &QAction::triggered,    qApp, &QApplication::quit);
+    this->connect(ui->mnAbout,          &QAction::triggered,    this, [this]() { QMessageBox::aboutQt(this); });
     this->connect(ui->mnSearchReplace,  &QAction::triggered,    this, &SeptemberEditor::closeOrShowWidgetSearchAndReplace);
     this->connect(ui->mnListFile,     &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowListFile, this));
     this->connect(ui->mnCreateWidget, &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowCreateWidget, this));
@@ -182,6 +204,8 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
         m_settingKey->writeKey(m_nameGroup, ui->mnFullScreen->text(), ui->mnFullScreen->shortcut().toString());
         m_settingKey->writeKey(m_nameGroup, ui->mnSettingKey->text(), ui->mnSettingKey->shortcut().toString());
         m_settingKey->writeKey(m_nameGroup, ui->mnSettingSeptember->text(), ui->mnSettingSeptember->shortcut().toString());
+
+        m_settingKey->writeKey(m_nameGroup, ui->mnAbout->text(), ui->mnAbout->shortcut().toString());
     }
 }
 
@@ -325,39 +349,16 @@ void SeptemberEditor::openFile()
     QFile file(path);
     if(file.open(QIODevice::ReadOnly))
     {
-        if(m_listModel->rowCount() == 1)
-        {
-            if(!ui->plainTextEdit->toPlainText().isEmpty())
-            {
-                newFile(path);
-                selectFile(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
-                ui->plainTextEdit->appendText(file.readAll());
-            }
-            else
-            {
-                ui->plainTextEdit->appendText(file.readAll());
-                m_listModel->removeItem(0);
-                m_listModel->addItem(path, ui->plainTextEdit, ui->widgetCreateWidget->getScene(), ui->widgetOpenUI->getBufferUi());
-                ui->fileListView->setCurrentIndex(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
-            }
-        }
-        else
-        {
-            newFile(path);
-            selectFile(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
-            ui->plainTextEdit->appendText(file.readAll());
-        }
-        QTextCursor cursorFirst(ui->plainTextEdit->document());
-        cursorFirst.setPosition(0);
-        ui->plainTextEdit->setTextCursor(cursorFirst);
-        ui->plainTextEdit->checkingCodeQss();
-        pathFile(m_visiblePathFile);
+        writeFile(path, file);
+        m_settingApp->writeHistoryFile(path);
+        readHistoryFile();
     }
     file.close();
 }
 
 void SeptemberEditor::lineWrap(bool trigger)
 {
+    m_visibleLineWrap = trigger;
     if(trigger)
         ui->plainTextEdit->setLineWrapMode(QPlainTextEdit::WidgetWidth);
     else
@@ -394,7 +395,10 @@ void SeptemberEditor::saveFile()
 {
     QString path;
     if(m_fileInfo.exists())
+    {
         path = m_fileInfo.filePath();
+        m_settingApp->writeHistoryFile(path);
+    }
     else
     {
         path = QFileDialog::getSaveFileName(this, "Save file", QString(), "*.qss");
@@ -402,13 +406,15 @@ void SeptemberEditor::saveFile()
             return;
         if(!path.contains(QRegExp(R"(.+\.qss)")))
             path += ".qss";
-        m_fileInfo.setFile(path);
     }
     QFile file(path);
     if(file.open(QIODevice::WriteOnly))
     {
+        m_listModel->replaceFile(m_fileInfo.filePath(), path);
+        m_fileInfo.setFile(path);
         file.write(ui->plainTextEdit->toPlainText().toUtf8());
         pathFile(m_visiblePathFile);
+        lineWrap(m_visibleLineWrap);
     }
     file.close();
 }
@@ -420,19 +426,31 @@ void SeptemberEditor::saveFileAs()
         return;
     if(!path.contains(QRegExp(R"(.+\.qss)")))
         path += ".qss";
-    m_fileInfo.setFile(path);
 
     QFile file(path);
     if(file.open(QIODevice::WriteOnly))
     {
+        m_listModel->replaceFile(m_fileInfo.filePath(), path);
+        m_settingApp->writeHistoryFile(path);
+        m_fileInfo.setFile(path);
         file.write(ui->plainTextEdit->toPlainText().toUtf8());
         pathFile(m_visiblePathFile);
+        lineWrap(m_visibleLineWrap);
     }
     file.close();
 }
 
 void SeptemberEditor::newFile(const QString& name)
 {
+    int row = m_listModel->containsFile(name);
+    if(row != -1)
+    {
+        QModelIndex index = m_listModel->getModelIndex(row);
+        if(ui->fileListView->currentIndex() != index)
+            selectFile(index);
+        return;
+    }
+
     CoreEditor* editor = new CoreEditor(this);
     editor->setVisible(false);
     if(name == "Безымянный")
@@ -496,6 +514,7 @@ void SeptemberEditor::selectFile(const QModelIndex& index)
     ui->fileListView->setCurrentIndex(index);
     connectionCoreEditor();
     pathFile(m_visiblePathFile);
+    lineWrap(m_visibleLineWrap);
 }
 
 void SeptemberEditor::closeFileOther()
@@ -582,6 +601,37 @@ void SeptemberEditor::showSettingKey()
     m_settingKey->show();
 }
 
+void SeptemberEditor::clearHistoryFile()
+{
+    for(auto& act : m_historyFile_)
+        act.first->setVisible(false);
+    m_settingApp->clearHistoryFile();
+}
+
+void SeptemberEditor::openHistoryFile()
+{
+    QAction* action = qobject_cast<QAction*>(this->sender());
+    if(action == nullptr)
+        return;
+    QString path;
+    for(auto& act : m_historyFile_)
+        if(act.first == action)
+        {
+            path = act.second;
+            break;
+        }
+    QFile file(path);
+    if(!file.open(QIODevice::ReadOnly))
+        QMessageBox::warning(this, "Предупреждение", "Файл <b>" + path + "<\b> не найден");
+    else
+    {
+        writeFile(path, file);
+        m_settingApp->writeHistoryFile(path);
+        readHistoryFile();
+    }
+    file.close();
+}
+
 void SeptemberEditor::connectionCoreEditor()
 {
     m_connectionCoreEditor.push_back(this->connect(ui->mnUndo,           &QAction::triggered,    ui->plainTextEdit, &CoreEditor::undo));
@@ -634,4 +684,48 @@ void SeptemberEditor::readSettingKey()
     ui->mnFullScreen->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnFullScreen->text())));
     ui->mnSettingKey->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnSettingKey->text())));
     ui->mnSettingSeptember->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnSettingSeptember->text())));
+
+    ui->mnAbout->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnAbout->text())));
+}
+
+void SeptemberEditor::readHistoryFile()
+{
+    QFileInfoList infoList = m_settingApp->readHistoryFile();
+    for(int i = 0; i < infoList.size(); i++)
+    {
+        m_historyFile_[i].first->setVisible(true);
+        m_historyFile_[i].first->setText(infoList[i].fileName() + " [" + infoList[i].filePath() + "]");
+        m_historyFile_[i].second = infoList[i].filePath();
+    }
+}
+
+void SeptemberEditor::writeFile(const QString& path, QFile& file)
+{
+    m_fileInfo.setFile(path);
+    if(m_listModel->rowCount() == 1)
+    {
+        if(!ui->plainTextEdit->toPlainText().isEmpty())
+        {
+            newFile(path);
+            ui->plainTextEdit->appendText(file.readAll());
+        }
+        else
+        {
+            ui->plainTextEdit->appendText(file.readAll());
+            m_listModel->removeItem(0);
+            m_listModel->addItem(path, ui->plainTextEdit, ui->widgetCreateWidget->getScene(), ui->widgetOpenUI->getBufferUi());
+            ui->fileListView->setCurrentIndex(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
+        }
+    }
+    else
+    {
+        newFile(path);
+        ui->plainTextEdit->appendText(file.readAll());
+    }
+    QTextCursor cursorFirst(ui->plainTextEdit->document());
+    cursorFirst.setPosition(0);
+    ui->plainTextEdit->setTextCursor(cursorFirst);
+    ui->plainTextEdit->checkingCodeQss();
+    pathFile(m_visiblePathFile);
+    lineWrap(m_visibleLineWrap);
 }

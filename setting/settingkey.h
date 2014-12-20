@@ -23,6 +23,7 @@
 #include <QKeyEvent>
 #include <QHeaderView>
 #include <QCloseEvent>
+#include <QKeyEvent>
 
 namespace Ui {
 class SettingKey;
@@ -110,6 +111,7 @@ private:
     void addNameScheme(const QString& scheme);
     void addItemTable(const QString& group, const QString& name, const QString& key);
     void closeEvent(QCloseEvent*) override;
+    void keyPressEvent(QKeyEvent* event) override;
 };
 
 #endif // SETTINGKEY_H

@@ -30,6 +30,8 @@ public:
     void removeItem(int row);
     std::tuple<QFileInfo, CoreEditor*, SceneStyle*, BufferUI*> getItem(int row) const;
     QModelIndex getModelIndex(int row) const;
+    int containsFile(const QString& file);
+    void replaceFile(const QString& oldFile, const QString& newFile);
 
 private:
     struct Item
