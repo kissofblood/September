@@ -27,7 +27,11 @@ SOURCES += main.cpp\
     setting/settingseptember.cpp \
     src/fileView/listfileview.cpp \
     src/fileView/listfilemodel.cpp \
-    setting/settingapp.cpp
+    setting/settingapp.cpp \
+    setting/settingsession.cpp \
+    setting/settingfontandcolor.cpp \
+    setting/settingediting.cpp \
+    setting/settingcommon.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \
@@ -44,14 +48,22 @@ HEADERS  += septembereditor.h \
     src/fileView/listfileview.h \
     src/common.h \
     src/fileView/listfilemodel.h \
-    setting/settingapp.h
+    setting/settingapp.h \
+    setting/settingsession.h \
+    setting/settingfontandcolor.h \
+    setting/settingediting.h \
+    setting/settingcommon.h
 
 FORMS    += septembereditor.ui \
     widgetstyle.ui \
     widgetuistyle.ui \
     searchandreplace.ui \
     setting/settingkey.ui \
-    setting/settingseptember.ui
+    setting/settingseptember.ui \
+    setting/settingsession.ui \
+    setting/settingfontandcolor.ui \
+    setting/settingediting.ui \
+    setting/settingcommon.ui
 
 RESOURCES += \
     qssKeyWords/resource.qrc

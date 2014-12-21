@@ -533,7 +533,7 @@
   </action>
   <action name="mnClearHistoryFile">
    <property name="text">
-    <string>Очистить</string>
+    <string>Очистить меню</string>
    </property>
   </action>
  </widget>
