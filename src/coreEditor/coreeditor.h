@@ -4,6 +4,7 @@
 #include "src/common.h"
 #include "highlighter.h"
 #include "observercodeqss.h"
+#include "setting/settingseptember.h"
 #include <QWidget>
 #include <QPlainTextEdit>
 #include <QSize>
@@ -38,8 +39,6 @@ public:
     explicit CoreEditor(QWidget* parent = nullptr);
     ~CoreEditor() override = default;
 
-    void setDocumentColor(const QColor& color);
-    void setLineColor(const QColor& color);
     void setOtherTextColor(const QColor& color);
     void setFormatOther(const QTextCharFormat& charFormat);
     void setFormatProperties(const QTextCharFormat& charFormat);
@@ -68,6 +67,7 @@ private slots:
     void updateLineNumberArea(const QRect& rect, int dy);
     void insertCompletion(const QString& text);
     void insertOrRemove(int block);
+    void readColor();
 
 private:
     class LineNumberArea : public QWidget
@@ -86,6 +86,7 @@ private:
 
     LineNumberArea      *m_lineNumberArea       = new LineNumberArea(this);
     QCompleter          *m_completer            = new QCompleter(this);
+    SettingSeptember    *m_settingSeptember     = SettingSeptember::instance();
     Highlighter         *m_highlighter          = nullptr;
     ObserverCodeQss     *m_observerCode         = nullptr;
     QColor              m_lineColor;
@@ -93,6 +94,7 @@ private:
     QVector<bool>       m_blockNumberError_;
     bool                m_visibleLineNumberAre  = true;
     int                 m_zoomDocument          = 12;
+    QColor              m_backgroundDoc         = { Qt::black };
     QMultiHash<int, std::tuple<QTextCursor, QTextCharFormat, bool>> m_selectTextSearch_;
 
     int lineNumberAreaWidth();

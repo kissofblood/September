@@ -42,11 +42,11 @@ public:
     void addValue(const QString& group, const QString& name);
     void addKey();
     bool containsKey(const QString& group, const QString& name);
-    void writeKey(const QString& group, const QString& name, const QString& key = QString());
+    void writeDefaultKey(const QString& group, const QString& name, const QString& key = QString());
     QString readKey(const QString& group, const QString& name);
 
 signals:
-    void settingKey();
+    void settingKeyOK();
 
 private slots:
     void visibleGrpScheme();

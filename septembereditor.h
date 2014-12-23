@@ -65,6 +65,7 @@ private slots:
     void prevFile();
     void printFile();
     void showSettingKey();
+    void showSettingSeptember();
     void clearHistoryFile();
     void openHistoryFile();
 
@@ -77,7 +78,7 @@ private:
     };
     Ui::SeptemberEditor         *ui                 = nullptr;
     SettingKey                  *m_settingKey       = SettingKey::instance(this);
-    SettingSeptember            *m_settingSeptember = new SettingSeptember(this);
+    SettingSeptember            *m_settingSeptember = SettingSeptember::instance(this);
     ListFileModel               *m_listModel        = new ListFileModel(this);
     SettingApp                  *m_settingApp       = SettingApp::instance();
     ClickedButton               m_clickedButton;

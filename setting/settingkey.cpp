@@ -94,7 +94,7 @@ void SettingKey::addKey()
 bool SettingKey::containsKey(const QString& group, const QString& name)
 { return m_settingApp->containsSettingKey(ui->cmbScheme->currentText(), group, name);  }
 
-void SettingKey::writeKey(const QString& group, const QString& name, const QString& key)
+void SettingKey::writeDefaultKey(const QString& group, const QString& name, const QString& key)
 {
     QString scheme = ui->cmbScheme->currentText();
     m_settingApp->writeSettingKey(scheme, group, name, key);
@@ -216,7 +216,7 @@ void SettingKey::writeSetting()
     for(int i = 0; i < ui->cmbScheme->count(); i++)
         m_settingApp->writeSettingKey(ui->cmbScheme->itemText(i), i);
     clearContainer();
-    emit settingKey();
+    emit settingKeyOK();
     this->close();
 }
 

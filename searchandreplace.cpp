@@ -34,20 +34,27 @@ SearchAndReplace::SearchAndReplace(QWidget* parent) : QWidget(parent),
             m_editor->clearSelectTextSearch();
         }
     });
-    this->connect(m_settingKey, &SettingKey::settingKey, this, [this]()
+    this->connect(m_settingKey, &SettingKey::settingKeyOK, this, [this]()
     {
         m_settingKey->readScheme();
         readSettingKey();
     });
+    this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, [this]()
+    { m_searchSelectColor = m_settingSeptember->readSearchTextColor(); });
 
     m_settingKey->readScheme();
     if(m_settingKey->containsKey(m_nameGroup, ui->btnNext->text()))
         readSettingKey();
     else
     {
-        m_settingKey->writeKey(m_nameGroup, ui->btnNext->text(), ui->btnNext->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->btnPrev->text(), ui->btnPrev->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->btnNext->text(), ui->btnNext->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->btnPrev->text(), ui->btnPrev->shortcut().toString());
     }
+
+    if(m_settingSeptember->containsKey())
+        m_searchSelectColor = m_settingSeptember->readSearchTextColor();
+    else
+        m_settingSeptember->writeDefaultSearchTextColor(m_searchSelectColor);
 }
 
 SearchAndReplace::~SearchAndReplace()
@@ -75,7 +82,7 @@ void SearchAndReplace::searchText()
     QTextCursor highlightCursor(m_editor->document());
 
     QTextCharFormat colorFormat = highlightCursor.charFormat();
-    colorFormat.setBackground(QBrush(QColor(85, 85, 0)));
+    colorFormat.setBackground(QBrush(m_searchSelectColor));
     while(!highlightCursor.isNull() && !highlightCursor.atEnd())
     {
         if(!m_isRegExp)

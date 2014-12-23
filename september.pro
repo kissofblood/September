@@ -28,10 +28,11 @@ SOURCES += main.cpp\
     src/fileView/listfileview.cpp \
     src/fileView/listfilemodel.cpp \
     setting/settingapp.cpp \
-    setting/settingsession.cpp \
-    setting/settingfontandcolor.cpp \
-    setting/settingediting.cpp \
-    setting/settingcommon.cpp
+    setting/settingSeptember/settingsession.cpp \
+    setting/settingSeptember/settingfontandcolor.cpp \
+    setting/settingSeptember/settingediting.cpp \
+    setting/settingSeptember/settingcommon.cpp \
+    setting/settingSeptember/fontpage.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \
@@ -49,10 +50,11 @@ HEADERS  += septembereditor.h \
     src/common.h \
     src/fileView/listfilemodel.h \
     setting/settingapp.h \
-    setting/settingsession.h \
-    setting/settingfontandcolor.h \
-    setting/settingediting.h \
-    setting/settingcommon.h
+    setting/settingSeptember/settingsession.h \
+    setting/settingSeptember/settingfontandcolor.h \
+    setting/settingSeptember/settingediting.h \
+    setting/settingSeptember/settingcommon.h \
+    setting/settingSeptember/fontpage.h
 
 FORMS    += septembereditor.ui \
     widgetstyle.ui \
@@ -60,10 +62,10 @@ FORMS    += septembereditor.ui \
     searchandreplace.ui \
     setting/settingkey.ui \
     setting/settingseptember.ui \
-    setting/settingsession.ui \
-    setting/settingfontandcolor.ui \
-    setting/settingediting.ui \
-    setting/settingcommon.ui
+    setting/settingSeptember/settingsession.ui \
+    setting/settingSeptember/settingfontandcolor.ui \
+    setting/settingSeptember/settingediting.ui \
+    setting/settingSeptember/settingcommon.ui
 
 RESOURCES += \
     qssKeyWords/resource.qrc

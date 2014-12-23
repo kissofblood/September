@@ -33,14 +33,26 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
         m_observerCode->textParserHead(cursor.selectedText().left(this->textCursor().position() - startBlock.position()));
     });
     this->connect(m_observerCode, &ObserverCodeQss::stringListModelChanged, m_completer, &QCompleter::setModel);
+    this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, &CoreEditor::readColor);
     this->connect(this, &QPlainTextEdit::textChanged, this, [this]()
     { emit updateStyleSheet(this->document()->toPlainText()); });
     this->setFocus();
     this->setObjectName("plainTextEdit");
 
+    if(m_settingSeptember->containsKey())
+        readColor();
+    else
+    {
+        QPalette pal;
+        pal.setColor(QPalette::Text, m_otherTextColor);
+        pal.setColor(QPalette::Base, m_backgroundDoc);
+        this->setPalette(pal);
+        m_settingSeptember->writeDefaultBackgroundColor(m_backgroundDoc);
+        m_settingSeptember->writeDefaultCurrentLineColor(m_lineColor);
+    }
+
     updateLineNumberAreaWidth();
     highlightCurrentLine();
-    setDocumentColor(Qt::black);
     this->document()->setDefaultFont(QFont("Droid Sans Mono", 12, QFont::Monospace));
 }
 
@@ -57,17 +69,6 @@ void CoreEditor::insertOrRemove(int block)
     else
         m_blockNumberError_.pop_back();
 }
-
-void CoreEditor::setDocumentColor(const QColor& color)
-{
-    QPalette pal;
-    pal.setColor(QPalette::Text, m_otherTextColor);
-    pal.setColor(QPalette::Base, color);
-    this->setPalette(pal);
-}
-
-void CoreEditor::setLineColor(const QColor& color)
-{ m_lineColor = color; }
 
 void CoreEditor::setOtherTextColor(const QColor& color)
 { m_otherTextColor = color; }
@@ -191,7 +192,7 @@ void CoreEditor::insertCompletion(const QString& text)
 void CoreEditor::lineNumberAreaPaintEvent(QPaintEvent* event)
 {
     QPainter painter(m_lineNumberArea);
-    painter.fillRect(event->rect(), QColor(35, 35, 35));
+    painter.fillRect(event->rect(), m_backgroundDoc.darker());
 
     QTextBlock block = this->firstVisibleBlock();
     int blockNumber = block.blockNumber();
@@ -213,7 +214,7 @@ void CoreEditor::lineNumberAreaPaintEvent(QPaintEvent* event)
                 return;
 
             QString number = QString::number(blockNumber + 1);
-            painter.setPen(QColor(136, 136, 136));
+            painter.setPen(m_backgroundDoc.lighter(1));
             painter.setFont(QFont("Areal", -1, QFont::Bold));
             painter.drawText(0, top, m_lineNumberArea->width(), this->fontMetrics().height(), Qt::AlignCenter, number);
         }
@@ -313,6 +314,17 @@ void CoreEditor::wheelEvent(QWheelEvent* event)
             zoomDocOut();
     }
     QPlainTextEdit::wheelEvent(event);
+}
+
+void CoreEditor::readColor()
+{
+    QPalette pal;
+    m_backgroundDoc = m_settingSeptember->readBackgroundColor();
+    pal.setColor(QPalette::Text, m_otherTextColor);
+    pal.setColor(QPalette::Base, m_backgroundDoc);
+    this->setPalette(pal);
+    m_lineColor = m_settingSeptember->readCurrentLineColor();
+    highlightCurrentLine();
 }
 
 CoreEditor::LineNumberArea::LineNumberArea(CoreEditor* parent) : QWidget(parent)

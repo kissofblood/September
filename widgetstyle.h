@@ -49,10 +49,10 @@ private:
         void clearWidget();
 
     private:
-        WidgetStyle             *m_wgtStyle = nullptr;
-        QGraphicsRectItem       *m_rectItem = nullptr;
+        WidgetStyle             *m_wgtStyle     = nullptr;
+        QGraphicsRectItem       *m_rectItem     = nullptr;
         QPointF                 m_topLeftRect;
-        Qt::MouseButton         m_mouseButton = Qt::NoButton;
+        Qt::MouseButton         m_mouseButton   = Qt::NoButton;
         QList<GraphicsWidget*>  m_graphicsWgt_;
 
         void mousePressEvent(QGraphicsSceneMouseEvent* event) override;

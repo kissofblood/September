@@ -24,7 +24,7 @@ ListFileView::ListFileView(QWidget* parent) : QListView(parent)
         if(index.isValid())
             emit clickedCloseFile(index.row());
     });
-    this->connect(m_settingKey, &SettingKey::settingKey, this, [this, readSettingKey]()
+    this->connect(m_settingKey, &SettingKey::settingKeyOK, this, [this, readSettingKey]()
     {
         m_settingKey->readScheme();
         readSettingKey();
@@ -35,8 +35,8 @@ ListFileView::ListFileView(QWidget* parent) : QListView(parent)
         readSettingKey();
     else
     {
-        m_settingKey->writeKey(m_nameGroup, close->text(), close->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, copy->text(), copy->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, close->text(), close->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, copy->text(), copy->shortcut().toString());
     }
 }
 

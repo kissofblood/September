@@ -62,7 +62,7 @@ QString SettingApp::readCurrentSettingKey()
             QString current = m_setting->value("name").toString();
         m_setting->endGroup();
     m_setting->endGroup();
-    return current;
+    return qMove(current);
 }
 
 QString SettingApp::readSettingKey(const QString& scheme, const QString& group, const QString& name)
@@ -76,7 +76,7 @@ QString SettingApp::readSettingKey(const QString& scheme, const QString& group, 
             m_setting->endGroup();
         m_setting->endGroup();
     m_setting->endGroup();
-    return key;
+    return qMove(key);
 }
 
 QString SettingApp::readDefaultSettingKey(const QString& scheme, const QString& group, const QString& name)
@@ -85,12 +85,12 @@ QString SettingApp::readDefaultSettingKey(const QString& scheme, const QString& 
         m_setting->beginGroup("defaultScheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup(group);
-                QString key = m_setting->value(name).toString();
+                    QString key = m_setting->value(name).toString();
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
     m_setting->endGroup();
-    return key;
+    return qMove(key);
 }
 
 QStringList SettingApp::readSettingKey()
@@ -223,4 +223,86 @@ void SettingApp::clearHistoryFile()
     m_setting->beginGroup("historyFile");
         m_setting->remove("");
     m_setting->endGroup();
+}
+
+void SettingApp::writeBackgroundColorSettingSeptember(const QColor& color)
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("colorEdit");
+            m_setting->beginGroup("backgroundColor");
+                m_setting->setValue("background", color);
+            m_setting->endGroup();
+        m_setting->endGroup();
+   m_setting->endGroup();
+}
+
+QColor SettingApp::readBackgroundColorSettingSeptember()
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("colorEdit");
+            m_setting->beginGroup("backgroundColor");
+                QColor color = qvariant_cast<QColor>(m_setting->value("background"));
+            m_setting->endGroup();
+        m_setting->endGroup();
+    m_setting->endGroup();
+    return qMove(color);
+}
+
+void SettingApp::writeCurrentLineColorSettingSeptember(const QColor& color)
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("colorEdit");
+            m_setting->beginGroup("currentLineColor");
+                m_setting->setValue("currentLine", color);
+            m_setting->endGroup();
+        m_setting->endGroup();
+    m_setting->endGroup();
+}
+
+QColor SettingApp::readCurrentLineColorSettingSeptember()
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("colorEdit");
+            m_setting->beginGroup("currentLineColor");
+                QColor color = qvariant_cast<QColor>(m_setting->value("currentLine"));
+            m_setting->endGroup();
+        m_setting->endGroup();
+    m_setting->endGroup();
+    return qMove(color);
+}
+
+void SettingApp::writeSearchTextColorSettingSeptember(const QColor& searchText)
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("colorEdit");
+            m_setting->beginGroup("searchTextColor");
+                m_setting->setValue("searchText", searchText);
+            m_setting->endGroup();
+        m_setting->endGroup();
+    m_setting->endGroup();
+}
+
+QColor SettingApp::readSearchTextColorSettingSeptember()
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("colorEdit");
+            m_setting->beginGroup("searchTextColor");
+                QColor color = qvariant_cast<QColor>(m_setting->value("searchText"));
+            m_setting->endGroup();
+        m_setting->endGroup();
+    m_setting->endGroup();
+    return qMove(color);
+}
+
+bool SettingApp::containsColorSettingSeptember()
+{
+    bool success;
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("colorEdit");
+            m_setting->beginGroup("backgroundColor");
+                success = m_setting->contains("background");
+            m_setting->endGroup();
+        m_setting->endGroup();
+    m_setting->endGroup();
+    return success;
 }

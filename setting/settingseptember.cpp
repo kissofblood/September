@@ -1,6 +1,8 @@
 #include "settingseptember.h"
 #include "ui_settingseptember.h"
 
+SettingSeptember* SettingSeptember::m_singleton = nullptr;
+
 SettingSeptember::SettingSeptember(QWidget* parent) : QDialog(parent),
     ui(new Ui::SettingSeptember)
 {
@@ -15,6 +17,7 @@ SettingSeptember::SettingSeptember(QWidget* parent) : QDialog(parent),
     ui->treeSetting->setCurrentItem(item->child(0));
 
     this->connect(ui->treeSetting, &QTreeWidget::itemClicked, std::bind(&SettingSeptember::selectSetting, this, std::placeholders::_1));
+    this->connect(ui->btnOK, &QPushButton::clicked, this, &SettingSeptember::writeSetting);
     this->setWindowTitle("Настройка -- September");
 }
 
@@ -26,6 +29,41 @@ SettingSeptember::~SettingSeptember()
     delete m_settingFontAndColor;
     delete m_settingEditing;
     delete m_spacerSetting;
+}
+
+SettingSeptember* SettingSeptember::instance(QWidget* parent)
+{
+    if(m_singleton == nullptr)
+        m_singleton = new SettingSeptember(parent);
+    return m_singleton;
+}
+
+void SettingSeptember::writeDefaultBackgroundColor(const QColor& background)
+{ m_settingApp->writeBackgroundColorSettingSeptember(background); }
+
+void SettingSeptember::writeDefaultCurrentLineColor(const QColor& currentLine)
+{ m_settingApp->writeCurrentLineColorSettingSeptember(currentLine); }
+
+void SettingSeptember::writeDefaultSearchTextColor(const QColor& searchText)
+{ m_settingApp->writeSearchTextColorSettingSeptember(searchText); }
+
+bool SettingSeptember::containsKey()
+{ return m_settingApp->containsColorSettingSeptember(); }
+
+QColor SettingSeptember::readBackgroundColor()
+{ return m_settingApp->readBackgroundColorSettingSeptember(); }
+
+QColor SettingSeptember::readCurrentLineColor()
+{ return m_settingApp->readCurrentLineColorSettingSeptember(); }
+
+QColor SettingSeptember::readSearchTextColor()
+{ return m_settingApp->readSearchTextColorSettingSeptember(); }
+
+void SettingSeptember::addColor()
+{
+    m_settingFontAndColor->setBackgroundColor(m_settingApp->readBackgroundColorSettingSeptember());
+    m_settingFontAndColor->setCurrentLineColor(m_settingApp->readCurrentLineColorSettingSeptember());
+    m_settingFontAndColor->setSearchTextColor(m_settingApp->readSearchTextColorSettingSeptember());
 }
 
 void SettingSeptember::selectSetting(QTreeWidgetItem* item)
@@ -79,4 +117,13 @@ void SettingSeptember::selectSetting(QTreeWidgetItem* item)
         }
         m_currentSetting = m_settingEditing;
     }
+}
+
+void SettingSeptember::writeSetting()
+{
+    m_settingApp->writeBackgroundColorSettingSeptember(m_settingFontAndColor->backgroundColor());
+    m_settingApp->writeCurrentLineColorSettingSeptember(m_settingFontAndColor->currentLineColor());
+    m_settingApp->writeSearchTextColorSettingSeptember(m_settingFontAndColor->searchTextColor());
+    emit settingSeptemberOK();
+    this->close();
 }

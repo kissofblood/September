@@ -154,10 +154,10 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnStatusBar,  &QAction::triggered, std::bind(&QLabel::setVisible, ui->lblStatusBar, std::placeholders::_1));
     this->connect(ui->mnPathFile,   &QAction::triggered, this, &SeptemberEditor::pathFile);
     this->connect(ui->mnSettingKey, &QAction::triggered, this, &SeptemberEditor::showSettingKey);
-    this->connect(ui->mnSettingSeptember, &QAction::triggered, m_settingSeptember, &SettingSeptember::show);
+    this->connect(ui->mnSettingSeptember, &QAction::triggered, this, &SeptemberEditor::showSettingSeptember);
     this->connect(ui->fileListView, &ListFileView::clickedCloseFile, this, &SeptemberEditor::closeFile);
     this->connect(ui->fileListView, &ListFileView::clicked, this, &SeptemberEditor::selectFile);
-    this->connect(m_settingKey, &SettingKey::settingKey, this, [this]()
+    this->connect(m_settingKey, &SettingKey::settingKeyOK, this, [this]()
     {
         m_settingKey->readScheme();
         readSettingKey();
@@ -170,42 +170,42 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
         readSettingKey();
     else
     {
-        m_settingKey->writeKey(m_nameGroup, ui->mnNewFile->text(), ui->mnNewFile->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnOpen->text(), ui->mnOpen->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnSave->text(), ui->mnSave->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnSaveAs->text(), ui->mnSaveAs->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnSaveAll->text(), ui->mnSaveAll->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnPrint->text(), ui->mnPrint->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnCloseFile->text(), ui->mnCloseFile->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnCloseFileOther->text(), ui->mnCloseFileOther->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnCloseFileAll->text(), ui->mnCloseFileAll->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnQuit->text(), ui->mnQuit->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnNewFile->text(), ui->mnNewFile->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnOpen->text(), ui->mnOpen->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnSave->text(), ui->mnSave->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnSaveAs->text(), ui->mnSaveAs->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnSaveAll->text(), ui->mnSaveAll->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnPrint->text(), ui->mnPrint->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnCloseFile->text(), ui->mnCloseFile->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnCloseFileOther->text(), ui->mnCloseFileOther->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnCloseFileAll->text(), ui->mnCloseFileAll->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnQuit->text(), ui->mnQuit->shortcut().toString());
 
-        m_settingKey->writeKey(m_nameGroup, ui->mnUndo->text(), ui->mnUndo->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnRedo->text(), ui->mnRedo->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnCut->text(), ui->mnCut->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnCopy->text(), ui->mnCopy->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnPaste->text(), ui->mnPaste->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnSelectAll->text(), ui->mnSelectAll->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnSearchReplace->text(), ui->mnSearchReplace->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnUndo->text(), ui->mnUndo->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnRedo->text(), ui->mnRedo->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnCut->text(), ui->mnCut->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnCopy->text(), ui->mnCopy->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnPaste->text(), ui->mnPaste->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnSelectAll->text(), ui->mnSelectAll->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnSearchReplace->text(), ui->mnSearchReplace->shortcut().toString());
 
-        m_settingKey->writeKey(m_nameGroup, ui->mnPrevFile->text(), ui->mnPrevFile->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnNextFile->text(), ui->mnNextFile->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnListFile->text(), ui->mnListFile->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnCreateWidget->text(), ui->mnCreateWidget->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnOpenUi->text(), ui->mnOpenUi->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnLineWrap->text(), ui->mnLineWrap->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnNumberLine->text(), ui->mnNumberLine->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnZoomIn->text(), ui->mnZoomIn->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnZoomOut->text(), ui->mnZoomOut->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnPrevFile->text(), ui->mnPrevFile->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnNextFile->text(), ui->mnNextFile->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnListFile->text(), ui->mnListFile->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnCreateWidget->text(), ui->mnCreateWidget->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnOpenUi->text(), ui->mnOpenUi->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnLineWrap->text(), ui->mnLineWrap->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnNumberLine->text(), ui->mnNumberLine->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnZoomIn->text(), ui->mnZoomIn->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnZoomOut->text(), ui->mnZoomOut->shortcut().toString());
 
-        m_settingKey->writeKey(m_nameGroup, ui->mnStatusBar->text(), ui->mnStatusBar->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnPathFile->text(), ui->mnPathFile->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnFullScreen->text(), ui->mnFullScreen->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnSettingKey->text(), ui->mnSettingKey->shortcut().toString());
-        m_settingKey->writeKey(m_nameGroup, ui->mnSettingSeptember->text(), ui->mnSettingSeptember->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnStatusBar->text(), ui->mnStatusBar->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnPathFile->text(), ui->mnPathFile->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnFullScreen->text(), ui->mnFullScreen->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnSettingKey->text(), ui->mnSettingKey->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnSettingSeptember->text(), ui->mnSettingSeptember->shortcut().toString());
 
-        m_settingKey->writeKey(m_nameGroup, ui->mnAbout->text(), ui->mnAbout->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnAbout->text(), ui->mnAbout->shortcut().toString());
     }
 }
 
@@ -599,6 +599,12 @@ void SeptemberEditor::showSettingKey()
     m_settingKey->readScheme();
     m_settingKey->addKey();
     m_settingKey->show();
+}
+
+void SeptemberEditor::showSettingSeptember()
+{
+    m_settingSeptember->addColor();
+    m_settingSeptember->show();
 }
 
 void SeptemberEditor::clearHistoryFile()

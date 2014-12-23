@@ -96,21 +96,21 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_3">
+          <widget class="QPushButton" name="btnOK">
            <property name="text">
             <string>ОК</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_2">
+          <widget class="QPushButton" name="btnApply">
            <property name="text">
             <string>Применить</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="btnCancel">
            <property name="text">
             <string>Отмена</string>
            </property>
@@ -128,7 +128,7 @@
   <customwidget>
    <class>SettingCommon</class>
    <extends>QWidget</extends>
-   <header>setting/settingcommon.h</header>
+   <header>setting/settingSeptember/settingcommon.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

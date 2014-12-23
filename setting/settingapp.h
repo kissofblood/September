@@ -6,6 +6,7 @@
 #include <QSettings>
 #include <QStringList>
 #include <QFileInfoList>
+#include <QColor>
 
 class SettingApp : public QApplication
 {
@@ -14,6 +15,7 @@ public:
     ~SettingApp() override = default;
 
     static SettingApp* instance();
+
     void writeSettingKey(const QString& scheme, const QString& group, const QString& name, const QString& key);
     void writeDefaultSettingKey(const QString& scheme, const QString& group, const QString& name, const QString& key);
     void writeSettingKey(const QString& scheme, int pos);
@@ -25,9 +27,18 @@ public:
     void removeSettingKey(const QString& scheme, const QString& group, const QString& name);
     void removeSettingKey(const QString& scheme);
     bool containsSettingKey(const QString& scheme, const QString& group, const QString& name);
+
     void writeHistoryFile(const QString& file);
     QFileInfoList readHistoryFile();
     void clearHistoryFile();
+
+    void writeBackgroundColorSettingSeptember(const QColor& color);
+    QColor readBackgroundColorSettingSeptember();
+    void writeCurrentLineColorSettingSeptember(const QColor& color);
+    QColor readCurrentLineColorSettingSeptember();
+    void writeSearchTextColorSettingSeptember(const QColor& searchText);
+    QColor readSearchTextColorSettingSeptember();
+    bool containsColorSettingSeptember();
 
 private:
     QSettings   *m_setting = nullptr;
