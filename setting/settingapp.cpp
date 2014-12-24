@@ -306,3 +306,22 @@ bool SettingApp::containsColorSettingSeptember()
     m_setting->endGroup();
     return success;
 }
+
+void SettingApp::writeFontText(const QFont& font)
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("fontText");
+            m_setting->setValue("font", font);
+        m_setting->endGroup();
+    m_setting->endGroup();
+}
+
+QFont SettingApp::readFontText()
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("fontText");
+            QFont font = qvariant_cast<QFont>(m_setting->value("font"));
+        m_setting->endGroup();
+    m_setting->endGroup();
+    return qMove(font);
+}

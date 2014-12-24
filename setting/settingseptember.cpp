@@ -17,7 +17,9 @@ SettingSeptember::SettingSeptember(QWidget* parent) : QDialog(parent),
     ui->treeSetting->setCurrentItem(item->child(0));
 
     this->connect(ui->treeSetting, &QTreeWidget::itemClicked, std::bind(&SettingSeptember::selectSetting, this, std::placeholders::_1));
-    this->connect(ui->btnOK, &QPushButton::clicked, this, &SettingSeptember::writeSetting);
+    this->connect(ui->btnOK,    &QPushButton::clicked, this, &SettingSeptember::writeSetting);
+    this->connect(ui->btnOK,    &QPushButton::clicked, this, &QDialog::close);
+    this->connect(ui->btnApply, &QPushButton::clicked, this, &SettingSeptember::writeSetting);
     this->setWindowTitle("Настройка -- September");
 }
 
@@ -47,6 +49,9 @@ void SettingSeptember::writeDefaultCurrentLineColor(const QColor& currentLine)
 void SettingSeptember::writeDefaultSearchTextColor(const QColor& searchText)
 { m_settingApp->writeSearchTextColorSettingSeptember(searchText); }
 
+void SettingSeptember::writeDefaultFontText(const QFont& font)
+{ m_settingApp->writeFontText(font); }
+
 bool SettingSeptember::containsKey()
 { return m_settingApp->containsColorSettingSeptember(); }
 
@@ -59,11 +64,15 @@ QColor SettingSeptember::readCurrentLineColor()
 QColor SettingSeptember::readSearchTextColor()
 { return m_settingApp->readSearchTextColorSettingSeptember(); }
 
-void SettingSeptember::addColor()
+QFont SettingSeptember::readFontText()
+{ return m_settingApp->readFontText(); }
+
+void SettingSeptember::addValue()
 {
     m_settingFontAndColor->setBackgroundColor(m_settingApp->readBackgroundColorSettingSeptember());
     m_settingFontAndColor->setCurrentLineColor(m_settingApp->readCurrentLineColorSettingSeptember());
     m_settingFontAndColor->setSearchTextColor(m_settingApp->readSearchTextColorSettingSeptember());
+    m_settingFontAndColor->setFontText(m_settingApp->readFontText());
 }
 
 void SettingSeptember::selectSetting(QTreeWidgetItem* item)
@@ -124,6 +133,6 @@ void SettingSeptember::writeSetting()
     m_settingApp->writeBackgroundColorSettingSeptember(m_settingFontAndColor->backgroundColor());
     m_settingApp->writeCurrentLineColorSettingSeptember(m_settingFontAndColor->currentLineColor());
     m_settingApp->writeSearchTextColorSettingSeptember(m_settingFontAndColor->searchTextColor());
+    m_settingApp->writeFontText(m_settingFontAndColor->fontText());
     emit settingSeptemberOK();
-    this->close();
 }

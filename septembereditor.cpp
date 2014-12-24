@@ -603,7 +603,7 @@ void SeptemberEditor::showSettingKey()
 
 void SeptemberEditor::showSettingSeptember()
 {
-    m_settingSeptember->addColor();
+    m_settingSeptember->addValue();
     m_settingSeptember->show();
 }
 

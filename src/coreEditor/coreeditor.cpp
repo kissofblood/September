@@ -3,6 +3,7 @@
 CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
     , m_lineColor(26, 21, 21)
     , m_otherTextColor(170, 170, 170)
+    , m_fontText(QFont("Droid Sans Mono", m_zoomDocument, QFont::Monospace))
 {
     QStringList properties = Common::keyWordsFromFile("listOfProperties") + Common::keyWordsFromFile("listOfIcons");
     QStringList pseudo = Common::keyWordsFromFile("listOfPseudo-States");
@@ -33,14 +34,14 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
         m_observerCode->textParserHead(cursor.selectedText().left(this->textCursor().position() - startBlock.position()));
     });
     this->connect(m_observerCode, &ObserverCodeQss::stringListModelChanged, m_completer, &QCompleter::setModel);
-    this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, &CoreEditor::readColor);
+    this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, &CoreEditor::readValue);
     this->connect(this, &QPlainTextEdit::textChanged, this, [this]()
     { emit updateStyleSheet(this->document()->toPlainText()); });
     this->setFocus();
     this->setObjectName("plainTextEdit");
 
     if(m_settingSeptember->containsKey())
-        readColor();
+        readValue();
     else
     {
         QPalette pal;
@@ -49,11 +50,12 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
         this->setPalette(pal);
         m_settingSeptember->writeDefaultBackgroundColor(m_backgroundDoc);
         m_settingSeptember->writeDefaultCurrentLineColor(m_lineColor);
+        m_settingSeptember->writeDefaultFontText(m_fontText);
     }
 
     updateLineNumberAreaWidth();
     highlightCurrentLine();
-    this->document()->setDefaultFont(QFont("Droid Sans Mono", 12, QFont::Monospace));
+    this->document()->setDefaultFont(m_fontText);
 }
 
 void CoreEditor::setVisibleLineNimberArea(bool value)
@@ -214,7 +216,10 @@ void CoreEditor::lineNumberAreaPaintEvent(QPaintEvent* event)
                 return;
 
             QString number = QString::number(blockNumber + 1);
-            painter.setPen(m_backgroundDoc.lighter(1));
+            if(m_backgroundDoc == QColor(Qt::black))
+                painter.setPen(QColor(136, 136, 136));
+            else
+                painter.setPen(m_backgroundDoc.lighter());
             painter.setFont(QFont("Areal", -1, QFont::Bold));
             painter.drawText(0, top, m_lineNumberArea->width(), this->fontMetrics().height(), Qt::AlignCenter, number);
         }
@@ -243,7 +248,8 @@ void CoreEditor::zoomDocIn()
 {
     m_zoomDocument += 1;
     this->zoomIn();
-    this->document()->setDefaultFont(QFont("Droid Sans Mono", m_zoomDocument, QFont::Monospace));
+    m_fontText.setPixelSize(m_zoomDocument);
+    this->document()->setDefaultFont(m_fontText);
 }
 
 void CoreEditor::zoomDocOut()
@@ -252,7 +258,8 @@ void CoreEditor::zoomDocOut()
     if(m_zoomDocument < 1)
         m_zoomDocument = 1;
     this->zoomOut();
-    this->document()->setDefaultFont(QFont("Droid Sans Mono", m_zoomDocument, QFont::Monospace));
+    m_fontText.setPixelSize(m_zoomDocument);
+    this->document()->setDefaultFont(m_fontText);
 }
 
 void CoreEditor::resizeEvent(QResizeEvent* event)
@@ -316,7 +323,7 @@ void CoreEditor::wheelEvent(QWheelEvent* event)
     QPlainTextEdit::wheelEvent(event);
 }
 
-void CoreEditor::readColor()
+void CoreEditor::readValue()
 {
     QPalette pal;
     m_backgroundDoc = m_settingSeptember->readBackgroundColor();
@@ -324,6 +331,9 @@ void CoreEditor::readColor()
     pal.setColor(QPalette::Base, m_backgroundDoc);
     this->setPalette(pal);
     m_lineColor = m_settingSeptember->readCurrentLineColor();
+    m_fontText = m_settingSeptember->readFontText();
+    m_zoomDocument = m_fontText.pointSize();
+    this->document()->setDefaultFont(m_fontText);
     highlightCurrentLine();
 }
 

@@ -6,6 +6,7 @@
 #include <QPalette>
 #include <QPushButton>
 #include <QColorDialog>
+#include <QFont>
 
 #include <QDebug>
 
@@ -26,6 +27,8 @@ public:
     QColor currentLineColor();
     void setSearchTextColor(const QColor& searchText);
     QColor searchTextColor();
+    void setFontText(const QFont& font);
+    QFont fontText();
 
 private slots:
     void amendColorEdit();

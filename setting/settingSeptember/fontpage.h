@@ -4,18 +4,12 @@
 #include <QWidget>
 #include <QFontDialog>
 
-#include <QtWidgets>
-
 class FontPage : public QFontDialog
 {
-    Q_OBJECT
 public:
-    explicit FontPage(QWidget* parent = nullptr);
+    explicit FontPage(QWidget* parent = nullptr) : QFontDialog(parent)
+    { this->setOption(QFontDialog::NoButtons); }
     ~FontPage() override = default;
-
-signals:
-
-public slots:
 };
 
 #endif // FONTPAGE_H

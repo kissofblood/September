@@ -14,6 +14,7 @@
 #include <functional>
 #include <QSpacerItem>
 #include <QColor>
+#include <QFont>
 
 #include <QDebug>
 
@@ -33,11 +34,13 @@ public:
     void writeDefaultBackgroundColor(const QColor& background);
     void writeDefaultCurrentLineColor(const QColor& currentLine);
     void writeDefaultSearchTextColor(const QColor& searchText);
+    void writeDefaultFontText(const QFont& font);
     bool containsKey();
     QColor readBackgroundColor();
     QColor readCurrentLineColor();
     QColor readSearchTextColor();
-    void addColor();
+    QFont readFontText();
+    void addValue();
 
 signals:
     void settingSeptemberOK();

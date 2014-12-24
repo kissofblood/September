@@ -31,8 +31,7 @@ SOURCES += main.cpp\
     setting/settingSeptember/settingsession.cpp \
     setting/settingSeptember/settingfontandcolor.cpp \
     setting/settingSeptember/settingediting.cpp \
-    setting/settingSeptember/settingcommon.cpp \
-    setting/settingSeptember/fontpage.cpp
+    setting/settingSeptember/settingcommon.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \

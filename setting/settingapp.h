@@ -7,6 +7,7 @@
 #include <QStringList>
 #include <QFileInfoList>
 #include <QColor>
+#include <QFont>
 
 class SettingApp : public QApplication
 {
@@ -39,6 +40,8 @@ public:
     void writeSearchTextColorSettingSeptember(const QColor& searchText);
     QColor readSearchTextColorSettingSeptember();
     bool containsColorSettingSeptember();
+    void writeFontText(const QFont& font);
+    QFont readFontText();
 
 private:
     QSettings   *m_setting = nullptr;

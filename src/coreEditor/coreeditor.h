@@ -67,7 +67,7 @@ private slots:
     void updateLineNumberArea(const QRect& rect, int dy);
     void insertCompletion(const QString& text);
     void insertOrRemove(int block);
-    void readColor();
+    void readValue();
 
 private:
     class LineNumberArea : public QWidget
@@ -95,6 +95,7 @@ private:
     bool                m_visibleLineNumberAre  = true;
     int                 m_zoomDocument          = 12;
     QColor              m_backgroundDoc         = { Qt::black };
+    QFont               m_fontText;
     QMultiHash<int, std::tuple<QTextCursor, QTextCharFormat, bool>> m_selectTextSearch_;
 
     int lineNumberAreaWidth();

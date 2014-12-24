@@ -76,7 +76,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="tabBarAutoHide">
       <bool>false</bool>
@@ -229,7 +229,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="FontPage" name="widget">
+     <widget class="FontPage" name="fontText">
       <attribute name="title">
        <string>Шрифт</string>
       </attribute>

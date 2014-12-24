@@ -34,6 +34,12 @@ void SettingFontAndColor::setSearchTextColor(const QColor& searchText)
 QColor SettingFontAndColor::searchTextColor()
 { return ui->btnColorSearchText->palette().color(QPalette::Button); }
 
+void SettingFontAndColor::setFontText(const QFont& font)
+{ ui->fontText->setCurrentFont(font); }
+
+QFont SettingFontAndColor::fontText()
+{ return ui->fontText->currentFont(); }
+
 void SettingFontAndColor::amendColorEdit()
 {
     QColor color = QColorDialog::getColor(Qt::white, this);
