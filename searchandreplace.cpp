@@ -3,7 +3,8 @@
 
 SearchAndReplace::SearchAndReplace(QWidget* parent) : QWidget(parent),
     ui(new Ui::SearchAndReplace),
-    m_editor(parent->parent()->findChild<CoreEditor*>())
+    m_editor(parent->parent()->findChild<CoreEditor*>()),
+    m_searchSelectColor(QColor(85, 85, 0))
 {
     ui->setupUi(this);
     ui->btnNext->setShortcut(Qt::CTRL + Qt::Key_Up);
@@ -52,7 +53,10 @@ SearchAndReplace::SearchAndReplace(QWidget* parent) : QWidget(parent),
     }
 
     if(m_settingSeptember->containsKey())
+    {
+        m_settingSeptember->addValueColor();
         m_searchSelectColor = m_settingSeptember->readSearchTextColor();
+    }
     else
         m_settingSeptember->writeDefaultSearchTextColor(m_searchSelectColor);
 }

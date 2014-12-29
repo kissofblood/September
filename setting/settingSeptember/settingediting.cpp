@@ -8,6 +8,4 @@ SettingEditing::SettingEditing(QWidget* parent) : QWidget(parent),
 }
 
 SettingEditing::~SettingEditing()
-{
-    delete ui;
-}
+{ delete ui; }

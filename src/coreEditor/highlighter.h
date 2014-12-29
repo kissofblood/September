@@ -1,6 +1,7 @@
 #ifndef HIGHLIGHTER_H
 #define HIGHLIGHTER_H
 
+#include "setting/settingseptember.h"
 #include <QTextDocument>
 #include <QSyntaxHighlighter>
 #include <QString>
@@ -12,23 +13,23 @@
 #include <QBrush>
 #include <QFont>
 #include <QColor>
+#include <QPair>
+
+#include <QDebug>
 
 class Highlighter : public QSyntaxHighlighter
 {
+    Q_OBJECT
 public:
     Highlighter(const QStringList& properties,  const QStringList& pseudo,
                 const QStringList& widgets,     const QStringList& sub,
                 const QStringList& other, QTextDocument* parent = nullptr);
     ~Highlighter() override = default;
 
-    void setFormatOther(const QTextCharFormat& charFormat);
-    void setFormatProperties(const QTextCharFormat& charFormat);
-    void setFormatPseudo(const QTextCharFormat& charFormat);
-    void setFormatWidgets(const QTextCharFormat& charFormat);
-    void setFormatSub(const QTextCharFormat& charFormat);
-    void setFormatComment(const QTextCharFormat& charFormat);
-    void setFormatNumber(const QTextCharFormat& charFormat);
     void highlightBlock(const QString& text) override;
+
+private slots:
+    void readValue();
 
 private:
     struct HighlightingRule
@@ -37,13 +38,14 @@ private:
         QTextCharFormat format;
     };
     QHash<QString, QVector<HighlightingRule>> m_highlightingRule_;
-    QTextCharFormat m_commentTextFormat;
-    QTextCharFormat m_numberFormat;
-    QRegExp         m_commentStart;
-    QRegExp         m_commentEnd;
-    QRegExp         m_number;
+    QTextCharFormat     m_commentTextFormat;
+    QTextCharFormat     m_numberFormat;
+    QRegExp             m_commentStart;
+    QRegExp             m_commentEnd;
+    QRegExp             m_number;
+    SettingSeptember    *m_settingSeptember = SettingSeptember::instance();
 
-    void setCharFormat(const QString& name, const QTextCharFormat& charFormat);
+    void setCharFormat(const QString& name, const QPair<QColor, QFont::Weight>& pair);
 };
 
 #endif // HIGHLIGHTER_H

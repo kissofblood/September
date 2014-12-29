@@ -41,39 +41,83 @@ SettingSeptember* SettingSeptember::instance(QWidget* parent)
 }
 
 void SettingSeptember::writeDefaultBackgroundColor(const QColor& background)
-{ m_settingApp->writeBackgroundColorSettingSeptember(background); }
+{ m_settingFontAndColor->writeBackgroundColor(background); }
 
 void SettingSeptember::writeDefaultCurrentLineColor(const QColor& currentLine)
-{ m_settingApp->writeCurrentLineColorSettingSeptember(currentLine); }
+{ m_settingFontAndColor->writeCurrentLineColor(currentLine); }
 
 void SettingSeptember::writeDefaultSearchTextColor(const QColor& searchText)
-{ m_settingApp->writeSearchTextColorSettingSeptember(searchText); }
+{ m_settingFontAndColor->writeSearchTextColor(searchText); }
 
 void SettingSeptember::writeDefaultFontText(const QFont& font)
-{ m_settingApp->writeFontText(font); }
+{ m_settingFontAndColor->writeFontText(font); }
+
+void SettingSeptember::writeDefaultOtherQss(const QColor& color, QFont::Weight weight)
+{ m_settingFontAndColor->writeOtherQss(color, weight); }
+
+void SettingSeptember::writeDefaultSubQss(const QColor& color, QFont::Weight weight)
+{ m_settingFontAndColor->writeSubQss(color, weight); }
+
+void SettingSeptember::writeDefaultWidgetQss(const QColor& color, QFont::Weight weight)
+{ m_settingFontAndColor->writeWidgetQss(color, weight); }
+
+void SettingSeptember::writeDefaultPseudoQss(const QColor& color, QFont::Weight weight)
+{ m_settingFontAndColor->writePseudoQss(color, weight); }
+
+void SettingSeptember::writeDefaultPropertiesQss(const QColor& color, QFont::Weight weight)
+{ m_settingFontAndColor->writePropertiesQss(color, weight); }
+
+void SettingSeptember::writeDefaultCommentQss(const QColor& color, QFont::Weight weight)
+{ m_settingFontAndColor->writeCommentQss(color, weight); }
+
+void SettingSeptember::writeDefaultNumberQss(const QColor& color, QFont::Weight weight)
+{ m_settingFontAndColor->writeNumberQss(color, weight); }
 
 bool SettingSeptember::containsKey()
-{ return m_settingApp->containsColorSettingSeptember(); }
+{
+    if(m_settingApp->containsColorSettingSeptember() && m_settingApp->containsQssSettingSeptember())
+        return true;
+    return false;
+}
 
 QColor SettingSeptember::readBackgroundColor()
-{ return m_settingApp->readBackgroundColorSettingSeptember(); }
+{ return m_settingFontAndColor->backgroundColor(); }
 
 QColor SettingSeptember::readCurrentLineColor()
-{ return m_settingApp->readCurrentLineColorSettingSeptember(); }
+{ return m_settingFontAndColor->currentLineColor(); }
 
 QColor SettingSeptember::readSearchTextColor()
-{ return m_settingApp->readSearchTextColorSettingSeptember(); }
+{ return m_settingFontAndColor->searchTextColor(); }
 
 QFont SettingSeptember::readFontText()
-{ return m_settingApp->readFontText(); }
+{ return m_settingFontAndColor->fontText(); }
 
-void SettingSeptember::addValue()
-{
-    m_settingFontAndColor->setBackgroundColor(m_settingApp->readBackgroundColorSettingSeptember());
-    m_settingFontAndColor->setCurrentLineColor(m_settingApp->readCurrentLineColorSettingSeptember());
-    m_settingFontAndColor->setSearchTextColor(m_settingApp->readSearchTextColorSettingSeptember());
-    m_settingFontAndColor->setFontText(m_settingApp->readFontText());
-}
+QPair<QColor, QFont::Weight> SettingSeptember::readOtherQss()
+{ return m_settingFontAndColor->otherQss(); }
+
+QPair<QColor, QFont::Weight> SettingSeptember::readSubQss()
+{ return m_settingFontAndColor->subQss(); }
+
+QPair<QColor, QFont::Weight> SettingSeptember::readWidgetQss()
+{ return m_settingFontAndColor->widgetQss(); }
+
+QPair<QColor, QFont::Weight> SettingSeptember::readPseudoQss()
+{ return m_settingFontAndColor->pseudoQss(); }
+
+QPair<QColor, QFont::Weight> SettingSeptember::readPropertiesQss()
+{ return m_settingFontAndColor->propertiesQss(); }
+
+QPair<QColor, QFont::Weight> SettingSeptember::readCommentQss()
+{ return m_settingFontAndColor->commentQss(); }
+
+QPair<QColor, QFont::Weight> SettingSeptember::readNumberQss()
+{ return m_settingFontAndColor->numberQss(); }
+
+void SettingSeptember::addValueColor()
+{ m_settingFontAndColor->readSettingColor(); }
+
+void SettingSeptember::addValueQss()
+{ m_settingFontAndColor->readSettingQss(); }
 
 void SettingSeptember::selectSetting(QTreeWidgetItem* item)
 {
@@ -130,9 +174,7 @@ void SettingSeptember::selectSetting(QTreeWidgetItem* item)
 
 void SettingSeptember::writeSetting()
 {
-    m_settingApp->writeBackgroundColorSettingSeptember(m_settingFontAndColor->backgroundColor());
-    m_settingApp->writeCurrentLineColorSettingSeptember(m_settingFontAndColor->currentLineColor());
-    m_settingApp->writeSearchTextColorSettingSeptember(m_settingFontAndColor->searchTextColor());
-    m_settingApp->writeFontText(m_settingFontAndColor->fontText());
+    m_settingFontAndColor->writeSettingColor();
+    m_settingFontAndColor->writeSettingQss();
     emit settingSeptemberOK();
 }

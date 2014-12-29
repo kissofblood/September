@@ -40,13 +40,6 @@ public:
     ~CoreEditor() override = default;
 
     void setOtherTextColor(const QColor& color);
-    void setFormatOther(const QTextCharFormat& charFormat);
-    void setFormatProperties(const QTextCharFormat& charFormat);
-    void setFormatPseudo(const QTextCharFormat& charFormat);
-    void setFormatWidgets(const QTextCharFormat& charFormat);
-    void setFormatSub(const QTextCharFormat& charFormat);
-    void setFormatComment(const QTextCharFormat& charFormat);
-    void setFormatNumber(const QTextCharFormat& charFormat);
     void checkingCodeQss();
     void appendText(const QString& text);
     void selectTextSearch(const QTextCursor& cursor, const QTextCharFormat& format);
@@ -94,7 +87,7 @@ private:
     QVector<bool>       m_blockNumberError_;
     bool                m_visibleLineNumberAre  = true;
     int                 m_zoomDocument          = 12;
-    QColor              m_backgroundDoc         = { Qt::black };
+    QColor              m_backgroundDoc;
     QFont               m_fontText;
     QMultiHash<int, std::tuple<QTextCursor, QTextCharFormat, bool>> m_selectTextSearch_;
 

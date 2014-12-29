@@ -46,6 +46,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->mnSearchReplace->setShortcut(QKeySequence::Find);
 
     ui->mnListFile->setCheckable(true);
+    ui->mnListFile->setChecked(true);
     ui->mnCreateWidget->setCheckable(true);
     ui->mnOpenUi->setCheckable(true);
     ui->mnNumberLine->setCheckable(true);
@@ -210,10 +211,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
 }
 
 SeptemberEditor::~SeptemberEditor()
-{
-    delete ui;
-    m_settingKey->deleteLater();
-}
+{ delete ui; }
 
 void SeptemberEditor::closeOrShowListFile()
 {
@@ -603,7 +601,8 @@ void SeptemberEditor::showSettingKey()
 
 void SeptemberEditor::showSettingSeptember()
 {
-    m_settingSeptember->addValue();
+    m_settingSeptember->addValueColor();
+    m_settingSeptember->addValueQss();
     m_settingSeptember->show();
 }
 

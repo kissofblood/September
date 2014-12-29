@@ -53,7 +53,7 @@ private:
     QFlags<QTextDocument::FindFlag> m_findFlag          = QTextDocument::FindWholeWords;
     QVector<QPair<QTextCursor, QTextCharFormat>>        m_textCharFormatUndo_;
     SettingSeptember                *m_settingSeptember = SettingSeptember::instance();
-    QColor  m_searchSelectColor = { 85, 85, 0 };
+    QColor  m_searchSelectColor;
     int     m_posCursor         = 0;
     bool    m_isRegExp          = false;
     bool    m_isReplaceAll      = false;

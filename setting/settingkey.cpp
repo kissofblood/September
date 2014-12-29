@@ -98,7 +98,7 @@ void SettingKey::writeDefaultKey(const QString& group, const QString& name, cons
 {
     QString scheme = ui->cmbScheme->currentText();
     m_settingApp->writeSettingKey(scheme, group, name, key);
-    m_settingApp->writeDefaultSettingKey(scheme, group, name, key);
+    m_settingApp->writeDefaultSettingKey(group, name, key);
 }
 
 QString SettingKey::readKey(const QString& group, const QString& name)
@@ -232,7 +232,7 @@ void SettingKey::setDefaultScheme()
     QString scheme = ui->cmbScheme->itemText(0);
     for(auto i = m_groupRow_.begin(); i != m_groupRow_.end(); i++)
         for(auto& row : i.value())
-            m_scheme_[scheme][row].second = m_settingApp->readDefaultSettingKey(scheme, i.key(), m_scheme_[scheme][row].first);
+            m_scheme_[scheme][row].second = m_settingApp->readDefaultSettingKey(i.key(), m_scheme_[scheme][row].first);
     ui->cmbScheme->setCurrentIndex(0);
     if(ui->cmbScheme->count() == 1)
         selectScheme(ui->cmbScheme->currentText());

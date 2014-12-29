@@ -7,14 +7,13 @@ Highlighter::Highlighter(const QStringList& properties, const QStringList& pseud
     , m_commentEnd(R"(\*/)")
     , m_number(R"(([0-9]+)|([0-9]+\.[0-9]+)|(#\b(([a-fA-F]|\d)+)\b))")
 {
-    auto setHighlighter = [](const QString& name, const QBrush& bruch, QFont::Weight weight, const QStringList& list)
+    this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, &Highlighter::readValue);
+
+    auto setHighlighter = [](const QString& name, const QStringList& list)
     {
-        QTextCharFormat charFormat;
         HighlightingRule rule;
         QVector<HighlightingRule> vecRule;
 
-        charFormat.setForeground(bruch);
-        charFormat.setFontWeight(weight);
         for(auto& str : list)
         {
             if(name == "widgets" || name == "properties")
@@ -25,48 +24,42 @@ Highlighter::Highlighter(const QStringList& properties, const QStringList& pseud
                 rule.pattern.setPattern(R"(\b::)" + str + R"(\b)");
             else if(name == "other")
                 rule.pattern.setPattern(R"(:(\w|\s)*)" + str + R"(.*;)");
-            rule.format = charFormat;
             vecRule.push_back(rule);
         }
         return vecRule;
     };
-
     QStringList strList;
     for(QString str : other)
         strList.push_back(str.remove(QRegExp(R"(\(.*\))")));
 
-    m_highlightingRule_.insert("properties", setHighlighter("properties", QBrush(QColor(255, 255, 85)), QFont::Bold, properties));
-    m_highlightingRule_.insert("pseudo", setHighlighter("pseudo", QBrush(QColor(84, 84, 255)), QFont::Bold, pseudo));
-    m_highlightingRule_.insert("widgets", setHighlighter("widgets", QBrush(QColor(85, 255, 85)), QFont::Bold, widgets));
-    m_highlightingRule_.insert("sub", setHighlighter("sub", QBrush(QColor(100, 74, 155)), QFont::Bold, sub));
-    m_highlightingRule_.insert("other", setHighlighter("other", QBrush(QColor(Qt::gray)), QFont::Bold, strList));
-    m_commentTextFormat.setForeground(QColor(85, 255, 255));
-    m_numberFormat.setForeground(QColor(243, 81, 243));
+    m_highlightingRule_.insert("properties", setHighlighter("properties", properties));
+    m_highlightingRule_.insert("pseudo", setHighlighter("pseudo", pseudo));
+    m_highlightingRule_.insert("widgets", setHighlighter("widgets", widgets));
+    m_highlightingRule_.insert("sub", setHighlighter("sub", sub));
+    m_highlightingRule_.insert("other", setHighlighter("other", strList));
+
+    if(m_settingSeptember->containsKey())
+        readValue();
+    else
+    {
+        setCharFormat("properties", { QColor(255, 255, 85), QFont::Bold });
+        m_settingSeptember->writeDefaultPropertiesQss(QColor(255, 255, 85), QFont::Bold);
+        setCharFormat("pseudo", { QColor(84, 84, 255), QFont::Bold });
+        m_settingSeptember->writeDefaultPseudoQss(QColor(84, 84, 255), QFont::Bold);
+        setCharFormat("widgets", { QColor(85, 255, 85), QFont::DemiBold });
+        m_settingSeptember->writeDefaultWidgetQss(QColor(85, 255, 85), QFont::DemiBold);
+        setCharFormat("sub", { QColor(100, 74, 155), QFont::Bold });
+        m_settingSeptember->writeDefaultSubQss(QColor(100, 74, 155), QFont::Bold);
+        setCharFormat("other", { QColor(Qt::gray), QFont::Bold });
+        m_settingSeptember->writeDefaultOtherQss(QColor(Qt::gray), QFont::Bold);
+        m_commentTextFormat.setForeground(QColor(85, 255, 255));
+        m_commentTextFormat.setFontWeight(QFont::Normal);
+        m_settingSeptember->writeDefaultCommentQss(QColor(85, 255, 255), QFont::Normal);
+        m_numberFormat.setForeground(QColor(243, 81, 243));
+        m_numberFormat.setFontWeight(QFont::Normal);
+        m_settingSeptember->writeDefaultNumberQss(QColor(243, 81, 243), QFont::Normal);
+    }
 }
-
-void Highlighter::setFormatOther(const QTextCharFormat& charFormat)
-{ setCharFormat("other", charFormat); }
-
-void Highlighter::setFormatProperties(const QTextCharFormat& charFormat)
-{
-    setCharFormat("properties", charFormat);
-    setCharFormat("icons", charFormat);
-}
-
-void Highlighter::setFormatPseudo(const QTextCharFormat& charFormat)
-{ setCharFormat("pseudo", charFormat); }
-
-void Highlighter::setFormatWidgets(const QTextCharFormat& charFormat)
-{ setCharFormat("widgets", charFormat); }
-
-void Highlighter::setFormatSub(const QTextCharFormat& charFormat)
-{ setCharFormat("sub", charFormat); }
-
-void Highlighter::setFormatComment(const QTextCharFormat& charFormat)
-{ m_commentTextFormat = charFormat; }
-
-void Highlighter::setFormatNumber(const QTextCharFormat& charFormat)
-{ m_numberFormat = charFormat; }
 
 void Highlighter::highlightBlock(const QString& text)
 {
@@ -80,6 +73,7 @@ void Highlighter::highlightBlock(const QString& text)
                 int length;
                 if(i.key() == "properties" || i.key() == "widgets")
                 {
+
                     if(index > 1)
                         if(text[index - 1] == ':' || text[index - 1] == '!')
                             break;
@@ -144,8 +138,34 @@ void Highlighter::highlightBlock(const QString& text)
     }
 }
 
-void Highlighter::setCharFormat(const QString& name, const QTextCharFormat& charFormat)
+void Highlighter::readValue()
 {
+    m_settingSeptember->addValueQss();
+    QPair<QColor, QFont::Weight> pair;
+    pair = m_settingSeptember->readOtherQss();
+    setCharFormat("other", pair);
+    pair = m_settingSeptember->readSubQss();
+    setCharFormat("sub", pair);
+    pair = m_settingSeptember->readWidgetQss();
+    setCharFormat("widgets", pair);
+    pair = m_settingSeptember->readPseudoQss();
+    setCharFormat("pseudo", pair);
+    pair = m_settingSeptember->readPropertiesQss();
+    setCharFormat("properties", pair);
+    pair = m_settingSeptember->readCommentQss();
+    m_commentTextFormat.setForeground(QBrush(pair.first));
+    m_commentTextFormat.setFontWeight(pair.second);
+    pair = m_settingSeptember->readNumberQss();
+    m_numberFormat.setForeground(QBrush(pair.first));
+    m_numberFormat.setFontWeight(pair.second);
+    this->rehighlight();
+}
+
+void Highlighter::setCharFormat(const QString& name, const QPair<QColor, QFont::Weight>& pair)
+{
+    QTextCharFormat charFormat;
+    charFormat.setForeground(QBrush(pair.first));
+    charFormat.setFontWeight(pair.second);
     for(auto& rule : m_highlightingRule_[name])
         rule.format = charFormat;
 }

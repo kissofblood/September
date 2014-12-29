@@ -35,12 +35,27 @@ public:
     void writeDefaultCurrentLineColor(const QColor& currentLine);
     void writeDefaultSearchTextColor(const QColor& searchText);
     void writeDefaultFontText(const QFont& font);
+    void writeDefaultOtherQss(const QColor& color, QFont::Weight weight);
+    void writeDefaultSubQss(const QColor& color, QFont::Weight weight);
+    void writeDefaultWidgetQss(const QColor& color, QFont::Weight weight);
+    void writeDefaultPseudoQss(const QColor& color, QFont::Weight weight);
+    void writeDefaultPropertiesQss(const QColor& color, QFont::Weight weight);
+    void writeDefaultCommentQss(const QColor& color, QFont::Weight weight);
+    void writeDefaultNumberQss(const QColor& color, QFont::Weight weight);
     bool containsKey();
     QColor readBackgroundColor();
     QColor readCurrentLineColor();
     QColor readSearchTextColor();
     QFont readFontText();
-    void addValue();
+    QPair<QColor, QFont::Weight> readOtherQss();
+    QPair<QColor, QFont::Weight> readSubQss();
+    QPair<QColor, QFont::Weight> readWidgetQss();
+    QPair<QColor, QFont::Weight> readPseudoQss();
+    QPair<QColor, QFont::Weight> readPropertiesQss();
+    QPair<QColor, QFont::Weight> readCommentQss();
+    QPair<QColor, QFont::Weight> readNumberQss();
+    void addValueColor();
+    void addValueQss();
 
 signals:
     void settingSeptemberOK();

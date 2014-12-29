@@ -3,6 +3,7 @@
 CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
     , m_lineColor(26, 21, 21)
     , m_otherTextColor(170, 170, 170)
+    , m_backgroundDoc(Qt::black)
     , m_fontText(QFont("Droid Sans Mono", m_zoomDocument, QFont::Monospace))
 {
     QStringList properties = Common::keyWordsFromFile("listOfProperties") + Common::keyWordsFromFile("listOfIcons");
@@ -30,8 +31,8 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
         QTextCursor startBlock = this->textCursor();
         startBlock.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
 
-        m_observerCode->textParserBody(this->document()->toPlainText().left(this->textCursor().position()));
-        m_observerCode->textParserHead(cursor.selectedText().left(this->textCursor().position() - startBlock.position()));
+        m_observerCode->textParserBody(this->document()->toPlainText().left(this->textCursor().position() + 1));
+        m_observerCode->textParserHead(cursor.selectedText().left(this->textCursor().position() - startBlock.position() + 1));
     });
     this->connect(m_observerCode, &ObserverCodeQss::stringListModelChanged, m_completer, &QCompleter::setModel);
     this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, &CoreEditor::readValue);
@@ -74,27 +75,6 @@ void CoreEditor::insertOrRemove(int block)
 
 void CoreEditor::setOtherTextColor(const QColor& color)
 { m_otherTextColor = color; }
-
-void CoreEditor::setFormatOther(const QTextCharFormat& charFormat)
-{ m_highlighter->setFormatOther(charFormat); }
-
-void CoreEditor::setFormatProperties(const QTextCharFormat& charFormat)
-{ m_highlighter->setFormatProperties(charFormat); }
-
-void CoreEditor::setFormatPseudo(const QTextCharFormat& charFormat)
-{ m_highlighter->setFormatPseudo(charFormat); }
-
-void CoreEditor::setFormatWidgets(const QTextCharFormat& charFormat)
-{ m_highlighter->setFormatWidgets(charFormat); }
-
-void CoreEditor::setFormatSub(const QTextCharFormat& charFormat)
-{ m_highlighter->setFormatSub(charFormat); }
-
-void CoreEditor::setFormatComment(const QTextCharFormat& charFormat)
-{ m_highlighter->setFormatComment(charFormat); }
-
-void CoreEditor::setFormatNumber(const QTextCharFormat& charFormat)
-{ m_highlighter->setFormatNumber(charFormat); }
 
 void CoreEditor::checkingCodeQss()
 {
@@ -216,6 +196,7 @@ void CoreEditor::lineNumberAreaPaintEvent(QPaintEvent* event)
                 return;
 
             QString number = QString::number(blockNumber + 1);
+
             if(m_backgroundDoc == QColor(Qt::black))
                 painter.setPen(QColor(136, 136, 136));
             else
@@ -325,6 +306,7 @@ void CoreEditor::wheelEvent(QWheelEvent* event)
 
 void CoreEditor::readValue()
 {
+    m_settingSeptember->addValueColor();
     QPalette pal;
     m_backgroundDoc = m_settingSeptember->readBackgroundColor();
     pal.setColor(QPalette::Text, m_otherTextColor);
