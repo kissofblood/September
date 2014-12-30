@@ -31,6 +31,7 @@ SettingFontAndColor::SettingFontAndColor(QWidget* parent) : QWidget(parent),
     this->connect(ui->btnNumberColor,       &QPushButton::clicked, this, &SettingFontAndColor::amendColorEdit);
     this->connect(ui->btnCreateScheme,      &QPushButton::clicked, m_boxScheme, &BoxScheme::showBoxScheme);
     this->connect(ui->btnRemoveScheme,      &QPushButton::clicked, this, &SettingFontAndColor::deleteScheme);
+    this->connect(ui->btnDefaultScheme,     &QPushButton::clicked, this, &SettingFontAndColor::setDefaultScheme);
     this->connect(ui->cmbOtherWeight,       &QComboBox::currentTextChanged, this, std::bind(&SettingFontAndColor::changeWeight, this));
     this->connect(ui->cmbPropertiesWeight,  &QComboBox::currentTextChanged, this, std::bind(&SettingFontAndColor::changeWeight, this));
     this->connect(ui->cmbPseudoWeight,      &QComboBox::currentTextChanged, this, std::bind(&SettingFontAndColor::changeWeight, this));
@@ -68,63 +69,63 @@ void SettingFontAndColor::writeSearchTextColor(const QColor& color)
 
 void SettingFontAndColor::writeFontText(const QFont& font)
 {
-    m_settingApp->writeFontText(ui->cmbScheme->currentText(), font);
-    m_settingApp->writeDefaultFontText(font);
+    m_settingApp->writeFontTextSeptember(ui->cmbScheme->currentText(), font);
+    m_settingApp->writeDefaultFontTextSeptember(font);
     ui->fontText->setCurrentFont(font);
 }
 
 void SettingFontAndColor::writeOtherQss(const QColor& color, QFont::Weight weight)
 {
-    m_settingApp->writeOtherQss(ui->cmbScheme->currentText(), color, weight);
-    m_settingApp->writeDefaultOtherQss(color, weight);
+    m_settingApp->writeOtherQssSeptember(ui->cmbScheme->currentText(), color, weight);
+    m_settingApp->writeDefaultOtherQssSeptember(color, weight);
     ui->btnOtherColor->setPalette(QPalette(color));
     ui->cmbOtherWeight->setCurrentIndex(ui->cmbOtherWeight->findData(static_cast<int>(weight)));
 }
 
 void SettingFontAndColor::writePropertiesQss(const QColor& color, QFont::Weight weight)
 {
-    m_settingApp->writePropertiesQss(ui->cmbScheme->currentText(), color, weight);
-    m_settingApp->writeDefaultPropertiesQss(color, weight);
+    m_settingApp->writePropertiesQssSeptember(ui->cmbScheme->currentText(), color, weight);
+    m_settingApp->writeDefaultPropertiesQssSeptember(color, weight);
     ui->btnPropertiesColor->setPalette(QPalette(color));
     ui->cmbPropertiesWeight->setCurrentIndex(ui->cmbPropertiesWeight->findData(static_cast<int>(weight)));
 }
 
 void SettingFontAndColor::writePseudoQss(const QColor& color, QFont::Weight weight)
 {
-    m_settingApp->writePseudoQss(ui->cmbScheme->currentText(), color, weight);
-    m_settingApp->writeDefaultPseudoQss(color, weight);
+    m_settingApp->writePseudoQssSeptember(ui->cmbScheme->currentText(), color, weight);
+    m_settingApp->writeDefaultPseudoQssSeptember(color, weight);
     ui->btnPseudoColor->setPalette(QPalette(color));
     ui->cmbPseudoWeight->setCurrentIndex(ui->cmbPseudoWeight->findData(static_cast<int>(weight)));
 }
 
 void SettingFontAndColor::writeSubQss(const QColor& color, QFont::Weight weight)
 {
-    m_settingApp->writeSubQss(ui->cmbScheme->currentText(), color, weight);
-    m_settingApp->writeDefaultSubQss(color, weight);
+    m_settingApp->writeSubQssSeptember(ui->cmbScheme->currentText(), color, weight);
+    m_settingApp->writeDefaultSubQssSeptember(color, weight);
     ui->btnSubColor->setPalette(QPalette(color));
     ui->cmbSubWeight->setCurrentIndex(ui->cmbSubWeight->findData(static_cast<int>(weight)));
 }
 
 void SettingFontAndColor::writeWidgetQss(const QColor& color, QFont::Weight weight)
 {
-    m_settingApp->writeWidgetQss(ui->cmbScheme->currentText(), color, weight);
-    m_settingApp->writeDefaultWidgetQss(color, weight);
+    m_settingApp->writeWidgetQssSeptember(ui->cmbScheme->currentText(), color, weight);
+    m_settingApp->writeDefaultWidgetQssSeptember(color, weight);
     ui->btnWidgetColor->setPalette(QPalette(color));
     ui->cmbWidgetWeight->setCurrentIndex(ui->cmbWidgetWeight->findData(static_cast<int>(weight)));
 }
 
 void SettingFontAndColor::writeCommentQss(const QColor& color, QFont::Weight weight)
 {
-    m_settingApp->writeCommentQss(ui->cmbScheme->currentText(), color, weight);
-    m_settingApp->writeDefaultCommentQss(color, weight);
+    m_settingApp->writeCommentQssSeptember(ui->cmbScheme->currentText(), color, weight);
+    m_settingApp->writeDefaultCommentQssSeptember(color, weight);
     ui->btnCommentColor->setPalette(QPalette(color));
     ui->cmbCommentWeight->setCurrentIndex(ui->cmbCommentWeight->findData(static_cast<int>(weight)));
 }
 
 void SettingFontAndColor::writeNumberQss(const QColor& color, QFont::Weight weight)
 {
-    m_settingApp->writeNumberQss(ui->cmbScheme->currentText(), color, weight);
-    m_settingApp->writeDefaultNumberQss(color, weight);
+    m_settingApp->writeNumberQssSeptember(ui->cmbScheme->currentText(), color, weight);
+    m_settingApp->writeDefaultNumberQssSeptember(color, weight);
     ui->btnNumberColor->setPalette(QPalette(color));
     ui->cmbNumberWeight->setCurrentIndex(ui->cmbNumberWeight->findData(static_cast<int>(weight)));
 }
@@ -150,7 +151,7 @@ void SettingFontAndColor::readSettingColor()
     ui->btnColorBackground->setPalette(QPalette(m_settingApp->readBackgroundColorSettingSeptember(scheme)));
     ui->btnColorCurrentLine->setPalette(QPalette(m_settingApp->readCurrentLineColorSettingSeptember(scheme)));
     ui->btnColorSearchText->setPalette(QPalette(m_settingApp->readSearchTextColorSettingSeptember(scheme)));
-    ui->fontText->setCurrentFont(m_settingApp->readFontText(scheme));
+    ui->fontText->setCurrentFont(m_settingApp->readFontTextSeptember(scheme));
 }
 
 void SettingFontAndColor::readSettingQss()
@@ -160,25 +161,25 @@ void SettingFontAndColor::readSettingQss()
 
     QPair<QColor, QFont::Weight> pair;
     QString scheme = ui->cmbScheme->currentText();
-    pair = m_settingApp->readOtherQss(scheme);
+    pair = m_settingApp->readOtherQssSeptember(scheme);
     ui->btnOtherColor->setPalette(QPalette(pair.first));
     ui->cmbOtherWeight->setCurrentIndex(ui->cmbOtherWeight->findData(static_cast<int>(pair.second)));
-    pair = m_settingApp->readPropertiesQss(scheme);
+    pair = m_settingApp->readPropertiesQssSeptember(scheme);
     ui->btnPropertiesColor->setPalette(QPalette(pair.first));
     ui->cmbPropertiesWeight->setCurrentIndex(ui->cmbPropertiesWeight->findData(static_cast<int>(pair.second)));
-    pair = m_settingApp->readPseudoQss(scheme);
+    pair = m_settingApp->readPseudoQssSeptember(scheme);
     ui->btnPseudoColor->setPalette(QPalette(pair.first));
     ui->cmbPseudoWeight->setCurrentIndex(ui->cmbPseudoWeight->findData(static_cast<int>(pair.second)));
-    pair = m_settingApp->readSubQss(scheme);
+    pair = m_settingApp->readSubQssSeptember(scheme);
     ui->btnSubColor->setPalette(QPalette(pair.first));
     ui->cmbSubWeight->setCurrentIndex(ui->cmbSubWeight->findData(static_cast<int>(pair.second)));
-    pair = m_settingApp->readWidgetQss(scheme);
+    pair = m_settingApp->readWidgetQssSeptember(scheme);
     ui->btnWidgetColor->setPalette(QPalette(pair.first));
     ui->cmbWidgetWeight->setCurrentIndex(ui->cmbWidgetWeight->findData(static_cast<int>(pair.second)));
-    pair = m_settingApp->readCommentQss(scheme);
+    pair = m_settingApp->readCommentQssSeptember(scheme);
     ui->btnCommentColor->setPalette(QPalette(pair.first));
     ui->cmbCommentWeight->setCurrentIndex(ui->cmbCommentWeight->findData(static_cast<int>(pair.second)));
-    pair = m_settingApp->readNumberQss(scheme);
+    pair = m_settingApp->readNumberQssSeptember(scheme);
     ui->btnNumberColor->setPalette(QPalette(pair.first));
     ui->cmbNumberWeight->setCurrentIndex(ui->cmbNumberWeight->findData(static_cast<int>(pair.second)));
 }
@@ -193,14 +194,14 @@ void SettingFontAndColor::writeSetting()
         m_settingApp->writeBackgroundColorSettingSeptember(i.key(), i.value().background);
         m_settingApp->writeCurrentLineColorSettingSeptember(i.key(), i.value().currentLine);
         m_settingApp->writeSearchTextColorSettingSeptember(i.key(), i.value().searchText);
-        m_settingApp->writeFontText(i.key(), i.value().fontText);
-        m_settingApp->writeOtherQss(i.key(), i.value().qssOther.first, i.value().qssOther.second);
-        m_settingApp->writePropertiesQss(i.key(), i.value().qssProperties.first, i.value().qssProperties.second);
-        m_settingApp->writePseudoQss(i.key(), i.value().qssPseudo.first, i.value().qssPseudo.second);
-        m_settingApp->writeSubQss(i.key(), i.value().qssSub.first, i.value().qssSub.second);
-        m_settingApp->writeWidgetQss(i.key(), i.value().qssWidget.first, i.value().qssWidget.second);
-        m_settingApp->writeCommentQss(i.key(), i.value().qssComment.first, i.value().qssComment.second);
-        m_settingApp->writeNumberQss(i.key(), i.value().qssNumber.first, i.value().qssNumber.second);
+        m_settingApp->writeFontTextSeptember(i.key(), i.value().fontText);
+        m_settingApp->writeOtherQssSeptember(i.key(), i.value().qssOther.first, i.value().qssOther.second);
+        m_settingApp->writePropertiesQssSeptember(i.key(), i.value().qssProperties.first, i.value().qssProperties.second);
+        m_settingApp->writePseudoQssSeptember(i.key(), i.value().qssPseudo.first, i.value().qssPseudo.second);
+        m_settingApp->writeSubQssSeptember(i.key(), i.value().qssSub.first, i.value().qssSub.second);
+        m_settingApp->writeWidgetQssSeptember(i.key(), i.value().qssWidget.first, i.value().qssWidget.second);
+        m_settingApp->writeCommentQssSeptember(i.key(), i.value().qssComment.first, i.value().qssComment.second);
+        m_settingApp->writeNumberQssSeptember(i.key(), i.value().qssNumber.first, i.value().qssNumber.second);
     }
     for(int i = 0; i < ui->cmbScheme->count(); i++)
         m_settingApp->writeSchemeSettingSeptember(ui->cmbScheme->itemText(i), i);
@@ -354,6 +355,22 @@ void SettingFontAndColor::selectScheme(const QString& scheme)
     ui->cmbNumberWeight->setCurrentIndex(ui->cmbNumberWeight->findData(static_cast<int>(m_scheme_[scheme].qssNumber.second)));
 }
 
+void SettingFontAndColor::setDefaultScheme()
+{
+    QString scheme = ui->cmbScheme->itemText(0);
+    m_scheme_[scheme].background = m_settingApp->readDefaultBackgroundColorSettingSeptember();
+    m_scheme_[scheme].currentLine = m_settingApp->readDefaultCurrentLineColorSettingSeptember();
+    m_scheme_[scheme].searchText = m_settingApp->readDefaultSearchTextColorSettingSeptember();
+    m_scheme_[scheme].fontText = m_settingApp->readDefaultFontTextSeptember();
+    m_scheme_[scheme].qssOther = m_settingApp->readDefaultOtherQssSeptember();
+    m_scheme_[scheme].qssProperties = m_settingApp->readDefaultPropertiesQssSeptember();
+    m_scheme_[scheme].qssPseudo = m_settingApp->readDefaultPseudoQssSeptember();
+    m_scheme_[scheme].qssSub = m_settingApp->readDefaultSubQssSeptember();
+    m_scheme_[scheme].qssWidget = m_settingApp->readDefaultWidgetQssSeptember();
+    m_scheme_[scheme].qssComment = m_settingApp->readDefaultCommentQssSeptember();
+    m_scheme_[scheme].qssNumber = m_settingApp->readDefaultNumberQssSeptember();
+}
+
 void SettingFontAndColor::addNameScheme(const QString& scheme)
 {
     ui->cmbScheme->addItem(scheme);
@@ -402,14 +419,14 @@ void SettingFontAndColor::readKey()
         m_scheme_[scheme].background = m_settingApp->readBackgroundColorSettingSeptember(scheme);
         m_scheme_[scheme].currentLine = m_settingApp->readCurrentLineColorSettingSeptember(scheme);
         m_scheme_[scheme].searchText = m_settingApp->readSearchTextColorSettingSeptember(scheme);
-        m_scheme_[scheme].fontText = m_settingApp->readFontText(scheme);
-        m_scheme_[scheme].qssOther = m_settingApp->readOtherQss(scheme);
-        m_scheme_[scheme].qssProperties = m_settingApp->readPropertiesQss(scheme);
-        m_scheme_[scheme].qssPseudo = m_settingApp->readPseudoQss(scheme);
-        m_scheme_[scheme].qssSub = m_settingApp->readSubQss(scheme);
-        m_scheme_[scheme].qssWidget = m_settingApp->readWidgetQss(scheme);
-        m_scheme_[scheme].qssComment = m_settingApp->readCommentQss(scheme);
-        m_scheme_[scheme].qssNumber = m_settingApp->readNumberQss(scheme);
+        m_scheme_[scheme].fontText = m_settingApp->readFontTextSeptember(scheme);
+        m_scheme_[scheme].qssOther = m_settingApp->readOtherQssSeptember(scheme);
+        m_scheme_[scheme].qssProperties = m_settingApp->readPropertiesQssSeptember(scheme);
+        m_scheme_[scheme].qssPseudo = m_settingApp->readPseudoQssSeptember(scheme);
+        m_scheme_[scheme].qssSub = m_settingApp->readSubQssSeptember(scheme);
+        m_scheme_[scheme].qssWidget = m_settingApp->readWidgetQssSeptember(scheme);
+        m_scheme_[scheme].qssComment = m_settingApp->readCommentQssSeptember(scheme);
+        m_scheme_[scheme].qssNumber = m_settingApp->readNumberQssSeptember(scheme);
     }
 }
 

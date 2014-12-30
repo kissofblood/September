@@ -335,7 +335,7 @@ bool SettingApp::containsColorSettingSeptember()
     return true;
 }
 
-void SettingApp::writeFontText(const QString& scheme, const QFont& font)
+void SettingApp::writeFontTextSeptember(const QString& scheme, const QFont& font)
 {
     m_setting->beginGroup("settingSeptember");
         m_setting->beginGroup("scheme");
@@ -348,7 +348,7 @@ void SettingApp::writeFontText(const QString& scheme, const QFont& font)
    m_setting->endGroup();
 }
 
-void SettingApp::writeDefaultFontText(const QFont& font)
+void SettingApp::writeDefaultFontTextSeptember(const QFont& font)
 {
     m_setting->beginGroup("settingSeptember");
         m_setting->beginGroup("defaultFontText");
@@ -359,7 +359,7 @@ void SettingApp::writeDefaultFontText(const QFont& font)
     m_setting->endGroup();
 }
 
-QFont SettingApp::readFontText(const QString& scheme)
+QFont SettingApp::readFontTextSeptember(const QString& scheme)
 {
     m_setting->beginGroup("settingSeptember");
         m_setting->beginGroup("scheme");
@@ -373,7 +373,7 @@ QFont SettingApp::readFontText(const QString& scheme)
     return qMove(font);
 }
 
-QFont SettingApp::readDefaultFontText()
+QFont SettingApp::readDefaultFontTextSeptember()
 {
     m_setting->beginGroup("settingSeptember");
         m_setting->beginGroup("defaultFontText");
@@ -385,7 +385,7 @@ QFont SettingApp::readDefaultFontText()
    return qMove(font);
 }
 
-void SettingApp::writeOtherQss(const QString& scheme, const QColor& color, QFont::Weight weight)
+void SettingApp::writeOtherQssSeptember(const QString& scheme, const QColor& color, QFont::Weight weight)
 {
     beginQssSettingSeptember;
         m_setting->beginGroup("scheme");
@@ -399,7 +399,7 @@ void SettingApp::writeOtherQss(const QString& scheme, const QColor& color, QFont
     endSetting;
 }
 
-void SettingApp::writeDefaultOtherQss(const QColor& color, QFont::Weight weight)
+void SettingApp::writeDefaultOtherQssSeptember(const QColor& color, QFont::Weight weight)
 {
     beginDefaultQssSettingSeptember;
         m_setting->beginGroup("otherQss");
@@ -409,7 +409,7 @@ void SettingApp::writeDefaultOtherQss(const QColor& color, QFont::Weight weight)
     endSetting;
 }
 
-QPair<QColor, QFont::Weight> SettingApp::readOtherQss(const QString& scheme)
+QPair<QColor, QFont::Weight> SettingApp::readOtherQssSeptember(const QString& scheme)
 {
     beginQssSettingSeptember;
         m_setting->beginGroup("scheme");
@@ -424,7 +424,7 @@ QPair<QColor, QFont::Weight> SettingApp::readOtherQss(const QString& scheme)
     return qMove(pair);
 }
 
-QPair<QColor, QFont::Weight> SettingApp::readDefaultOtherQss()
+QPair<QColor, QFont::Weight> SettingApp::readDefaultOtherQssSeptember()
 {
     beginDefaultQssSettingSeptember;
         m_setting->beginGroup("otherQss");
@@ -435,7 +435,7 @@ QPair<QColor, QFont::Weight> SettingApp::readDefaultOtherQss()
     return qMove(pair);
 }
 
-void SettingApp::writePropertiesQss(const QString& scheme, const QColor& color, QFont::Weight weight)
+void SettingApp::writePropertiesQssSeptember(const QString& scheme, const QColor& color, QFont::Weight weight)
 {
     beginQssSettingSeptember;
         m_setting->beginGroup("scheme");
@@ -449,7 +449,7 @@ void SettingApp::writePropertiesQss(const QString& scheme, const QColor& color, 
    endSetting;
 }
 
-void SettingApp::writeDefaultPropertiesQss(const QColor& color, QFont::Weight weight)
+void SettingApp::writeDefaultPropertiesQssSeptember(const QColor& color, QFont::Weight weight)
 {
     beginDefaultQssSettingSeptember;
         m_setting->beginGroup("propertiesQss");
@@ -459,7 +459,7 @@ void SettingApp::writeDefaultPropertiesQss(const QColor& color, QFont::Weight we
     endSetting;
 }
 
-QPair<QColor, QFont::Weight> SettingApp::readPropertiesQss(const QString& scheme)
+QPair<QColor, QFont::Weight> SettingApp::readPropertiesQssSeptember(const QString& scheme)
 {
     beginQssSettingSeptember;
         m_setting->beginGroup("scheme");
@@ -474,7 +474,7 @@ QPair<QColor, QFont::Weight> SettingApp::readPropertiesQss(const QString& scheme
     return qMove(pair);
 }
 
-QPair<QColor, QFont::Weight> SettingApp::readDefaultPropertiesQss()
+QPair<QColor, QFont::Weight> SettingApp::readDefaultPropertiesQssSeptember()
 {
     beginDefaultQssSettingSeptember;
         m_setting->beginGroup("propertiesQss");
@@ -485,7 +485,7 @@ QPair<QColor, QFont::Weight> SettingApp::readDefaultPropertiesQss()
     return qMove(pair);
 }
 
-void SettingApp::writePseudoQss(const QString& scheme, const QColor& color, QFont::Weight weight)
+void SettingApp::writePseudoQssSeptember(const QString& scheme, const QColor& color, QFont::Weight weight)
 {
     beginQssSettingSeptember;
         m_setting->beginGroup("scheme");
@@ -499,7 +499,7 @@ void SettingApp::writePseudoQss(const QString& scheme, const QColor& color, QFon
     endSetting;
 }
 
-void SettingApp::writeDefaultPseudoQss(const QColor& color, QFont::Weight weight)
+void SettingApp::writeDefaultPseudoQssSeptember(const QColor& color, QFont::Weight weight)
 {
     beginDefaultQssSettingSeptember;
         m_setting->beginGroup("pseudoQss");
@@ -509,7 +509,7 @@ void SettingApp::writeDefaultPseudoQss(const QColor& color, QFont::Weight weight
     endSetting;
 }
 
-QPair<QColor, QFont::Weight> SettingApp::readPseudoQss(const QString& scheme)
+QPair<QColor, QFont::Weight> SettingApp::readPseudoQssSeptember(const QString& scheme)
 {
     beginQssSettingSeptember;
         m_setting->beginGroup("scheme");
@@ -524,7 +524,7 @@ QPair<QColor, QFont::Weight> SettingApp::readPseudoQss(const QString& scheme)
     return qMove(pair);
 }
 
-QPair<QColor, QFont::Weight> SettingApp::readDefaultPseudoQss()
+QPair<QColor, QFont::Weight> SettingApp::readDefaultPseudoQssSeptember()
 {
     beginDefaultQssSettingSeptember;
         m_setting->beginGroup("pseudoQss");
@@ -535,7 +535,7 @@ QPair<QColor, QFont::Weight> SettingApp::readDefaultPseudoQss()
     return qMove(pair);
 }
 
-void SettingApp::writeSubQss(const QString& scheme, const QColor& color, QFont::Weight weight)
+void SettingApp::writeSubQssSeptember(const QString& scheme, const QColor& color, QFont::Weight weight)
 {
     beginQssSettingSeptember;
         m_setting->beginGroup("scheme");
@@ -549,7 +549,7 @@ void SettingApp::writeSubQss(const QString& scheme, const QColor& color, QFont::
     endSetting;
 }
 
-void SettingApp::writeDefaultSubQss(const QColor& color, QFont::Weight weight)
+void SettingApp::writeDefaultSubQssSeptember(const QColor& color, QFont::Weight weight)
 {
     beginDefaultQssSettingSeptember;
         m_setting->beginGroup("subQss");
@@ -559,7 +559,7 @@ void SettingApp::writeDefaultSubQss(const QColor& color, QFont::Weight weight)
     endSetting;
 }
 
-QPair<QColor, QFont::Weight> SettingApp::readSubQss(const QString& scheme)
+QPair<QColor, QFont::Weight> SettingApp::readSubQssSeptember(const QString& scheme)
 {
     beginQssSettingSeptember;
         m_setting->beginGroup("scheme");
@@ -574,7 +574,7 @@ QPair<QColor, QFont::Weight> SettingApp::readSubQss(const QString& scheme)
     return qMove(pair);
 }
 
-QPair<QColor, QFont::Weight> SettingApp::readDefaultSubQss()
+QPair<QColor, QFont::Weight> SettingApp::readDefaultSubQssSeptember()
 {
     beginDefaultQssSettingSeptember;
         m_setting->beginGroup("subQss");
@@ -585,7 +585,7 @@ QPair<QColor, QFont::Weight> SettingApp::readDefaultSubQss()
     return qMove(pair);
 }
 
-void SettingApp::writeWidgetQss(const QString& scheme, const QColor& color, QFont::Weight weight)
+void SettingApp::writeWidgetQssSeptember(const QString& scheme, const QColor& color, QFont::Weight weight)
 {
     beginQssSettingSeptember;
         m_setting->beginGroup("scheme");
@@ -599,7 +599,7 @@ void SettingApp::writeWidgetQss(const QString& scheme, const QColor& color, QFon
     endSetting;
 }
 
-void SettingApp::writeDefaultWidgetQss(const QColor& color, QFont::Weight weight)
+void SettingApp::writeDefaultWidgetQssSeptember(const QColor& color, QFont::Weight weight)
 {
     beginDefaultQssSettingSeptember;
         m_setting->beginGroup("widgetQss");
@@ -609,7 +609,7 @@ void SettingApp::writeDefaultWidgetQss(const QColor& color, QFont::Weight weight
     endSetting;
 }
 
-QPair<QColor, QFont::Weight> SettingApp::readWidgetQss(const QString& scheme)
+QPair<QColor, QFont::Weight> SettingApp::readWidgetQssSeptember(const QString& scheme)
 {
     beginQssSettingSeptember;
         m_setting->beginGroup("scheme");
@@ -624,7 +624,7 @@ QPair<QColor, QFont::Weight> SettingApp::readWidgetQss(const QString& scheme)
     return qMove(pair);
 }
 
-QPair<QColor, QFont::Weight> SettingApp::readDefaultWidgetQss()
+QPair<QColor, QFont::Weight> SettingApp::readDefaultWidgetQssSeptember()
 {
     beginDefaultQssSettingSeptember;
         m_setting->beginGroup("widgetQss");
@@ -635,7 +635,7 @@ QPair<QColor, QFont::Weight> SettingApp::readDefaultWidgetQss()
     return qMove(pair);
 }
 
-void SettingApp::writeCommentQss(const QString& scheme, const QColor& color, QFont::Weight weight)
+void SettingApp::writeCommentQssSeptember(const QString& scheme, const QColor& color, QFont::Weight weight)
 {
     beginQssSettingSeptember;
         m_setting->beginGroup("scheme");
@@ -649,7 +649,7 @@ void SettingApp::writeCommentQss(const QString& scheme, const QColor& color, QFo
     endSetting;
 }
 
-void SettingApp::writeDefaultCommentQss(const QColor& color, QFont::Weight weight)
+void SettingApp::writeDefaultCommentQssSeptember(const QColor& color, QFont::Weight weight)
 {
     beginDefaultQssSettingSeptember;
         m_setting->beginGroup("commentQss");
@@ -659,7 +659,7 @@ void SettingApp::writeDefaultCommentQss(const QColor& color, QFont::Weight weigh
     endSetting;
 }
 
-QPair<QColor, QFont::Weight> SettingApp::readCommentQss(const QString& scheme)
+QPair<QColor, QFont::Weight> SettingApp::readCommentQssSeptember(const QString& scheme)
 {
     beginQssSettingSeptember;
         m_setting->beginGroup("scheme");
@@ -674,7 +674,7 @@ QPair<QColor, QFont::Weight> SettingApp::readCommentQss(const QString& scheme)
    return qMove(pair);
 }
 
-QPair<QColor, QFont::Weight> SettingApp::readDefaultCommentQss()
+QPair<QColor, QFont::Weight> SettingApp::readDefaultCommentQssSeptember()
 {
     beginDefaultQssSettingSeptember;
         m_setting->beginGroup("commentQss");
@@ -685,7 +685,7 @@ QPair<QColor, QFont::Weight> SettingApp::readDefaultCommentQss()
     return qMove(pair);
 }
 
-void SettingApp::writeNumberQss(const QString& scheme, const QColor& color, QFont::Weight weight)
+void SettingApp::writeNumberQssSeptember(const QString& scheme, const QColor& color, QFont::Weight weight)
 {
     beginQssSettingSeptember;
         m_setting->beginGroup("scheme");
@@ -699,7 +699,7 @@ void SettingApp::writeNumberQss(const QString& scheme, const QColor& color, QFon
     endSetting;
 }
 
-void SettingApp::writeDefaultNumberQss(const QColor& color, QFont::Weight weight)
+void SettingApp::writeDefaultNumberQssSeptember(const QColor& color, QFont::Weight weight)
 {
     beginDefaultQssSettingSeptember;
         m_setting->beginGroup("numberQss");
@@ -709,7 +709,7 @@ void SettingApp::writeDefaultNumberQss(const QColor& color, QFont::Weight weight
     endSetting;
 }
 
-QPair<QColor, QFont::Weight> SettingApp::readNumberQss(const QString& scheme)
+QPair<QColor, QFont::Weight> SettingApp::readNumberQssSeptember(const QString& scheme)
 {
     beginQssSettingSeptember;
         m_setting->beginGroup("scheme");
@@ -724,7 +724,7 @@ QPair<QColor, QFont::Weight> SettingApp::readNumberQss(const QString& scheme)
    return qMove(pair);
 }
 
-QPair<QColor, QFont::Weight> SettingApp::readDefaultNumberQss()
+QPair<QColor, QFont::Weight> SettingApp::readDefaultNumberQssSeptember()
 {
     beginDefaultQssSettingSeptember;
         m_setting->beginGroup("numberQss");

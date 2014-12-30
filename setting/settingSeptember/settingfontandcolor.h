@@ -67,6 +67,7 @@ private slots:
     void deleteScheme();
     void changeWeight();
     void selectScheme(const QString& scheme);
+    void setDefaultScheme();
 
 private:
     class BoxScheme : public QDialog
