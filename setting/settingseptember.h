@@ -56,6 +56,8 @@ public:
     QPair<QColor, QFont::Weight> readNumberQss();
     void addValueColor();
     void addValueQss();
+    void addKey();
+    void readScheme();
 
 signals:
     void settingSeptemberOK();
@@ -64,7 +66,7 @@ private slots:
     void selectSetting(QTreeWidgetItem* item);
     void writeSetting();
 
-private:
+private:    
     static SettingSeptember *m_singleton;
     Ui::SettingSeptember    *ui                     = nullptr;
     SettingCommon           *m_settingCommon        = nullptr;
@@ -74,6 +76,8 @@ private:
     SettingEditing          *m_settingEditing       = new SettingEditing;
     QWidget                 *m_currentSetting       = nullptr;
     QSpacerItem             *m_spacerSetting        = nullptr;
+
+    void closeEvent(QCloseEvent*) override;
 };
 
 #endif // SETTINGSEPTEMBER_H

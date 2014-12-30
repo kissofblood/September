@@ -16,10 +16,11 @@ SettingSeptember::SettingSeptember(QWidget* parent) : QDialog(parent),
     ui->treeSetting->setItemExpanded(ui->treeSetting->topLevelItem(1), true);
     ui->treeSetting->setCurrentItem(item->child(0));
 
-    this->connect(ui->treeSetting, &QTreeWidget::itemClicked, std::bind(&SettingSeptember::selectSetting, this, std::placeholders::_1));
-    this->connect(ui->btnOK,    &QPushButton::clicked, this, &SettingSeptember::writeSetting);
-    this->connect(ui->btnOK,    &QPushButton::clicked, this, &QDialog::close);
-    this->connect(ui->btnApply, &QPushButton::clicked, this, &SettingSeptember::writeSetting);
+    this->connect(ui->treeSetting,  &QTreeWidget::itemClicked, std::bind(&SettingSeptember::selectSetting, this, std::placeholders::_1));
+    this->connect(ui->btnOK,        &QPushButton::clicked, this, &SettingSeptember::writeSetting);
+    this->connect(ui->btnOK,        &QPushButton::clicked, this, &QDialog::close);
+    this->connect(ui->btnApply,     &QPushButton::clicked, this, &SettingSeptember::writeSetting);
+    this->connect(ui->btnCancel,    &QPushButton::clicked, this, &QDialog::close);
     this->setWindowTitle("Настройка -- September");
 }
 
@@ -119,6 +120,12 @@ void SettingSeptember::addValueColor()
 void SettingSeptember::addValueQss()
 { m_settingFontAndColor->readSettingQss(); }
 
+void SettingSeptember::addKey()
+{ m_settingFontAndColor->readKey(); }
+
+void SettingSeptember::readScheme()
+{ m_settingFontAndColor->addScheme(); }
+
 void SettingSeptember::selectSetting(QTreeWidgetItem* item)
 {
     static bool removeSpacer = false;
@@ -174,7 +181,9 @@ void SettingSeptember::selectSetting(QTreeWidgetItem* item)
 
 void SettingSeptember::writeSetting()
 {
-    m_settingFontAndColor->writeSettingColor();
-    m_settingFontAndColor->writeSettingQss();
+    m_settingFontAndColor->writeSetting();
     emit settingSeptemberOK();
 }
+
+void SettingSeptember::closeEvent(QCloseEvent*)
+{ m_settingFontAndColor->clearContainer(); }

@@ -103,11 +103,16 @@ public:
     QPair<QColor, QFont::Weight> readNumberQss(const QString& scheme);
     QPair<QColor, QFont::Weight> readDefaultNumberQss();
     bool containsQssSettingSeptember();
-    void writeSettingSeptember(const QString& scheme, int pos);
-    QStringList readSettingSeptember();
+    void writeSchemeSettingSeptember(const QString& scheme, int pos);
+    void removeSchemeSettingSeptember(const QString& scheme);
+    QStringList readSchemeSettingSeptember();
+    void writeCurrentSchemeSettingSeptember(const QString& scheme);
+    QString readCurrentSchemeSettingSeptember();
 
 private:
     QSettings   *m_setting = nullptr;
+
+    void deleteScheme(const QString& scheme);
 };
 
 #endif // SETTINGAPP_H

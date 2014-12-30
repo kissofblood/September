@@ -17,8 +17,6 @@ SettingFontAndColor::SettingFontAndColor(QWidget* parent) : QWidget(parent),
         ui->cmbNumberWeight->addItem(pair.first, pair.second);
         ui->cmbCommentWeight->addItem(pair.first, pair.second);
     }
-   // addScheme();
-    ui->cmbScheme->addItem("Default");
 
     this->connect(ui->btnColorBackground,   &QPushButton::clicked, this, &SettingFontAndColor::amendColorEdit);
     this->connect(ui->btnColorSelectText,   &QPushButton::clicked, this, &SettingFontAndColor::amendColorEdit);
@@ -31,6 +29,17 @@ SettingFontAndColor::SettingFontAndColor(QWidget* parent) : QWidget(parent),
     this->connect(ui->btnWidgetColor,       &QPushButton::clicked, this, &SettingFontAndColor::amendColorEdit);
     this->connect(ui->btnCommentColor,      &QPushButton::clicked, this, &SettingFontAndColor::amendColorEdit);
     this->connect(ui->btnNumberColor,       &QPushButton::clicked, this, &SettingFontAndColor::amendColorEdit);
+    this->connect(ui->btnCreateScheme,      &QPushButton::clicked, m_boxScheme, &BoxScheme::showBoxScheme);
+    this->connect(ui->btnRemoveScheme,      &QPushButton::clicked, this, &SettingFontAndColor::deleteScheme);
+    this->connect(ui->cmbOtherWeight,       &QComboBox::currentTextChanged, this, std::bind(&SettingFontAndColor::changeWeight, this));
+    this->connect(ui->cmbPropertiesWeight,  &QComboBox::currentTextChanged, this, std::bind(&SettingFontAndColor::changeWeight, this));
+    this->connect(ui->cmbPseudoWeight,      &QComboBox::currentTextChanged, this, std::bind(&SettingFontAndColor::changeWeight, this));
+    this->connect(ui->cmbSubWeight,         &QComboBox::currentTextChanged, this, std::bind(&SettingFontAndColor::changeWeight, this));
+    this->connect(ui->cmbWidgetWeight,      &QComboBox::currentTextChanged, this, std::bind(&SettingFontAndColor::changeWeight, this));
+    this->connect(ui->cmbCommentWeight,     &QComboBox::currentTextChanged, this, std::bind(&SettingFontAndColor::changeWeight, this));
+    this->connect(ui->cmbNumberWeight,      &QComboBox::currentTextChanged, this, std::bind(&SettingFontAndColor::changeWeight, this));
+    this->connect(ui->cmbWidgetWeight,      &QComboBox::currentTextChanged, this, std::bind(&SettingFontAndColor::changeWeight, this));
+    this->connect(ui->cmbScheme,            &QComboBox::currentTextChanged, this, &SettingFontAndColor::selectScheme);
 }
 
 SettingFontAndColor::~SettingFontAndColor()
@@ -134,8 +143,6 @@ QFont SettingFontAndColor::fontText()
 
 void SettingFontAndColor::readSettingColor()
 {
-   // addScheme();
-
     if(!m_settingApp->containsColorSettingSeptember())
         return;
 
@@ -144,15 +151,6 @@ void SettingFontAndColor::readSettingColor()
     ui->btnColorCurrentLine->setPalette(QPalette(m_settingApp->readCurrentLineColorSettingSeptember(scheme)));
     ui->btnColorSearchText->setPalette(QPalette(m_settingApp->readSearchTextColorSettingSeptember(scheme)));
     ui->fontText->setCurrentFont(m_settingApp->readFontText(scheme));
-}
-
-void SettingFontAndColor::writeSettingColor()
-{
-    QString scheme = ui->cmbScheme->currentText();
-    m_settingApp->writeBackgroundColorSettingSeptember(scheme, backgroundColor());
-    m_settingApp->writeCurrentLineColorSettingSeptember(scheme, currentLineColor());
-    m_settingApp->writeSearchTextColorSettingSeptember(scheme, searchTextColor());
-    m_settingApp->writeFontText(scheme, fontText());
 }
 
 void SettingFontAndColor::readSettingQss()
@@ -185,24 +183,27 @@ void SettingFontAndColor::readSettingQss()
     ui->cmbNumberWeight->setCurrentIndex(ui->cmbNumberWeight->findData(static_cast<int>(pair.second)));
 }
 
-void SettingFontAndColor::writeSettingQss()
+void SettingFontAndColor::writeSetting()
 {
-    QPair<QColor, QFont::Weight> pair;
-    QString scheme = ui->cmbScheme->currentText();
-    pair = otherQss();
-    m_settingApp->writeOtherQss(scheme, pair.first, pair.second);
-    pair = propertiesQss();
-    m_settingApp->writePropertiesQss(scheme, pair.first, pair.second);
-    pair = pseudoQss();
-    m_settingApp->writePseudoQss(scheme, pair.first, pair.second);
-    pair = subQss();
-    m_settingApp->writeSubQss(scheme, pair.first, pair.second);
-    pair = widgetQss();
-    m_settingApp->writeWidgetQss(scheme, pair.first, pair.second);
-    pair = commentQss();
-    m_settingApp->writeCommentQss(scheme, pair.first, pair.second);
-    pair = numberQss();
-    m_settingApp->writeNumberQss(scheme, pair.first, pair.second);
+    for(auto& schemeRemove : m_removeScheme_)
+        m_settingApp->removeSchemeSettingSeptember(schemeRemove);
+    m_settingApp->writeCurrentSchemeSettingSeptember(ui->cmbScheme->currentText());
+    for(auto i = m_scheme_.begin(); i != m_scheme_.end(); i++)
+    {
+        m_settingApp->writeBackgroundColorSettingSeptember(i.key(), i.value().background);
+        m_settingApp->writeCurrentLineColorSettingSeptember(i.key(), i.value().currentLine);
+        m_settingApp->writeSearchTextColorSettingSeptember(i.key(), i.value().searchText);
+        m_settingApp->writeFontText(i.key(), i.value().fontText);
+        m_settingApp->writeOtherQss(i.key(), i.value().qssOther.first, i.value().qssOther.second);
+        m_settingApp->writePropertiesQss(i.key(), i.value().qssProperties.first, i.value().qssProperties.second);
+        m_settingApp->writePseudoQss(i.key(), i.value().qssPseudo.first, i.value().qssPseudo.second);
+        m_settingApp->writeSubQss(i.key(), i.value().qssSub.first, i.value().qssSub.second);
+        m_settingApp->writeWidgetQss(i.key(), i.value().qssWidget.first, i.value().qssWidget.second);
+        m_settingApp->writeCommentQss(i.key(), i.value().qssComment.first, i.value().qssComment.second);
+        m_settingApp->writeNumberQss(i.key(), i.value().qssNumber.first, i.value().qssNumber.second);
+    }
+    for(int i = 0; i < ui->cmbScheme->count(); i++)
+        m_settingApp->writeSchemeSettingSeptember(ui->cmbScheme->itemText(i), i);
 }
 
 QPair<QColor, QFont::Weight> SettingFontAndColor::otherQss()
@@ -244,7 +245,14 @@ QPair<QColor, QFont::Weight> SettingFontAndColor::commentQss()
 QPair<QColor, QFont::Weight> SettingFontAndColor::numberQss()
 {
     return { ui->btnNumberColor->palette().color(QPalette::Button),
-             static_cast<QFont::Weight>(ui->cmbNumberWeight->currentData().toInt()) };
+                static_cast<QFont::Weight>(ui->cmbNumberWeight->currentData().toInt()) };
+}
+
+void SettingFontAndColor::clearContainer()
+{
+    ui->cmbScheme->clear();
+    m_scheme_.clear();
+    m_removeScheme_.clear();
 }
 
 void SettingFontAndColor::amendColorEdit()
@@ -255,20 +263,201 @@ void SettingFontAndColor::amendColorEdit()
         return;
 
     btn->setPalette(QPalette(color));
+    QString scheme = ui->cmbScheme->currentText();
+    if(btn->objectName() == ui->btnColorBackground->objectName())
+        m_scheme_[scheme].background = color;
+    else if(btn->objectName() == ui->btnColorCurrentLine->objectName())
+        m_scheme_[scheme].currentLine = color;
+    else if(btn->objectName() == ui->btnColorSearchText->objectName())
+        m_scheme_[scheme].searchText = color;
+    else if(btn->objectName() == ui->btnOtherColor->objectName())
+        m_scheme_[scheme].qssOther.first = color;
+    else if(btn->objectName() == ui->btnPropertiesColor->objectName())
+        m_scheme_[scheme].qssProperties.first = color;
+    else if(btn->objectName() == ui->btnPseudoColor->objectName())
+        m_scheme_[scheme].qssPseudo.first = color;
+    else if(btn->objectName() == ui->btnSubColor->objectName())
+        m_scheme_[scheme].qssSub.first = color;
+    else if(btn->objectName() == ui->btnWidgetColor->objectName())
+        m_scheme_[scheme].qssWidget.first = color;
+    else if(btn->objectName() == ui->btnCommentColor->objectName())
+        m_scheme_[scheme].qssComment.first = color;
+    else if(btn->objectName() == ui->btnNumberColor->objectName())
+        m_scheme_[scheme].qssNumber.first = color;
+}
+
+void SettingFontAndColor::deleteScheme()
+{
+    if(QMessageBox::Ok == QMessageBox::information(this,
+                          "Вопрос -- September",
+                          "Удалить схему \"" + ui->cmbScheme->currentText() + "\"",
+                          QMessageBox::Ok, QMessageBox::Cancel))
+    {
+        QString scheme = ui->cmbScheme->currentText();
+        m_removeScheme_.push_back(scheme);
+        m_scheme_.remove(scheme);
+        ui->cmbScheme->removeItem(ui->cmbScheme->currentIndex());
+    }
+}
+
+void SettingFontAndColor::changeWeight()
+{
+    if(m_scheme_.isEmpty())
+        return;
+
+    QString scheme = ui->cmbScheme->currentText();
+    QComboBox* cmb = qobject_cast<QComboBox*>(this->sender());
+    int weight = cmb->currentData().toInt();
+    if(cmb->objectName() == ui->cmbOtherWeight->objectName())
+        m_scheme_[scheme].qssOther.second = static_cast<QFont::Weight>(weight);
+    else if(cmb->objectName() == ui->cmbPropertiesWeight->objectName())
+        m_scheme_[scheme].qssProperties.second = static_cast<QFont::Weight>(weight);
+    else if(cmb->objectName() == ui->cmbPseudoWeight->objectName())
+        m_scheme_[scheme].qssPseudo.second = static_cast<QFont::Weight>(weight);
+    else if(cmb->objectName() == ui->cmbSubWeight->objectName())
+        m_scheme_[scheme].qssSub.second = static_cast<QFont::Weight>(weight);
+    else if(cmb->objectName() == ui->cmbWidgetWeight->objectName())
+        m_scheme_[scheme].qssWidget.second = static_cast<QFont::Weight>(weight);
+    else if(cmb->objectName() == ui->cmbCommentWeight->objectName())
+        m_scheme_[scheme].qssComment.second = static_cast<QFont::Weight>(weight);
+    else if(cmb->objectName() == ui->cmbNumberWeight->objectName())
+        m_scheme_[scheme].qssNumber.second = static_cast<QFont::Weight>(weight);
+}
+
+void SettingFontAndColor::selectScheme(const QString& scheme)
+{
+    if(m_scheme_.isEmpty())
+        return;
+
+    if(scheme == ui->cmbScheme->itemText(0))
+        ui->btnRemoveScheme->setEnabled(false);
+    else
+        ui->btnRemoveScheme->setEnabled(true);
+
+    ui->btnColorBackground->setPalette(QPalette(m_scheme_[scheme].background));
+    ui->btnColorCurrentLine->setPalette(QPalette(m_scheme_[scheme].currentLine));
+    ui->btnColorSearchText->setPalette(QPalette(m_scheme_[scheme].searchText));
+    ui->fontText->setCurrentFont(m_scheme_[scheme].fontText);
+    ui->btnOtherColor->setPalette(QPalette(m_scheme_[scheme].qssOther.first));
+    ui->cmbOtherWeight->setCurrentIndex(ui->cmbOtherWeight->findData(static_cast<int>(m_scheme_[scheme].qssOther.second)));
+    ui->btnPropertiesColor->setPalette(QPalette(m_scheme_[scheme].qssProperties.first));
+    ui->cmbPropertiesWeight->setCurrentIndex(ui->cmbPropertiesWeight->findData(static_cast<int>(m_scheme_[scheme].qssProperties.second)));
+    ui->btnPseudoColor->setPalette(QPalette(m_scheme_[scheme].qssPseudo.first));
+    ui->cmbPseudoWeight->setCurrentIndex(ui->cmbPseudoWeight->findData(static_cast<int>(m_scheme_[scheme].qssPseudo.second)));
+    ui->btnSubColor->setPalette(QPalette(m_scheme_[scheme].qssSub.first));
+    ui->cmbSubWeight->setCurrentIndex(ui->cmbSubWeight->findData(static_cast<int>(m_scheme_[scheme].qssSub.second)));
+    ui->btnWidgetColor->setPalette(QPalette(m_scheme_[scheme].qssWidget.first));
+    ui->cmbWidgetWeight->setCurrentIndex(ui->cmbWidgetWeight->findData(static_cast<int>(m_scheme_[scheme].qssWidget.second)));
+    ui->btnCommentColor->setPalette(QPalette(m_scheme_[scheme].qssComment.first));
+    ui->cmbCommentWeight->setCurrentIndex(ui->cmbCommentWeight->findData(static_cast<int>(m_scheme_[scheme].qssComment.second)));
+    ui->btnNumberColor->setPalette(QPalette(m_scheme_[scheme].qssNumber.first));
+    ui->cmbNumberWeight->setCurrentIndex(ui->cmbNumberWeight->findData(static_cast<int>(m_scheme_[scheme].qssNumber.second)));
+}
+
+void SettingFontAndColor::addNameScheme(const QString& scheme)
+{
+    ui->cmbScheme->addItem(scheme);
+    auto iterRemove = qFind(m_removeScheme_.begin(), m_removeScheme_.end(), scheme);
+    if(iterRemove != m_removeScheme_.end())
+        m_removeScheme_.erase(iterRemove);
+    m_scheme_.insert(scheme, FontAndColor());
+    m_scheme_[scheme].background = backgroundColor();
+    m_scheme_[scheme].currentLine = currentLineColor();
+    m_scheme_[scheme].searchText = searchTextColor();
+    m_scheme_[scheme].fontText = fontText();
+    m_scheme_[scheme].qssOther = otherQss();
+    m_scheme_[scheme].qssProperties = propertiesQss();
+    m_scheme_[scheme].qssPseudo = pseudoQss();
+    m_scheme_[scheme].qssSub = subQss();
+    m_scheme_[scheme].qssWidget = widgetQss();
+    m_scheme_[scheme].qssComment = commentQss();
+    m_scheme_[scheme].qssNumber = numberQss();
+    ui->cmbScheme->setCurrentText(scheme);
 }
 
 void SettingFontAndColor::addScheme()
 {
-    ui->cmbScheme->clear();
-    QStringList listScheme = m_settingApp->readSettingSeptember();
+    QStringList listScheme = m_settingApp->readSchemeSettingSeptember();
     if(listScheme.isEmpty())
     {
         ui->cmbScheme->addItem("Default");
-        m_settingApp->writeSettingSeptember("Default", 0);
+        ui->btnRemoveScheme->setEnabled(false);
+        m_settingApp->writeSchemeSettingSeptember("Default", 0);
+        m_scheme_.insert("Default", FontAndColor());
     }
     else for(auto& scheme : listScheme)
     {
         if(ui->cmbScheme->findText(scheme) == -1)
             ui->cmbScheme->addItem(scheme);
+        m_scheme_.insert(scheme, FontAndColor());
     }
+    ui->cmbScheme->setCurrentText(m_settingApp->readCurrentSchemeSettingSeptember());
+}
+
+void SettingFontAndColor::readKey()
+{
+    for(int i = 0; i < ui->cmbScheme->count(); i++)
+    {
+        QString scheme = ui->cmbScheme->itemText(i);
+        m_scheme_[scheme].background = m_settingApp->readBackgroundColorSettingSeptember(scheme);
+        m_scheme_[scheme].currentLine = m_settingApp->readCurrentLineColorSettingSeptember(scheme);
+        m_scheme_[scheme].searchText = m_settingApp->readSearchTextColorSettingSeptember(scheme);
+        m_scheme_[scheme].fontText = m_settingApp->readFontText(scheme);
+        m_scheme_[scheme].qssOther = m_settingApp->readOtherQss(scheme);
+        m_scheme_[scheme].qssProperties = m_settingApp->readPropertiesQss(scheme);
+        m_scheme_[scheme].qssPseudo = m_settingApp->readPseudoQss(scheme);
+        m_scheme_[scheme].qssSub = m_settingApp->readSubQss(scheme);
+        m_scheme_[scheme].qssWidget = m_settingApp->readWidgetQss(scheme);
+        m_scheme_[scheme].qssComment = m_settingApp->readCommentQss(scheme);
+        m_scheme_[scheme].qssNumber = m_settingApp->readNumberQss(scheme);
+    }
+}
+
+SettingFontAndColor::BoxScheme::BoxScheme(SettingFontAndColor* parent) : QDialog(parent)
+    , m_setting(parent)
+{
+    QHBoxLayout* boxBtn = new QHBoxLayout;
+    boxBtn->addStretch(1);
+    boxBtn->addWidget(m_btnOk);
+    boxBtn->addWidget(m_btnCancel);
+
+    QVBoxLayout* boxV = new QVBoxLayout;
+    boxV->addWidget(new QLabel("Название новой схемы:"));
+    boxV->addWidget(m_edit);
+    boxV->addItem(boxBtn);
+    this->setLayout(boxV);
+    this->setWindowTitle("Название новой схемы -- September");
+    this->connect(m_btnCancel,  &QPushButton::clicked, m_edit, &QLineEdit::clear);
+    this->connect(m_btnCancel,  &QPushButton::clicked, this, &QDialog::close);
+    this->connect(m_btnOk,      &QPushButton::clicked, this, &BoxScheme::newScheme);
+}
+
+void SettingFontAndColor::BoxScheme::showBoxScheme()
+{
+    m_edit->setText("Новая схема");
+    m_edit->selectAll();
+    this->show();
+}
+
+void SettingFontAndColor::BoxScheme::newScheme()
+{
+    QString scheme = m_edit->text();
+    int countScheme = m_setting->ui->cmbScheme->count();
+    for(int i = 0; i < countScheme; i++)
+        if(scheme == m_setting->ui->cmbScheme->itemText(i))
+        {
+            for(int j = countScheme - 1; j >= 0; j--)
+            {
+                QString str = m_setting->ui->cmbScheme->itemText(j);
+                if(str.contains(scheme))
+                {
+                    scheme += "_" + QString::number(str.remove(0, scheme.length() + 1).toInt() + 1);
+                    break;
+                }
+            }
+            break;
+        }
+    m_setting->addNameScheme(scheme);
+    m_edit->clear();
+    this->close();
 }

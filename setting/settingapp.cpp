@@ -109,44 +109,14 @@ void SettingApp::removeSettingKey(const QString& scheme, const QString& group, c
 
 void SettingApp::removeSettingKey(const QString& scheme)
 {
-    m_setting->beginGroup("settingKey");
-        int size = m_setting->beginReadArray("schemes");
-        int index = 0;
-        for(; index < size; index++)
-        {
-            m_setting->setArrayIndex(index);
-            QString key = m_setting->value("name").toString();
-            if(key == scheme)
-            {
-                m_setting->remove("name");
-                break;
-            }
-        }
-        m_setting->endArray();
-        if(index != size)
-        {
-            QStringList list;
-            m_setting->beginReadArray("schemes");
-                for(int i = index + 1; i < size; i++)
-                {
-                    m_setting->setArrayIndex(i);
-                    list.push_back(m_setting->value("name").toString());
-                    m_setting->remove("name");
-                }
-            m_setting->endArray();
-            m_setting->beginWriteArray("schemes", size - 1);
-                if(!list.isEmpty())
-                    for(int i = index, j = 0; i < size - 1; i++)
-                    {
-                        m_setting->setArrayIndex(i);
-                        m_setting->setValue("name", list[j]);
-                    }
-            m_setting->endArray();
-        }
-        m_setting->beginGroup(scheme);
-            m_setting->remove("");
+    beginSchemeSettingKey;
+        deleteScheme(scheme);
+        m_setting->beginGroup("scheme");
+            m_setting->beginGroup(scheme);
+                m_setting->remove("");
+            m_setting->endGroup();
         m_setting->endGroup();
-    m_setting->endGroup();
+    endSetting;
 }
 
 bool SettingApp::containsSettingKey(const QString& scheme, const QString& group, const QString& name)
@@ -795,7 +765,7 @@ bool SettingApp::containsQssSettingSeptember()
     return true;
 }
 
-void SettingApp::writeSettingSeptember(const QString& scheme, int pos)
+void SettingApp::writeSchemeSettingSeptember(const QString& scheme, int pos)
 {
     m_setting->beginGroup("settingSeptember");
         m_setting->beginWriteArray("schemes");
@@ -805,7 +775,28 @@ void SettingApp::writeSettingSeptember(const QString& scheme, int pos)
     m_setting->endGroup();
 }
 
-QStringList SettingApp::readSettingSeptember()
+void SettingApp::removeSchemeSettingSeptember(const QString& scheme)
+{
+    m_setting->beginGroup("settingSeptember");
+        deleteScheme(scheme);
+        m_setting->beginGroup("colorEdit");
+            m_setting->beginGroup("scheme");
+                m_setting->beginGroup(scheme);
+                    m_setting->remove("");
+                m_setting->endGroup();
+            m_setting->endGroup();
+        m_setting->endGroup();
+        m_setting->beginGroup("qss");
+            m_setting->beginGroup("scheme");
+                m_setting->beginGroup(scheme);
+                    m_setting->remove("");
+                m_setting->endGroup();
+            m_setting->endGroup();
+        m_setting->endGroup();
+    m_setting->endGroup();
+}
+
+QStringList SettingApp::readSchemeSettingSeptember()
 {
     QStringList list;
     m_setting->beginGroup("settingSeptember");
@@ -818,4 +809,60 @@ QStringList SettingApp::readSettingSeptember()
         m_setting->endArray();
     m_setting->endGroup();
     return qMove(list);
+}
+
+void SettingApp::writeCurrentSchemeSettingSeptember(const QString& scheme)
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("currentScheme");
+            m_setting->setValue("name", scheme);
+        m_setting->endGroup();
+    m_setting->endGroup();
+}
+
+QString SettingApp::readCurrentSchemeSettingSeptember()
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("currentScheme");
+            QString current = m_setting->value("name").toString();
+        m_setting->endGroup();
+    m_setting->endGroup();
+    return qMove(current);
+}
+
+void SettingApp::deleteScheme(const QString& scheme)
+{
+    int size = m_setting->beginReadArray("schemes");
+    int index = 0;
+    for(; index < size; index++)
+    {
+        m_setting->setArrayIndex(index);
+        QString key = m_setting->value("name").toString();
+        if(key == scheme)
+        {
+            m_setting->remove("name");
+            break;
+        }
+    }
+    m_setting->endArray();
+    if(index != size)
+    {
+        QStringList list;
+        m_setting->beginReadArray("schemes");
+            for(int i = index + 1; i < size; i++)
+            {
+                m_setting->setArrayIndex(i);
+                list.push_back(m_setting->value("name").toString());
+                m_setting->remove("name");
+            }
+        m_setting->endArray();
+        m_setting->beginWriteArray("schemes", size - 1);
+            if(!list.isEmpty())
+                for(int i = index, j = 0; i < size - 1; i++)
+                {
+                    m_setting->setArrayIndex(i);
+                    m_setting->setValue("name", list[j]);
+                }
+        m_setting->endArray();
+    }
 }

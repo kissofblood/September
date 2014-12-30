@@ -601,6 +601,8 @@ void SeptemberEditor::showSettingKey()
 
 void SeptemberEditor::showSettingSeptember()
 {
+    m_settingSeptember->readScheme();
+    m_settingSeptember->addKey();
     m_settingSeptember->addValueColor();
     m_settingSeptember->addValueQss();
     m_settingSeptember->show();
