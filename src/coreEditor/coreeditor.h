@@ -45,9 +45,11 @@ public:
     void selectTextSearch(const QTextCursor& cursor, const QTextCharFormat& format);
     void replaceSelectTextSearch(const QTextCursor& cursor, const QTextCharFormat& formatNew, const QTextCharFormat& formatOld);
     void clearSelectTextSearch();
+    void afterSetFileTrue();
 
 signals:
     void updateStyleSheet(const QString& text);
+    void textChangedAfterSetFile();
 
 public slots:
     void zoomDocIn();
@@ -87,6 +89,7 @@ private:
     QVector<bool>       m_blockNumberError_;
     bool                m_visibleLineNumberAre  = true;
     int                 m_zoomDocument          = 12;
+    bool                m_afterFile             = false;
     QColor              m_backgroundDoc;
     QFont               m_fontText;
     QMultiHash<int, std::tuple<QTextCursor, QTextCharFormat, bool>> m_selectTextSearch_;

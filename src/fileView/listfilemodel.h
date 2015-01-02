@@ -12,11 +12,13 @@
 #include <QList>
 #include <QFileInfo>
 #include <tuple>
+#include <QPair>
 
 class ListFileModel : public QAbstractListModel
 {
     using SceneStyle    = QGraphicsScene;
     using BufferUI      = QBuffer;
+    Q_OBJECT
 public:
     explicit ListFileModel(QObject* parent = nullptr);
     ~ListFileModel() override = default;
@@ -32,6 +34,11 @@ public:
     QModelIndex getModelIndex(int row) const;
     int containsFile(const QString& file);
     void replaceFile(const QString& oldFile, const QString& newFile);
+    QList<QPair<QFileInfo, CoreEditor*>> getIsChangedText();
+    void changeTextFalse(CoreEditor* editor);
+
+public slots:
+    void changeTextTrue(int row);
 
 private:
     struct Item
@@ -40,6 +47,7 @@ private:
         CoreEditor      *coreEditor = nullptr;
         SceneStyle      *sceneStyle = nullptr;
         BufferUI        *sceneUI    = nullptr;
+        bool            changeText  = false;
     };
     QList<Item> m_item_;
 };

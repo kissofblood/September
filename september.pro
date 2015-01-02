@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     setting/settingSeptember/settingsession.cpp \
     setting/settingSeptember/settingfontandcolor.cpp \
     setting/settingSeptember/settingediting.cpp \
-    setting/settingSeptember/settingcommon.cpp
+    setting/settingSeptember/settingcommon.cpp \
+    setting/messagesavefilebox.cpp
 
 HEADERS  += septembereditor.h \
     widgetstyle.h \
@@ -53,7 +54,8 @@ HEADERS  += septembereditor.h \
     setting/settingSeptember/settingfontandcolor.h \
     setting/settingSeptember/settingediting.h \
     setting/settingSeptember/settingcommon.h \
-    setting/settingSeptember/fontpage.h
+    setting/settingSeptember/fontpage.h \
+    setting/messagesavefilebox.h
 
 FORMS    += septembereditor.ui \
     widgetstyle.ui \
@@ -64,7 +66,8 @@ FORMS    += septembereditor.ui \
     setting/settingSeptember/settingsession.ui \
     setting/settingSeptember/settingfontandcolor.ui \
     setting/settingSeptember/settingediting.ui \
-    setting/settingSeptember/settingcommon.ui
+    setting/settingSeptember/settingcommon.ui \
+    setting/messagesavefilebox.ui
 
 RESOURCES += \
     qssKeyWords/resource.qrc

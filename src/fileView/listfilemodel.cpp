@@ -90,3 +90,25 @@ void ListFileModel::replaceFile(const QString& oldFile, const QString& newFile)
             break;
         }
 }
+
+void ListFileModel::changeTextTrue(int row)
+{
+    if(row < m_item_.size())
+        m_item_[row].changeText = true;
+}
+
+QList<QPair<QFileInfo, CoreEditor*>> ListFileModel::getIsChangedText()
+{
+    QList<QPair<QFileInfo, CoreEditor*>> list;
+    for(auto& item : m_item_)
+        if(item.changeText)
+            list.push_back({ item.file, item.coreEditor });
+    return qMove(list);
+}
+
+void ListFileModel::changeTextFalse(CoreEditor* editor)
+{
+    for(auto& item : m_item_)
+        if(item.coreEditor == editor)
+            item.changeText = false;
+}

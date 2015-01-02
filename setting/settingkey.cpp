@@ -218,13 +218,6 @@ void SettingKey::writeSetting()
     this->close();
 }
 
-void SettingKey::clearContainer()
-{
-    ui->cmbScheme->clear();
-    m_scheme_.clear();
-    m_removeScheme_.clear();
-}
-
 void SettingKey::setDefaultScheme()
 {
     QString scheme = ui->cmbScheme->itemText(0);
@@ -276,7 +269,9 @@ void SettingKey::addItemTable(const QString& group, const QString& name, const Q
 
 void SettingKey::closeEvent(QCloseEvent* event)
 {
-    clearContainer();
+    ui->cmbScheme->clear();
+    m_scheme_.clear();
+    m_removeScheme_.clear();
     QDialog::closeEvent(event);
 }
 

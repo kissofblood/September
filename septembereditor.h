@@ -4,6 +4,7 @@
 #include "setting/settingkey.h"
 #include "setting/settingseptember.h"
 #include "setting/settingapp.h"
+#include "setting/messagesavefilebox.h"
 #include "src/fileView/listfilemodel.h"
 #include <QMainWindow>
 #include <QWidget>
@@ -54,7 +55,7 @@ private slots:
     void fullScreen(bool trigger);
     void pathFile(bool trigger);
     void setStatusBar();
-    void saveFile();
+    bool saveFile(QFileInfo& fileInfo, CoreEditor* editor);
     void saveFileAs();
     void newFile(const QString& name);
     void closeFile(int row);
@@ -69,6 +70,7 @@ private slots:
     void clearHistoryFile();
     void openHistoryFile();
     void readSettingKey();
+    void messageSaveFile(const QList<QPair<QFileInfo, CoreEditor*>>& list);
 
 private:
     struct ClickedButton
@@ -82,18 +84,22 @@ private:
     SettingSeptember            *m_settingSeptember = SettingSeptember::instance(this);
     ListFileModel               *m_listModel        = new ListFileModel(this);
     SettingApp                  *m_settingApp       = SettingApp::instance();
+    MessageSaveFileBox          *m_messageSFBox     = new MessageSaveFileBox(this);
     ClickedButton               m_clickedButton;
     QFileInfo                   m_fileInfo;
     QVector<QMetaObject::Connection>    m_connectionCoreEditor;
     QVector<QPair<QAction*, QString>>   m_historyFile_;
     bool                        m_visiblePathFile   = false;
     bool                        m_visibleLineWrap   = true;
+    bool                        m_reject            = false;
+    bool                        m_warningChangeFile;
     int                         m_countUnnamedFile  = 1;
     const QString               m_nameGroup         = { "September" };
 
     void connectionCoreEditor();
     void readHistoryFile();
-    void writeFile(const QString& path, QFile& file);
+    void setFile(const QString& path, QFile& file);
+    void closeEvent(QCloseEvent* event);
 };
 
 #endif // SEPTEMBEREDITOR_H

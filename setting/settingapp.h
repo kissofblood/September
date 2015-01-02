@@ -11,28 +11,6 @@
 #include <QPair>
 #include <QVector>
 
-#define beginColorSettingSeptember              \
-    m_setting->beginGroup("settingSeptember");  \
-    m_setting->beginGroup("colorEdit");
-#define beginQssSettingSeptember                \
-    m_setting->beginGroup("settingSeptember");  \
-    m_setting->beginGroup("qss");
-#define beginSchemeSettingKey                   \
-    m_setting->beginGroup("settingKey");        \
-    m_setting->beginGroup("scheme");
-#define beginDefaultSchemeSettingKey            \
-    m_setting->beginGroup("settingKey");        \
-    m_setting->beginGroup("defaultScheme");
-#define beginDefaultColorSettingSeptember       \
-    m_setting->beginGroup("settingSeptember");  \
-    m_setting->beginGroup("defaultColorEdit");
-#define beginDefaultQssSettingSeptember         \
-    m_setting->beginGroup("settingSeptember");  \
-    m_setting->beginGroup("defaultQss");
-#define endSetting                              \
-    m_setting->endGroup();                      \
-    m_setting->endGroup();
-
 class SettingApp : public QApplication
 {
 public:
@@ -108,11 +86,20 @@ public:
     QStringList readSchemeSettingSeptember();
     void writeCurrentSchemeSettingSeptember(const QString& scheme);
     QString readCurrentSchemeSettingSeptember();
+    void writeWarningChangeFileSeptember(bool value);
+    bool readWarningChangeFileSeptember();
 
 private:
     QSettings   *m_setting = nullptr;
 
     void deleteScheme(const QString& scheme);
+    void beginColorSettingSeptember();
+    void beginQssSettingSeptember();
+    void beginSchemeSettingKey();
+    void beginDefaultSchemeSettingKey();
+    void beginDefaultColorSettingSeptember();
+    void beginDefaultQssSettingSeptember();
+    void endSetting();
 };
 
 #endif // SETTINGAPP_H

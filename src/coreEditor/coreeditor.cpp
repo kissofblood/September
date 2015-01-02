@@ -37,6 +37,11 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
     this->connect(m_observerCode, &ObserverCodeQss::stringListModelChanged, m_completer, &QCompleter::setModel);
     this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, &CoreEditor::readValue);
     this->connect(this, &QPlainTextEdit::textChanged, this, [this]()
+    {
+        if(m_afterFile)
+            emit textChangedAfterSetFile();
+    });
+    this->connect(this, &QPlainTextEdit::textChanged, this, [this]()
     { emit updateStyleSheet(this->document()->toPlainText()); });
     this->setFocus();
     this->setObjectName("plainTextEdit");
@@ -119,6 +124,9 @@ void CoreEditor::clearSelectTextSearch()
     m_selectTextSearch_.clear();
     highlightCurrentLine();
 }
+
+void CoreEditor::afterSetFileTrue()
+{ m_afterFile = true; }
 
 void CoreEditor::updateLineNumberAreaWidth()
 { this->setViewportMargins(lineNumberAreaWidth(), 0, 0, 1); }

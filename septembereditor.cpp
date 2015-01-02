@@ -119,13 +119,13 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->btnOpenUi,            &QPushButton::clicked, this, &SeptemberEditor::closeOrShowOpenUI);
     this->connect(ui->barBtnCreateFile,     &QPushButton::clicked, this, std::bind(&SeptemberEditor::newFile, this, "Безымянный"));
     this->connect(ui->barBtnOpenFile,       &QPushButton::clicked, this, &SeptemberEditor::openFile);
-    this->connect(ui->barBtnSaveFile,       &QPushButton::clicked, this, &SeptemberEditor::saveFile);
+    this->connect(ui->barBtnSaveFile,       &QPushButton::clicked, this, std::bind(&SeptemberEditor::saveFile, this, m_fileInfo, ui->plainTextEdit));
     this->connect(ui->barBtnSaveAsFile,     &QPushButton::clicked, this, &SeptemberEditor::saveFileAs);
     this->connect(ui->barBtnNextFile,       &QPushButton::clicked, this, &SeptemberEditor::nextFile);
     this->connect(ui->barBtnPrevFile,       &QPushButton::clicked, this, &SeptemberEditor::prevFile);
     this->connect(ui->mnNewFile,        &QAction::triggered,    this, std::bind(&SeptemberEditor::newFile, this, "Безымянный"));
     this->connect(ui->mnOpen,           &QAction::triggered,    this, &SeptemberEditor::openFile);
-    this->connect(ui->mnSave,           &QAction::triggered,    this, &SeptemberEditor::saveFile);
+    this->connect(ui->mnSave,           &QAction::triggered,    this, std::bind(&SeptemberEditor::saveFile, this, m_fileInfo, ui->plainTextEdit));
     this->connect(ui->mnSaveAs,         &QAction::triggered,    this, &SeptemberEditor::saveFileAs);
     this->connect(ui->mnPrint,          &QAction::triggered,    this, &SeptemberEditor::printFile);
     this->connect(ui->mnClearHistoryFile, &QAction::triggered,  this, &SeptemberEditor::clearHistoryFile);
@@ -158,7 +158,16 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnSettingSeptember, &QAction::triggered, this, &SeptemberEditor::showSettingSeptember);
     this->connect(ui->fileListView, &ListFileView::clickedCloseFile, this, &SeptemberEditor::closeFile);
     this->connect(ui->fileListView, &ListFileView::clicked, this, &SeptemberEditor::selectFile);
-    this->connect(m_settingKey, &SettingKey::settingKeyOK, this, &SeptemberEditor::readSettingKey);
+    this->connect(ui->plainTextEdit, &CoreEditor::textChanged, std::bind(&ListFileModel::changeTextTrue, m_listModel, ui->fileListView->currentIndex().row()));
+    this->connect(m_settingKey,     &SettingKey::settingKeyOK, this, &SeptemberEditor::readSettingKey);
+    this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, [this]()
+    { m_warningChangeFile = m_settingSeptember->warningChangeFile(); });
+    this->connect(m_messageSFBox,   &MessageSaveFileBox::clickedSaveFile, this, &SeptemberEditor::messageSaveFile);
+    this->connect(m_messageSFBox,   &MessageSaveFileBox::clickedReject, this, [this]()
+    {
+        m_reject = true;
+        this->close();
+    });
     this->setWindowTitle("Безымянный_1 -- September");
     connectionCoreEditor();
 
@@ -204,6 +213,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
 
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnAbout->text(), ui->mnAbout->shortcut().toString());
     }
+    m_warningChangeFile = m_settingSeptember->warningChangeFile();
 }
 
 SeptemberEditor::~SeptemberEditor()
@@ -343,11 +353,12 @@ void SeptemberEditor::openFile()
     QFile file(path);
     if(file.open(QIODevice::ReadOnly))
     {
-        writeFile(path, file);
+        setFile(path, file);
         m_settingApp->writeHistoryFile(path);
         readHistoryFile();
     }
     file.close();
+    ui->plainTextEdit->afterSetFileTrue();
 }
 
 void SeptemberEditor::lineWrap(bool trigger)
@@ -385,37 +396,39 @@ void SeptemberEditor::setStatusBar()
                                 .arg(QString::number(currentCursor.positionInBlock() + 1)));
 }
 
-void SeptemberEditor::saveFile()
+bool SeptemberEditor::saveFile(QFileInfo& fileInfo, CoreEditor* editor)
 {
     QString path;
-    if(m_fileInfo.exists())
+    if(fileInfo.exists())
     {
-        path = m_fileInfo.filePath();
+        path = fileInfo.filePath();
         m_settingApp->writeHistoryFile(path);
     }
     else
     {
-        path = QFileDialog::getSaveFileName(this, "Save file", QString(), "*.qss");
+        path = QFileDialog::getSaveFileName(this, "Save file (" + fileInfo.fileName() + ')', QString(), "*.qss");
         if(path.isEmpty())
-            return;
+            return false;
         if(!path.contains(QRegExp(R"(.+\.qss)")))
             path += ".qss";
     }
     QFile file(path);
     if(file.open(QIODevice::WriteOnly))
     {
-        m_listModel->replaceFile(m_fileInfo.filePath(), path);
-        m_fileInfo.setFile(path);
-        file.write(ui->plainTextEdit->toPlainText().toUtf8());
+        m_listModel->replaceFile(fileInfo.filePath(), path);
+        fileInfo.setFile(path);
+        file.write(editor->toPlainText().toUtf8());
         pathFile(m_visiblePathFile);
         lineWrap(m_visibleLineWrap);
+        m_listModel->changeTextFalse(editor);
     }
     file.close();
+    return true;
 }
 
 void SeptemberEditor::saveFileAs()
 {
-    QString path = QFileDialog::getSaveFileName(this, "Save file", QString(), "*.qss");
+    QString path = QFileDialog::getSaveFileName(this, "Save file (" + m_fileInfo.fileName() + ')', QString(), "*.qss");
     if(path.isEmpty())
         return;
     if(!path.contains(QRegExp(R"(.+\.qss)")))
@@ -448,10 +461,14 @@ void SeptemberEditor::newFile(const QString& name)
     CoreEditor* editor = new CoreEditor(this);
     editor->setVisible(false);
     if(name == "Безымянный")
+    {
         m_listModel->addItem("Безымянный_" + QString::number(++m_countUnnamedFile), editor, ui->widgetCreateWidget->createScene(), ui->widgetOpenUI->createBufferUi());
+        editor->afterSetFileTrue();
+    }
     else
         m_listModel->addItem(name, editor, ui->widgetCreateWidget->createScene(), ui->widgetOpenUI->createBufferUi());
     selectFile(m_listModel->getModelIndex(m_listModel->rowCount() - 1));
+    this->connect(editor, &CoreEditor::textChangedAfterSetFile, m_listModel, std::bind(&ListFileModel::changeTextTrue, m_listModel, ui->fileListView->currentIndex().row()));
 }
 
 void SeptemberEditor::closeFile(int row)
@@ -628,11 +645,12 @@ void SeptemberEditor::openHistoryFile()
         QMessageBox::warning(this, "Предупреждение", "Файл <b>" + path + "<\b> не найден");
     else
     {
-        writeFile(path, file);
+        setFile(path, file);
         m_settingApp->writeHistoryFile(path);
         readHistoryFile();
     }
     file.close();
+    ui->plainTextEdit->afterSetFileTrue();
 }
 
 void SeptemberEditor::connectionCoreEditor()
@@ -691,6 +709,23 @@ void SeptemberEditor::readSettingKey()
     ui->mnAbout->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnAbout->text())));
 }
 
+void SeptemberEditor::messageSaveFile(const QList<QPair<QFileInfo, CoreEditor*>>& list)
+{
+    bool flag = true;
+    for(auto pair : list)
+    {
+        if(!saveFile(pair.first, pair.second))
+        {
+            flag = false;
+            break;
+        }
+        if(ui->plainTextEdit == pair.second)
+            m_fileInfo = pair.first;
+    }
+    if(flag)
+        m_messageSFBox->close();
+}
+
 void SeptemberEditor::readHistoryFile()
 {
     QFileInfoList infoList = m_settingApp->readHistoryFile();
@@ -702,7 +737,7 @@ void SeptemberEditor::readHistoryFile()
     }
 }
 
-void SeptemberEditor::writeFile(const QString& path, QFile& file)
+void SeptemberEditor::setFile(const QString& path, QFile& file)
 {
     m_fileInfo.setFile(path);
     if(m_listModel->rowCount() == 1)
@@ -731,4 +766,23 @@ void SeptemberEditor::writeFile(const QString& path, QFile& file)
     ui->plainTextEdit->checkingCodeQss();
     pathFile(m_visiblePathFile);
     lineWrap(m_visibleLineWrap);
+}
+
+void SeptemberEditor::closeEvent(QCloseEvent* event)
+{
+    if(event->type() == QEvent::Close)
+    {
+        if(!m_warningChangeFile)
+            return;
+
+        auto infoList = m_listModel->getIsChangedText();
+        if(infoList.isEmpty())
+            return;
+        else if(m_reject)
+            return;
+
+        m_messageSFBox->appendChangeFile(infoList);
+        m_messageSFBox->show();
+        event->ignore();
+    }
 }

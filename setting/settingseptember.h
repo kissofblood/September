@@ -58,6 +58,7 @@ public:
     void addValueQss();
     void addKey();
     void readScheme();
+    bool warningChangeFile();
 
 signals:
     void settingSeptemberOK();

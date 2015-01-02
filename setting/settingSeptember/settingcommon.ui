@@ -28,7 +28,7 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QCheckBox" name="checkBox">
+       <widget class="QCheckBox" name="chkChangeFile">
         <property name="text">
          <string>Предупреждение об изменение файла</string>
         </property>

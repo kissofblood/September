@@ -12,22 +12,22 @@ SettingApp* SettingApp::instance()
 
 void SettingApp::writeSettingKey(const QString& scheme, const QString& group, const QString& name, const QString& key)
 {
-    beginSchemeSettingKey;
+    beginSchemeSettingKey();
         m_setting->beginGroup(scheme);
             m_setting->beginGroup(group);
                 m_setting->setValue(name, key);
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 void SettingApp::writeDefaultSettingKey(const QString& group, const QString& name, const QString& key)
 {
-    beginDefaultSchemeSettingKey;
+    beginDefaultSchemeSettingKey();
         m_setting->beginGroup(group);
             m_setting->setValue(name, key);
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 void SettingApp::writeSettingKey(const QString& scheme, int pos)
@@ -61,23 +61,23 @@ QString SettingApp::readCurrentSettingKey()
 
 QString SettingApp::readSettingKey(const QString& scheme, const QString& group, const QString& name)
 {
-    beginSchemeSettingKey;
+    beginSchemeSettingKey();
         m_setting->beginGroup(scheme);
             m_setting->beginGroup(group);
                 QString key = m_setting->value(name).toString();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(key);
 }
 
 QString SettingApp::readDefaultSettingKey(const QString& group, const QString& name)
 {
-    beginDefaultSchemeSettingKey;
+    beginDefaultSchemeSettingKey();
         m_setting->beginGroup(group);
             QString key = m_setting->value(name).toString();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(key);
 }
 
@@ -98,37 +98,37 @@ QStringList SettingApp::readSettingKey()
 
 void SettingApp::removeSettingKey(const QString& scheme, const QString& group, const QString& name)
 {
-    beginSchemeSettingKey;
+    beginSchemeSettingKey();
         m_setting->beginGroup(scheme);
             m_setting->beginGroup(group);
                 m_setting->remove(name);
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 void SettingApp::removeSettingKey(const QString& scheme)
 {
-    beginSchemeSettingKey;
+    beginSchemeSettingKey();
         deleteScheme(scheme);
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->remove("");
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 bool SettingApp::containsSettingKey(const QString& scheme, const QString& group, const QString& name)
 {
     bool success;
-    beginSchemeSettingKey;
+    beginSchemeSettingKey();
         m_setting->beginGroup(scheme);
             m_setting->beginGroup(group);
                 success = m_setting->contains(name);
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return success;
 }
 
@@ -181,7 +181,7 @@ void SettingApp::clearHistoryFile()
 
 void SettingApp::writeBackgroundColorSettingSeptember(const QString& scheme, const QColor& color)
 {
-    beginColorSettingSeptember;
+    beginColorSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("backgroundColor");
@@ -189,21 +189,21 @@ void SettingApp::writeBackgroundColorSettingSeptember(const QString& scheme, con
                 m_setting->endGroup();
             m_setting->endGroup();
        m_setting->endGroup();
-   endSetting;
+   endSetting();
 }
 
 void SettingApp::writeDefaultBackgroundColorSettingSeptember(const QColor& color)
 {
-    beginDefaultColorSettingSeptember;
+    beginDefaultColorSettingSeptember();
         m_setting->beginGroup("backgroundColor");
             m_setting->setValue("background", color);
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 QColor SettingApp::readBackgroundColorSettingSeptember(const QString& scheme)
 {
-    beginColorSettingSeptember;
+    beginColorSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("backgroundColor");
@@ -211,23 +211,23 @@ QColor SettingApp::readBackgroundColorSettingSeptember(const QString& scheme)
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(color);
 }
 
 QColor SettingApp::readDefaultBackgroundColorSettingSeptember()
 {
-    beginDefaultColorSettingSeptember;
+    beginDefaultColorSettingSeptember();
         m_setting->beginGroup("backgroundColor");
             QColor color = qvariant_cast<QColor>(m_setting->value("background"));
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(color);
 }
 
 void SettingApp::writeCurrentLineColorSettingSeptember(const QString& scheme, const QColor& color)
 {
-    beginColorSettingSeptember;
+    beginColorSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("currentLineColor");
@@ -235,21 +235,21 @@ void SettingApp::writeCurrentLineColorSettingSeptember(const QString& scheme, co
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 void SettingApp::writeDefaultCurrentLineColorSettingSeptember(const QColor& color)
 {
-    beginDefaultColorSettingSeptember;
+    beginDefaultColorSettingSeptember();
         m_setting->beginGroup("currentLineColor");
             m_setting->setValue("currentLine", color);
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 QColor SettingApp::readCurrentLineColorSettingSeptember(const QString& scheme)
 {
-    beginColorSettingSeptember;
+    beginColorSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("currentLineColor");
@@ -257,23 +257,23 @@ QColor SettingApp::readCurrentLineColorSettingSeptember(const QString& scheme)
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(color);
 }
 
 QColor SettingApp::readDefaultCurrentLineColorSettingSeptember()
 {
-    beginColorSettingSeptember;
+    beginColorSettingSeptember();
         m_setting->beginGroup("currentLineColor");
             QColor color = qvariant_cast<QColor>(m_setting->value("currentLine"));
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(color);
 }
 
 void SettingApp::writeSearchTextColorSettingSeptember(const QString& scheme, const QColor& color)
 {
-    beginColorSettingSeptember;
+    beginColorSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("searchTextColor");
@@ -281,21 +281,21 @@ void SettingApp::writeSearchTextColorSettingSeptember(const QString& scheme, con
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 void SettingApp::writeDefaultSearchTextColorSettingSeptember(const QColor& color)
 {
-    beginDefaultColorSettingSeptember;
+    beginDefaultColorSettingSeptember();
         m_setting->beginGroup("searchTextColor");
             m_setting->setValue("searchText", color);
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 QColor SettingApp::readSearchTextColorSettingSeptember(const QString& scheme)
 {
-    beginColorSettingSeptember;
+    beginColorSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("searchTextColor");
@@ -303,24 +303,24 @@ QColor SettingApp::readSearchTextColorSettingSeptember(const QString& scheme)
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(color);
 }
 
 QColor SettingApp::readDefaultSearchTextColorSettingSeptember()
 {
-    beginDefaultColorSettingSeptember;
+    beginDefaultColorSettingSeptember();
         m_setting->beginGroup("searchTextColor");
             QColor color = qvariant_cast<QColor>(m_setting->value("searchText"));
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(color);
 }
 
 bool SettingApp::containsColorSettingSeptember()
 {
     QVector<bool> success;
-    beginDefaultColorSettingSeptember;
+    beginDefaultColorSettingSeptember();
         m_setting->beginGroup("backgroundColor");
             success.push_back(m_setting->contains("background"));
         m_setting->endGroup();
@@ -330,7 +330,7 @@ bool SettingApp::containsColorSettingSeptember()
         m_setting->beginGroup("searchTextColor");
             success.push_back(m_setting->contains("searchText"));
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     for(auto& s : success) if(!s) return false;
     return true;
 }
@@ -387,7 +387,7 @@ QFont SettingApp::readDefaultFontTextSeptember()
 
 void SettingApp::writeOtherQssSeptember(const QString& scheme, const QColor& color, QFont::Weight weight)
 {
-    beginQssSettingSeptember;
+    beginQssSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("otherQss");
@@ -396,22 +396,22 @@ void SettingApp::writeOtherQssSeptember(const QString& scheme, const QColor& col
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 void SettingApp::writeDefaultOtherQssSeptember(const QColor& color, QFont::Weight weight)
 {
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("otherQss");
             m_setting->setValue("color", color);
             m_setting->setValue("weight", static_cast<int>(weight));
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 QPair<QColor, QFont::Weight> SettingApp::readOtherQssSeptember(const QString& scheme)
 {
-    beginQssSettingSeptember;
+    beginQssSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("otherQss");
@@ -420,24 +420,24 @@ QPair<QColor, QFont::Weight> SettingApp::readOtherQssSeptember(const QString& sc
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(pair);
 }
 
 QPair<QColor, QFont::Weight> SettingApp::readDefaultOtherQssSeptember()
 {
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("otherQss");
             QPair<QColor, QFont::Weight> pair = { qvariant_cast<QColor>(m_setting->value("color")),
                                                   static_cast<QFont::Weight>(m_setting->value("weight").toInt()) };
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(pair);
 }
 
 void SettingApp::writePropertiesQssSeptember(const QString& scheme, const QColor& color, QFont::Weight weight)
 {
-    beginQssSettingSeptember;
+    beginQssSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("propertiesQss");
@@ -446,22 +446,22 @@ void SettingApp::writePropertiesQssSeptember(const QString& scheme, const QColor
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-   endSetting;
+   endSetting();
 }
 
 void SettingApp::writeDefaultPropertiesQssSeptember(const QColor& color, QFont::Weight weight)
 {
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("propertiesQss");
             m_setting->setValue("color", color);
             m_setting->setValue("weight", static_cast<int>(weight));
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 QPair<QColor, QFont::Weight> SettingApp::readPropertiesQssSeptember(const QString& scheme)
 {
-    beginQssSettingSeptember;
+    beginQssSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("propertiesQss");
@@ -470,24 +470,24 @@ QPair<QColor, QFont::Weight> SettingApp::readPropertiesQssSeptember(const QStrin
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(pair);
 }
 
 QPair<QColor, QFont::Weight> SettingApp::readDefaultPropertiesQssSeptember()
 {
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("propertiesQss");
             QPair<QColor, QFont::Weight> pair = { qvariant_cast<QColor>(m_setting->value("color")),
                                                   static_cast<QFont::Weight>(m_setting->value("weight").toInt()) };
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(pair);
 }
 
 void SettingApp::writePseudoQssSeptember(const QString& scheme, const QColor& color, QFont::Weight weight)
 {
-    beginQssSettingSeptember;
+    beginQssSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("pseudoQss");
@@ -496,22 +496,22 @@ void SettingApp::writePseudoQssSeptember(const QString& scheme, const QColor& co
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 void SettingApp::writeDefaultPseudoQssSeptember(const QColor& color, QFont::Weight weight)
 {
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("pseudoQss");
             m_setting->setValue("color", color);
             m_setting->setValue("weight", static_cast<int>(weight));
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 QPair<QColor, QFont::Weight> SettingApp::readPseudoQssSeptember(const QString& scheme)
 {
-    beginQssSettingSeptember;
+    beginQssSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("pseudoQss");
@@ -520,24 +520,24 @@ QPair<QColor, QFont::Weight> SettingApp::readPseudoQssSeptember(const QString& s
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(pair);
 }
 
 QPair<QColor, QFont::Weight> SettingApp::readDefaultPseudoQssSeptember()
 {
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("pseudoQss");
             QPair<QColor, QFont::Weight> pair = { qvariant_cast<QColor>(m_setting->value("color")),
                                                   static_cast<QFont::Weight>(m_setting->value("weight").toInt()) };
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(pair);
 }
 
 void SettingApp::writeSubQssSeptember(const QString& scheme, const QColor& color, QFont::Weight weight)
 {
-    beginQssSettingSeptember;
+    beginQssSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("subQss");
@@ -546,22 +546,22 @@ void SettingApp::writeSubQssSeptember(const QString& scheme, const QColor& color
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 void SettingApp::writeDefaultSubQssSeptember(const QColor& color, QFont::Weight weight)
 {
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("subQss");
             m_setting->setValue("color", color);
             m_setting->setValue("weight", static_cast<int>(weight));
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 QPair<QColor, QFont::Weight> SettingApp::readSubQssSeptember(const QString& scheme)
 {
-    beginQssSettingSeptember;
+    beginQssSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("subQss");
@@ -570,24 +570,24 @@ QPair<QColor, QFont::Weight> SettingApp::readSubQssSeptember(const QString& sche
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(pair);
 }
 
 QPair<QColor, QFont::Weight> SettingApp::readDefaultSubQssSeptember()
 {
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("subQss");
             QPair<QColor, QFont::Weight> pair = { qvariant_cast<QColor>(m_setting->value("color")),
                                                   static_cast<QFont::Weight>(m_setting->value("weight").toInt()) };
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(pair);
 }
 
 void SettingApp::writeWidgetQssSeptember(const QString& scheme, const QColor& color, QFont::Weight weight)
 {
-    beginQssSettingSeptember;
+    beginQssSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("widgetQss");
@@ -596,22 +596,22 @@ void SettingApp::writeWidgetQssSeptember(const QString& scheme, const QColor& co
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 void SettingApp::writeDefaultWidgetQssSeptember(const QColor& color, QFont::Weight weight)
 {
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("widgetQss");
             m_setting->setValue("color", color);
             m_setting->setValue("weight", weight);
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 QPair<QColor, QFont::Weight> SettingApp::readWidgetQssSeptember(const QString& scheme)
 {
-    beginQssSettingSeptember;
+    beginQssSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("widgetQss");
@@ -620,24 +620,24 @@ QPair<QColor, QFont::Weight> SettingApp::readWidgetQssSeptember(const QString& s
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(pair);
 }
 
 QPair<QColor, QFont::Weight> SettingApp::readDefaultWidgetQssSeptember()
 {
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("widgetQss");
             QPair<QColor, QFont::Weight> pair = { qvariant_cast<QColor>(m_setting->value("color")),
                                                   static_cast<QFont::Weight>(m_setting->value("weight").toInt()) };
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(pair);
 }
 
 void SettingApp::writeCommentQssSeptember(const QString& scheme, const QColor& color, QFont::Weight weight)
 {
-    beginQssSettingSeptember;
+    beginQssSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("commentQss");
@@ -646,22 +646,22 @@ void SettingApp::writeCommentQssSeptember(const QString& scheme, const QColor& c
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 void SettingApp::writeDefaultCommentQssSeptember(const QColor& color, QFont::Weight weight)
 {
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("commentQss");
             m_setting->setValue("color", color);
             m_setting->setValue("weight", weight);
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 QPair<QColor, QFont::Weight> SettingApp::readCommentQssSeptember(const QString& scheme)
 {
-    beginQssSettingSeptember;
+    beginQssSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("commentQss");
@@ -670,24 +670,24 @@ QPair<QColor, QFont::Weight> SettingApp::readCommentQssSeptember(const QString& 
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-   endSetting;
+   endSetting();
    return qMove(pair);
 }
 
 QPair<QColor, QFont::Weight> SettingApp::readDefaultCommentQssSeptember()
 {
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("commentQss");
             QPair<QColor, QFont::Weight> pair = { qvariant_cast<QColor>(m_setting->value("color")),
                                                   static_cast<QFont::Weight>(m_setting->value("weight").toInt()) };
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(pair);
 }
 
 void SettingApp::writeNumberQssSeptember(const QString& scheme, const QColor& color, QFont::Weight weight)
 {
-    beginQssSettingSeptember;
+    beginQssSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("numberQss");
@@ -696,22 +696,22 @@ void SettingApp::writeNumberQssSeptember(const QString& scheme, const QColor& co
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 void SettingApp::writeDefaultNumberQssSeptember(const QColor& color, QFont::Weight weight)
 {
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("numberQss");
             m_setting->setValue("color", color);
             m_setting->setValue("weight", weight);
         m_setting->endGroup();
-    endSetting;
+    endSetting();
 }
 
 QPair<QColor, QFont::Weight> SettingApp::readNumberQssSeptember(const QString& scheme)
 {
-    beginQssSettingSeptember;
+    beginQssSettingSeptember();
         m_setting->beginGroup("scheme");
             m_setting->beginGroup(scheme);
                 m_setting->beginGroup("numberQss");
@@ -720,25 +720,25 @@ QPair<QColor, QFont::Weight> SettingApp::readNumberQssSeptember(const QString& s
                 m_setting->endGroup();
             m_setting->endGroup();
         m_setting->endGroup();
-   endSetting;
+   endSetting();
    return qMove(pair);
 }
 
 QPair<QColor, QFont::Weight> SettingApp::readDefaultNumberQssSeptember()
 {
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("numberQss");
             QPair<QColor, QFont::Weight> pair = { qvariant_cast<QColor>(m_setting->value("color")),
                                                   static_cast<QFont::Weight>(m_setting->value("weight").toInt()) };
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     return qMove(pair);
 }
 
 bool SettingApp::containsQssSettingSeptember()
 {
     QVector<bool> success;
-    beginDefaultQssSettingSeptember;
+    beginDefaultQssSettingSeptember();
         m_setting->beginGroup("otherQss");
             success.push_back(m_setting->contains("color"));
         m_setting->endGroup();
@@ -760,7 +760,7 @@ bool SettingApp::containsQssSettingSeptember()
         m_setting->beginGroup("numberQss");
             success.push_back(m_setting->contains("color"));
         m_setting->endGroup();
-    endSetting;
+    endSetting();
     for(auto& s : success) if(!s) return false;
     return true;
 }
@@ -830,6 +830,25 @@ QString SettingApp::readCurrentSchemeSettingSeptember()
     return qMove(current);
 }
 
+void SettingApp::writeWarningChangeFileSeptember(bool value)
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("warningChangeFile");
+            m_setting->setValue("changeFile", value);
+        m_setting->endGroup();
+    m_setting->endGroup();
+}
+
+bool SettingApp::readWarningChangeFileSeptember()
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("warningChangeFile");
+            bool value = m_setting->value("changeFile").toBool();
+        m_setting->endGroup();
+    m_setting->endGroup();
+    return qMove(value);
+}
+
 void SettingApp::deleteScheme(const QString& scheme)
 {
     int size = m_setting->beginReadArray("schemes");
@@ -865,4 +884,46 @@ void SettingApp::deleteScheme(const QString& scheme)
                 }
         m_setting->endArray();
     }
+}
+
+void SettingApp::beginColorSettingSeptember()
+{
+    m_setting->beginGroup("settingSeptember");
+    m_setting->beginGroup("colorEdit");
+}
+
+void SettingApp::beginQssSettingSeptember()
+{
+    m_setting->beginGroup("settingSeptember");
+    m_setting->beginGroup("qss");
+}
+
+void SettingApp::beginSchemeSettingKey()
+{
+    m_setting->beginGroup("settingKey");
+    m_setting->beginGroup("scheme");
+}
+
+void SettingApp::beginDefaultSchemeSettingKey()
+{
+    m_setting->beginGroup("settingKey");
+    m_setting->beginGroup("defaultScheme");
+}
+
+void SettingApp::beginDefaultColorSettingSeptember()
+{
+    m_setting->beginGroup("settingSeptember");
+    m_setting->beginGroup("defaultColorEdit");
+}
+
+void SettingApp::beginDefaultQssSettingSeptember()
+{
+    m_setting->beginGroup("settingSeptember");
+    m_setting->beginGroup("defaultQss");
+}
+
+void SettingApp::endSetting()
+{
+    m_setting->endGroup();
+    m_setting->endGroup();
 }

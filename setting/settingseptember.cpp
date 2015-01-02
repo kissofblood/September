@@ -126,6 +126,9 @@ void SettingSeptember::addKey()
 void SettingSeptember::readScheme()
 { m_settingFontAndColor->addScheme(); }
 
+bool SettingSeptember::warningChangeFile()
+{ return m_settingCommon->getState(); }
+
 void SettingSeptember::selectSetting(QTreeWidgetItem* item)
 {
     static bool removeSpacer = false;
@@ -182,10 +185,11 @@ void SettingSeptember::selectSetting(QTreeWidgetItem* item)
 void SettingSeptember::writeSetting()
 {
     m_settingFontAndColor->writeSetting();
+    m_settingCommon->writeState();
     emit settingSeptemberOK();
 }
 
-void SettingSeptember::closeEvent(QCloseEvent*event)
+void SettingSeptember::closeEvent(QCloseEvent* event)
 {
     m_settingFontAndColor->clearContainer();
     QDialog::closeEvent(event);

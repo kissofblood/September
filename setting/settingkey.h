@@ -56,7 +56,6 @@ private slots:
     void deleteScheme();
     void selectScheme(const QString& text);
     void writeSetting();
-    void clearContainer();
     void setDefaultScheme();
 
 private:
