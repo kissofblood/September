@@ -35,19 +35,15 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
         m_observerCode->textParserHead(cursor.selectedText().left(this->textCursor().position() - startBlock.position() + 1));
     });
     this->connect(m_observerCode, &ObserverCodeQss::stringListModelChanged, m_completer, &QCompleter::setModel);
-    this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, [this]()
-    {
-        m_settingSeptember->readScheme();
-        readValue();
-    });
+    this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, &CoreEditor::readValue);
     this->connect(this, &QPlainTextEdit::textChanged, this, [this]()
     { emit updateStyleSheet(this->document()->toPlainText()); });
     this->setFocus();
     this->setObjectName("plainTextEdit");
 
     m_settingSeptember->readScheme();
-    if(m_settingSeptember->containsKey()) {qDebug()<<"FDS";
-        readValue(); }
+    if(m_settingSeptember->containsKey())
+        readValue();
     else
     {
         QPalette pal;

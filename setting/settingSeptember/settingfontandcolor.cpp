@@ -189,6 +189,9 @@ void SettingFontAndColor::writeSetting()
     for(auto& schemeRemove : m_removeScheme_)
         m_settingApp->removeSchemeSettingSeptember(schemeRemove);
     m_settingApp->writeCurrentSchemeSettingSeptember(ui->cmbScheme->currentText());
+    for(int i = 0; i < ui->cmbScheme->count(); i++)
+        m_settingApp->writeSchemeSettingSeptember(ui->cmbScheme->itemText(i), i);
+
     for(auto i = m_scheme_.begin(); i != m_scheme_.end(); i++)
     {
         m_settingApp->writeBackgroundColorSettingSeptember(i.key(), i.value().background);
@@ -203,8 +206,6 @@ void SettingFontAndColor::writeSetting()
         m_settingApp->writeCommentQssSeptember(i.key(), i.value().qssComment.first, i.value().qssComment.second);
         m_settingApp->writeNumberQssSeptember(i.key(), i.value().qssNumber.first, i.value().qssNumber.second);
     }
-    for(int i = 0; i < ui->cmbScheme->count(); i++)
-        m_settingApp->writeSchemeSettingSeptember(ui->cmbScheme->itemText(i), i);
 }
 
 QPair<QColor, QFont::Weight> SettingFontAndColor::otherQss()
@@ -369,6 +370,7 @@ void SettingFontAndColor::setDefaultScheme()
     m_scheme_[scheme].qssWidget = m_settingApp->readDefaultWidgetQssSeptember();
     m_scheme_[scheme].qssComment = m_settingApp->readDefaultCommentQssSeptember();
     m_scheme_[scheme].qssNumber = m_settingApp->readDefaultNumberQssSeptember();
+    selectScheme(scheme);
 }
 
 void SettingFontAndColor::addNameScheme(const QString& scheme)
@@ -398,7 +400,6 @@ void SettingFontAndColor::addScheme()
     if(listScheme.isEmpty())
     {
         ui->cmbScheme->addItem("Default");
-        ui->btnRemoveScheme->setEnabled(false);
         m_settingApp->writeSchemeSettingSeptember("Default", 0);
         m_scheme_.insert("Default", FontAndColor());
     }
@@ -409,6 +410,8 @@ void SettingFontAndColor::addScheme()
         m_scheme_.insert(scheme, FontAndColor());
     }
     ui->cmbScheme->setCurrentText(m_settingApp->readCurrentSchemeSettingSeptember());
+    if(ui->cmbScheme->count() == 1)
+        ui->btnRemoveScheme->setEnabled(false);
 }
 
 void SettingFontAndColor::readKey()

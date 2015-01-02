@@ -185,5 +185,8 @@ void SettingSeptember::writeSetting()
     emit settingSeptemberOK();
 }
 
-void SettingSeptember::closeEvent(QCloseEvent*)
-{ m_settingFontAndColor->clearContainer(); }
+void SettingSeptember::closeEvent(QCloseEvent*event)
+{
+    m_settingFontAndColor->clearContainer();
+    QDialog::closeEvent(event);
+}

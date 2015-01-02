@@ -24,11 +24,7 @@ ListFileView::ListFileView(QWidget* parent) : QListView(parent)
         if(index.isValid())
             emit clickedCloseFile(index.row());
     });
-    this->connect(m_settingKey, &SettingKey::settingKeyOK, this, [this, readSettingKey]()
-    {
-        m_settingKey->readScheme();
-        readSettingKey();
-    });
+    this->connect(m_settingKey, &SettingKey::settingKeyOK, this, [this, readSettingKey]() { readSettingKey(); });
 
     m_settingKey->readScheme();
     if(m_settingKey->containsKey(m_nameGroup, close->text()))

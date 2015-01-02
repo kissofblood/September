@@ -35,11 +35,7 @@ SearchAndReplace::SearchAndReplace(QWidget* parent) : QWidget(parent),
             m_editor->clearSelectTextSearch();
         }
     });
-    this->connect(m_settingKey, &SettingKey::settingKeyOK, this, [this]()
-    {
-        m_settingKey->readScheme();
-        readSettingKey();
-    });
+    this->connect(m_settingKey, &SettingKey::settingKeyOK, this, &SearchAndReplace::readSettingKey);
     this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, [this]()
     { m_searchSelectColor = m_settingSeptember->readSearchTextColor(); });
 

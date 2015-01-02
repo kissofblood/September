@@ -7,11 +7,7 @@ Highlighter::Highlighter(const QStringList& properties, const QStringList& pseud
     , m_commentEnd(R"(\*/)")
     , m_number(R"(([0-9]+)|([0-9]+\.[0-9]+)|(#\b(([a-fA-F]|\d)+)\b))")
 {
-    this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, [this]()
-    {
-        m_settingSeptember->readScheme();
-        readValue();
-    });
+    this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, &Highlighter::readValue);
 
     auto setHighlighter = [](const QString& name, const QStringList& list)
     {

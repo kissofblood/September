@@ -158,11 +158,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnSettingSeptember, &QAction::triggered, this, &SeptemberEditor::showSettingSeptember);
     this->connect(ui->fileListView, &ListFileView::clickedCloseFile, this, &SeptemberEditor::closeFile);
     this->connect(ui->fileListView, &ListFileView::clicked, this, &SeptemberEditor::selectFile);
-    this->connect(m_settingKey, &SettingKey::settingKeyOK, this, [this]()
-    {
-        m_settingKey->readScheme();
-        readSettingKey();
-    });
+    this->connect(m_settingKey, &SettingKey::settingKeyOK, this, &SeptemberEditor::readSettingKey);
     this->setWindowTitle("Безымянный_1 -- September");
     connectionCoreEditor();
 

@@ -18,7 +18,6 @@ SettingKey::SettingKey(QWidget* parent) : QDialog(parent),
     ui->cmbGroup->addItem("Все");
 
     this->connect(ui->btnOk,        &QPushButton::clicked, this, &SettingKey::writeSetting);
-    this->connect(ui->btnCancel,    &QPushButton::clicked, this, &SettingKey::clearContainer);
     this->connect(ui->btnCancel,    &QPushButton::clicked, this, &QDialog::close);
     this->connect(ui->btnDefault,   &QPushButton::clicked, this, &SettingKey::setDefaultScheme);
     this->connect(ui->btnDetails,   &QPushButton::clicked, this, &SettingKey::visibleGrpScheme);
@@ -215,7 +214,6 @@ void SettingKey::writeSetting()
     m_settingApp->writeCurrentSettingKey(ui->cmbScheme->currentText());
     for(int i = 0; i < ui->cmbScheme->count(); i++)
         m_settingApp->writeSettingKey(ui->cmbScheme->itemText(i), i);
-    clearContainer();
     emit settingKeyOK();
     this->close();
 }
@@ -234,8 +232,7 @@ void SettingKey::setDefaultScheme()
         for(auto& row : i.value())
             m_scheme_[scheme][row].second = m_settingApp->readDefaultSettingKey(i.key(), m_scheme_[scheme][row].first);
     ui->cmbScheme->setCurrentIndex(0);
-    if(ui->cmbScheme->count() == 1)
-        selectScheme(ui->cmbScheme->currentText());
+    selectScheme(scheme);
 }
 
 QString SettingKey::checkingItemKey(const QString& text)
@@ -277,8 +274,11 @@ void SettingKey::addItemTable(const QString& group, const QString& name, const Q
     m_groupRow_[group].push_back(ui->tableWidget->rowCount() - 1);
 }
 
-void SettingKey::closeEvent(QCloseEvent*)
-{ clearContainer(); }
+void SettingKey::closeEvent(QCloseEvent* event)
+{
+    clearContainer();
+    QDialog::closeEvent(event);
+}
 
 void SettingKey::keyPressEvent(QKeyEvent* event)
 {

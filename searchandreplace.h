@@ -43,6 +43,7 @@ private slots:
     void setRegExp(int state);
     void setReplaceTextAll(int state);
     void replaceText();
+    void readSettingKey();
 
 private:
     SettingKey                      *m_settingKey       = SettingKey::instance();
@@ -61,7 +62,6 @@ private:
 
     void selectTextSearch();
     void clearTextCharFormatUndo();
-    void readSettingKey();
 };
 
 #endif // SEARCHANDREPLACE_H

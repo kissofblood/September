@@ -110,7 +110,7 @@ private:
     QString checkingItemKey(const QString& text);
     void addNameScheme(const QString& scheme);
     void addItemTable(const QString& group, const QString& name, const QString& key);
-    void closeEvent(QCloseEvent*) override;
+    void closeEvent(QCloseEvent* event) override;
     void keyPressEvent(QKeyEvent* event) override;
 };
 

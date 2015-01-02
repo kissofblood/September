@@ -68,6 +68,7 @@ private slots:
     void showSettingSeptember();
     void clearHistoryFile();
     void openHistoryFile();
+    void readSettingKey();
 
 private:
     struct ClickedButton
@@ -91,7 +92,6 @@ private:
     const QString               m_nameGroup         = { "September" };
 
     void connectionCoreEditor();
-    void readSettingKey();
     void readHistoryFile();
     void writeFile(const QString& path, QFile& file);
 };

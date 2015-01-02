@@ -77,7 +77,7 @@ private:
     QWidget                 *m_currentSetting       = nullptr;
     QSpacerItem             *m_spacerSetting        = nullptr;
 
-    void closeEvent(QCloseEvent*) override;
+    void closeEvent(QCloseEvent* event) override;
 };
 
 #endif // SETTINGSEPTEMBER_H
