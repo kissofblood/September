@@ -31,7 +31,8 @@ SettingSeptember::~SettingSeptember()
     delete m_settingSession;
     delete m_settingFontAndColor;
     delete m_settingEditing;
-    delete m_spacerSetting;
+    if(m_removeSpacer)
+        delete m_spacerSetting;
 }
 
 SettingSeptember* SettingSeptember::instance(QWidget* parent)
@@ -131,7 +132,6 @@ bool SettingSeptember::warningChangeFile()
 
 void SettingSeptember::selectSetting(QTreeWidgetItem* item)
 {
-    static bool removeSpacer = false;
     QString setting = item->text(0);
     QTreeWidgetItem* item1 = ui->treeSetting->topLevelItem(0);
     QTreeWidgetItem* item2 = ui->treeSetting->topLevelItem(1);
@@ -140,10 +140,10 @@ void SettingSeptember::selectSetting(QTreeWidgetItem* item)
         ui->vLayoutSetting->removeWidget(m_currentSetting);
         m_currentSetting->setParent(nullptr);
         ui->vLayoutSetting->insertWidget(0, m_settingCommon);
-        if(removeSpacer)
+        if(m_removeSpacer)
         {
             ui->vLayoutSetting->addItem(m_spacerSetting);
-            removeSpacer = false;
+            m_removeSpacer = false;
         }
         m_currentSetting = m_settingCommon;
     }
@@ -152,10 +152,10 @@ void SettingSeptember::selectSetting(QTreeWidgetItem* item)
         ui->vLayoutSetting->removeWidget(m_currentSetting);
         m_currentSetting->setParent(nullptr);
         ui->vLayoutSetting->insertWidget(0, m_settingSession);
-        if(removeSpacer)
+        if(m_removeSpacer)
         {
             ui->vLayoutSetting->addItem(m_spacerSetting);
-            removeSpacer = false;
+            m_removeSpacer = false;
         }
         m_currentSetting = m_settingSession;
     }
@@ -166,17 +166,17 @@ void SettingSeptember::selectSetting(QTreeWidgetItem* item)
         ui->vLayoutSetting->insertWidget(0, m_settingFontAndColor);
         ui->vLayoutSetting->removeItem(m_spacerSetting);
         m_currentSetting = m_settingFontAndColor;
-        removeSpacer = true;
+        m_removeSpacer = true;
     }
     else if(setting == item2->child(1)->text(0))
     {
         ui->vLayoutSetting->removeWidget(m_currentSetting);
         m_currentSetting->setParent(nullptr);
         ui->vLayoutSetting->insertWidget(0, m_settingEditing);
-        if(removeSpacer)
+        if(m_removeSpacer)
         {
             ui->vLayoutSetting->addItem(m_spacerSetting);
-            removeSpacer = false;
+            m_removeSpacer = false;
         }
         m_currentSetting = m_settingEditing;
     }

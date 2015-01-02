@@ -77,6 +77,7 @@ private:
     SettingEditing          *m_settingEditing       = new SettingEditing;
     QWidget                 *m_currentSetting       = nullptr;
     QSpacerItem             *m_spacerSetting        = nullptr;
+    bool                    m_removeSpacer          = false;
 
     void closeEvent(QCloseEvent* event) override;
 };
