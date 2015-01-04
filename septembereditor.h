@@ -50,6 +50,7 @@ private slots:
     void closeOrShowWidgetSearchAndReplace();
     void closeOrShowCreateWidget();
     void closeOrShowOpenUI();
+    void closeOrShowResourceEditor();
     void openFile();
     void lineWrap(bool trigger);
     void fullScreen(bool trigger);
@@ -71,6 +72,7 @@ private slots:
     void openHistoryFile();
     void readSettingKey();
     void messageSaveFile(const QList<QPair<QFileInfo, CoreEditor*>>& list);
+    void closeSeptember();
 
 private:
     struct ClickedButton
@@ -78,6 +80,7 @@ private:
         bool searchAndReplace   = false;
         bool createWidget       = false;
         bool openUI             = false;
+        bool resourceEditor     = false;
     };
     Ui::SeptemberEditor         *ui                 = nullptr;
     SettingKey                  *m_settingKey       = SettingKey::instance(this);
@@ -100,6 +103,7 @@ private:
     void readHistoryFile();
     void setFile(const QString& path, QFile& file);
     void closeEvent(QCloseEvent* event);
+    void setVisibleWidget(QWidget* wgt);
 };
 
 #endif // SEPTEMBEREDITOR_H

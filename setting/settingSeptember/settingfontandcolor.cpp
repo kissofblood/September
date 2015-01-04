@@ -235,19 +235,19 @@ QPair<QColor, QFont::Weight> SettingFontAndColor::subQss()
 QPair<QColor, QFont::Weight> SettingFontAndColor::widgetQss()
 {
     return { ui->btnWidgetColor->palette().color(QPalette::Button),
-                static_cast<QFont::Weight>(ui->cmbWidgetWeight->currentData().toInt()) };
+             static_cast<QFont::Weight>(ui->cmbWidgetWeight->currentData().toInt()) };
 }
 
 QPair<QColor, QFont::Weight> SettingFontAndColor::commentQss()
 {
     return { ui->btnCommentColor->palette().color(QPalette::Button),
-                static_cast<QFont::Weight>(ui->cmbCommentWeight->currentData().toInt()) };
+             static_cast<QFont::Weight>(ui->cmbCommentWeight->currentData().toInt()) };
 }
 
 QPair<QColor, QFont::Weight> SettingFontAndColor::numberQss()
 {
     return { ui->btnNumberColor->palette().color(QPalette::Button),
-                static_cast<QFont::Weight>(ui->cmbNumberWeight->currentData().toInt()) };
+             static_cast<QFont::Weight>(ui->cmbNumberWeight->currentData().toInt()) };
 }
 
 void SettingFontAndColor::clearContainer()

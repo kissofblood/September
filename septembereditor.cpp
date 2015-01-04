@@ -49,6 +49,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->mnListFile->setChecked(true);
     ui->mnCreateWidget->setCheckable(true);
     ui->mnOpenUi->setCheckable(true);
+    ui->mnResourceEditor->setCheckable(true);
     ui->mnNumberLine->setCheckable(true);
     ui->mnNumberLine->setChecked(true);
     ui->mnLineWrap->setCheckable(true);
@@ -117,6 +118,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->btnSearchAndReplace,  &QPushButton::clicked, this, &SeptemberEditor::closeOrShowWidgetSearchAndReplace);
     this->connect(ui->btnCreateWidget,      &QPushButton::clicked, this, &SeptemberEditor::closeOrShowCreateWidget);
     this->connect(ui->btnOpenUi,            &QPushButton::clicked, this, &SeptemberEditor::closeOrShowOpenUI);
+    this->connect(ui->btnResourceEditor,    &QPushButton::clicked, this, &SeptemberEditor::closeOrShowResourceEditor);
     this->connect(ui->barBtnCreateFile,     &QPushButton::clicked, this, std::bind(&SeptemberEditor::newFile, this, "Безымянный"));
     this->connect(ui->barBtnOpenFile,       &QPushButton::clicked, this, &SeptemberEditor::openFile);
     this->connect(ui->barBtnSaveFile,       &QPushButton::clicked, this, std::bind(&SeptemberEditor::saveFile, this, m_fileInfo, ui->plainTextEdit));
@@ -134,7 +136,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnPathFileHis3, &QAction::triggered, this, &SeptemberEditor::openHistoryFile);
     this->connect(ui->mnPathFileHis4, &QAction::triggered, this, &SeptemberEditor::openHistoryFile);
     this->connect(ui->mnPathFileHis5, &QAction::triggered, this, &SeptemberEditor::openHistoryFile);
-    this->connect(ui->mnCloseFile,      &QAction::triggered,    this, [this]()
+    this->connect(ui->mnCloseFile,    &QAction::triggered, this, [this]()
     {
         int row = ui->fileListView->currentIndex().row();
         if(row != -1)
@@ -147,9 +149,10 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnQuit,           &QAction::triggered,    qApp, &QApplication::quit);
     this->connect(ui->mnAbout,          &QAction::triggered,    this, [this]() { QMessageBox::aboutQt(this); });
     this->connect(ui->mnSearchReplace,  &QAction::triggered,    this, &SeptemberEditor::closeOrShowWidgetSearchAndReplace);
-    this->connect(ui->mnListFile,     &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowListFile, this));
-    this->connect(ui->mnCreateWidget, &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowCreateWidget, this));
-    this->connect(ui->mnOpenUi,       &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowOpenUI, this));
+    this->connect(ui->mnListFile,       &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowListFile, this));
+    this->connect(ui->mnCreateWidget,   &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowCreateWidget, this));
+    this->connect(ui->mnOpenUi,         &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowOpenUI, this));
+    this->connect(ui->mnResourceEditor, &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowResourceEditor, this));
     this->connect(ui->mnLineWrap,   &QAction::triggered, this, &SeptemberEditor::lineWrap);
     this->connect(ui->mnFullScreen, &QAction::triggered, this, &SeptemberEditor::fullScreen);
     this->connect(ui->mnStatusBar,  &QAction::triggered, std::bind(&QLabel::setVisible, ui->lblStatusBar, std::placeholders::_1));
@@ -160,14 +163,9 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->fileListView, &ListFileView::clicked, this, &SeptemberEditor::selectFile);
     this->connect(ui->plainTextEdit, &CoreEditor::textChanged, std::bind(&ListFileModel::changeTextTrue, m_listModel, ui->fileListView->currentIndex().row()));
     this->connect(m_settingKey,     &SettingKey::settingKeyOK, this, &SeptemberEditor::readSettingKey);
-    this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, [this]()
-    { m_warningChangeFile = m_settingSeptember->warningChangeFile(); });
+    this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, [this]() { m_warningChangeFile = m_settingSeptember->warningChangeFile(); });
     this->connect(m_messageSFBox,   &MessageSaveFileBox::clickedSaveFile, this, &SeptemberEditor::messageSaveFile);
-    this->connect(m_messageSFBox,   &MessageSaveFileBox::clickedReject, this, [this]()
-    {
-        m_reject = true;
-        this->close();
-    });
+    this->connect(m_messageSFBox,   &MessageSaveFileBox::clickedReject,   this, &SeptemberEditor::closeSeptember);
     this->setWindowTitle("Безымянный_1 -- September");
     connectionCoreEditor();
 
@@ -257,17 +255,9 @@ void SeptemberEditor::closeOrShowWidgetSearchAndReplace()
     }
     else
     {
-        m_clickedButton.searchAndReplace = true;
-        m_clickedButton.createWidget = false;
-        m_clickedButton.openUI = false;
+        setVisibleWidget(ui->widgetSearchAndReplace);
         ui->splitterEdit->setVisibleHeightHandle(false);
-        ui->btnOpenUi->setDown(false);
-        ui->widgetCreateWidget->setVisible(false);
-        ui->widgetOpenUI->setVisible(false);
-        ui->widgetSearchAndReplace->setVisible(true);
         ui->widgetSearchAndReplace->setFocusEditSearch();
-        ui->mnCreateWidget->setChecked(false);
-        ui->mnOpenUi->setChecked(false);
     }
 }
 
@@ -283,25 +273,13 @@ void SeptemberEditor::closeOrShowCreateWidget()
         ui->widgetCreateWidget->setVisible(false);
         ui->plainTextEdit->clearSelectTextSearch();
         ui->plainTextEdit->setFocus();
-        if(m_clickedButton.openUI == false && m_clickedButton.createWidget == false)
+        if(m_clickedButton.openUI == false && m_clickedButton.createWidget == false && m_clickedButton.resourceEditor == false)
             ui->splitterEdit->setVisibleHeightHandle(false);
     }
     else
     {
-        if(button == nullptr)
-            ui->mnOpenUi->setChecked(false);
-        else
-        {
-            ui->mnCreateWidget->setChecked(true);
-            ui->mnOpenUi->setChecked(false);
-        }
-        m_clickedButton.createWidget = true;
-        m_clickedButton.searchAndReplace = false;
-        m_clickedButton.openUI = false;
-        ui->widgetSearchAndReplace->setVisible(false);
+        setVisibleWidget(ui->widgetCreateWidget);
         ui->widgetSearchAndReplace->clearResultSearch();
-        ui->widgetOpenUI->setVisible(false);
-        ui->widgetCreateWidget->setVisible(true);
         ui->widgetCreateWidget->setFocusLineEdit();
         ui->splitterEdit->setVisibleHeightHandle(true);
         ui->splitterEdit->setHeight(ui->widgetCreateWidget->minimumSizeHint().height());
@@ -320,28 +298,40 @@ void SeptemberEditor::closeOrShowOpenUI()
         ui->widgetOpenUI->setVisible(false);
         ui->plainTextEdit->clearSelectTextSearch();
         ui->plainTextEdit->setFocus();
-        if(m_clickedButton.openUI == false && m_clickedButton.createWidget == false)
+        if(m_clickedButton.openUI == false && m_clickedButton.createWidget == false && m_clickedButton.resourceEditor == false)
             ui->splitterEdit->setVisibleHeightHandle(false);
     }
     else
     {
-        if(button == nullptr)
-            ui->mnCreateWidget->setChecked(false);
-        else
-        {
-            ui->mnOpenUi->setChecked(true);
-            ui->mnCreateWidget->setChecked(false);
-        }
-        m_clickedButton.openUI = true;
-        m_clickedButton.searchAndReplace = false;
-        m_clickedButton.createWidget = false;
-        ui->widgetSearchAndReplace->setVisible(false);
+        setVisibleWidget(ui->widgetOpenUI);
         ui->widgetSearchAndReplace->clearResultSearch();
-        ui->widgetCreateWidget->setVisible(false);
-        ui->widgetOpenUI->setVisible(true);
         ui->splitterEdit->setVisibleHeightHandle(true);
         ui->splitterEdit->setHeight(ui->widgetOpenUI->minimumSizeHint().height());
     }
+}
+
+void SeptemberEditor::closeOrShowResourceEditor()
+{
+    QPushButton* button = qobject_cast<QPushButton*>(this->sender());
+    if(m_clickedButton.resourceEditor)
+    {
+        if(button != nullptr)
+            ui->mnResourceEditor->setChecked(false);
+
+        m_clickedButton.resourceEditor = false;
+        ui->widgetResourceEditor->setVisible(false);
+        ui->plainTextEdit->clearSelectTextSearch();
+        ui->plainTextEdit->setFocus();
+        if(m_clickedButton.openUI == false && m_clickedButton.createWidget == false && m_clickedButton.resourceEditor == false)
+            ui->splitterEdit->setVisibleHeightHandle(false);
+    }
+    else
+    {
+        setVisibleWidget(ui->widgetResourceEditor);
+        ui->widgetSearchAndReplace->clearResultSearch();
+        ui->splitterEdit->setVisibleHeightHandle(true);
+        ui->splitterEdit->setHeight(ui->widgetOpenUI->minimumSizeHint().height());
+   }
 }
 
 void SeptemberEditor::openFile()
@@ -723,7 +713,13 @@ void SeptemberEditor::messageSaveFile(const QList<QPair<QFileInfo, CoreEditor*>>
             m_fileInfo = pair.first;
     }
     if(flag)
-        m_messageSFBox->close();
+        closeSeptember();
+}
+
+void SeptemberEditor::closeSeptember()
+{
+    m_reject = true;
+    this->close();
 }
 
 void SeptemberEditor::readHistoryFile()
@@ -785,4 +781,32 @@ void SeptemberEditor::closeEvent(QCloseEvent* event)
         m_messageSFBox->show();
         event->ignore();
     }
+}
+
+void SeptemberEditor::setVisibleWidget(QWidget* wgt)
+{
+    bool searchAndReplace = false;
+    bool createWidget = false;
+    bool openUI = false;
+    bool resourceEditor = false;
+    if(wgt == ui->widgetSearchAndReplace)
+        searchAndReplace = true;
+    if(wgt == ui->widgetCreateWidget)
+        createWidget = true;
+    if(wgt == ui->widgetOpenUI)
+        openUI = true;
+    if(wgt == ui->widgetResourceEditor)
+        resourceEditor = true;
+
+    m_clickedButton.searchAndReplace = searchAndReplace;
+    m_clickedButton.createWidget = createWidget;
+    m_clickedButton.openUI = openUI;
+    m_clickedButton.resourceEditor = resourceEditor;
+    ui->widgetSearchAndReplace->setVisible(searchAndReplace);
+    ui->widgetCreateWidget->setVisible(createWidget);
+    ui->widgetOpenUI->setVisible(openUI);
+    ui->widgetResourceEditor->setVisible(resourceEditor);
+    ui->mnCreateWidget->setChecked(createWidget);
+    ui->mnOpenUi->setChecked(openUI);
+    ui->mnResourceEditor->setChecked(resourceEditor);
 }

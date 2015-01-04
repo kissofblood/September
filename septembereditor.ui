@@ -174,6 +174,9 @@
           <widget class="QWidget" name="layoutWidget_1">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
+             <widget class="ResourceEditor" name="widgetResourceEditor" native="true"/>
+            </item>
+            <item>
              <widget class="WidgetStyle" name="widgetCreateWidget" native="true"/>
             </item>
             <item>
@@ -226,6 +229,13 @@
            <widget class="QPushButton" name="btnOpenUi">
             <property name="text">
              <string>UI</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnResourceEditor">
+            <property name="text">
+             <string>ResourceEditor</string>
             </property>
            </widget>
           </item>
@@ -304,6 +314,7 @@
      <addaction name="mnListFile"/>
      <addaction name="mnCreateWidget"/>
      <addaction name="mnOpenUi"/>
+     <addaction name="mnResourceEditor"/>
     </widget>
     <addaction name="mnNextFile"/>
     <addaction name="mnPrevFile"/>
@@ -536,6 +547,11 @@
     <string>Очистить меню</string>
    </property>
   </action>
+  <action name="mnResourceEditor">
+   <property name="text">
+    <string>Показать &quot;Resource Editor&quot;</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -572,6 +588,12 @@
    <class>ListFileView</class>
    <extends>QListView</extends>
    <header>src/fileView/listfileview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ResourceEditor</class>
+   <extends>QWidget</extends>
+   <header>resourceeditor.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

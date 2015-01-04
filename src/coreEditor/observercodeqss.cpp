@@ -126,10 +126,10 @@ QVector<int> ObserverCodeQss::checkingCodeQss(std::string& text, QTextBlock& tex
 
     if(begin == end && success)
     {
-        qDebug()<<"true";
+        qDebug()<<"true!!";
         return QVector<int>();
     }
-    qDebug()<<"false";
+    qDebug()<<"false!!";
     return { blockCharacter[cheking.getIterator()] };
 }
 
