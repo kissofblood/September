@@ -53,13 +53,18 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
           <widget class="QTreeWidget" name="treeWgt">
            <column>
             <property name="text">
              <string notr="true">Префикс</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Превдоним</string>
             </property>
            </column>
           </widget>
@@ -113,7 +118,7 @@
            <item>
             <widget class="QPushButton" name="btnAddImgItem">
              <property name="text">
-              <string>Добавить файлы</string>
+              <string>Добавить файл</string>
              </property>
             </widget>
            </item>

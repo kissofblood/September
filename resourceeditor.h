@@ -20,6 +20,9 @@
 #include <QLineEdit>
 #include <QFile>
 #include <QIODevice>
+#include <QBuffer>
+#include <QPair>
+#include <QByteArray>
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
 #include <QtXml/QDomNode>
@@ -45,18 +48,20 @@ private slots:
     void selectFile(QListWidgetItem* item);
     void selectItem();
     void changeTextPrefix(const QString& text);
+    void changeTextAlias(const QString& text);
     void registerFile();
 
 private:
-    Ui::ResourceEditor                                  *ui = nullptr;
-    QHash<QListWidgetItem*, QList<QTreeWidgetItem*>>    m_itemQrcAndRcc_;
+    Ui::ResourceEditor      *ui = nullptr;
+    QHash<QListWidgetItem*, QPair<QList<QTreeWidgetItem*>, QBuffer*>> m_itemQrcAndRcc_;
     QString m_prevTextItem;
     QTreeWidgetItem* m_currentItem = nullptr;
 
     void setEnableBtn(bool value);
     void setEnableWgt(bool value);
-    void insertNodeQrc(const QString& pathFile, const QString& prefix, const QString& node = QString());
-    void replacePrefixQrc(const QString pathFile, const QString& oldPrefix, const QString& newPrefix);
+    void insertElementQrc(const QString& prefix, const QString& node = QString());
+    void insertAliasQrc(const QString& prefix, const QString& value, const QString& node);
+    void replacePrefixQrc(const QString& oldPrefix, const QString& newPrefix);
 };
 
 #endif // RESOURCEEDITOR_H
