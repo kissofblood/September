@@ -101,6 +101,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     m_settingKey->addValue(m_nameGroup, ui->mnListFile->text());
     m_settingKey->addValue(m_nameGroup, ui->mnCreateWidget->text());
     m_settingKey->addValue(m_nameGroup, ui->mnOpenUi->text());
+    m_settingKey->addValue(m_nameGroup, ui->mnResourceEditor->text());
     m_settingKey->addValue(m_nameGroup, ui->mnLineWrap->text());
     m_settingKey->addValue(m_nameGroup, ui->mnNumberLine->text());
     m_settingKey->addValue(m_nameGroup, ui->mnZoomIn->text());
@@ -198,6 +199,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnListFile->text(), ui->mnListFile->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnCreateWidget->text(), ui->mnCreateWidget->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnOpenUi->text(), ui->mnOpenUi->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnResourceEditor->text(), ui->mnResourceEditor->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnLineWrap->text(), ui->mnLineWrap->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnNumberLine->text(), ui->mnNumberLine->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnZoomIn->text(), ui->mnZoomIn->shortcut().toString());
@@ -685,6 +687,7 @@ void SeptemberEditor::readSettingKey()
     ui->mnListFile->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnListFile->text())));
     ui->mnCreateWidget->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnCreateWidget->text())));
     ui->mnOpenUi->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnOpenUi->text())));
+    ui->mnResourceEditor->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnResourceEditor->text())));
     ui->mnLineWrap->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnLineWrap->text())));
     ui->mnNumberLine->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnNumberLine->text())));
     ui->mnZoomIn->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnZoomIn->text())));

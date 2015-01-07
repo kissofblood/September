@@ -16,6 +16,13 @@
 #include <QList>
 #include <QStringList>
 #include <QMessageBox>
+#include <QListWidget>
+#include <QLineEdit>
+#include <QFile>
+#include <QIODevice>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
+#include <QtXml/QDomNode>
 
 namespace Ui {
 class ResourceEditor;
@@ -31,20 +38,25 @@ public:
 private slots:
     void createQrcOrRcc();
     void addItem();
-    void addFileItem();
+    void addImgItem();
     void removeFile();
     void removeItem();
-    void correctTextItem(QTreeWidgetItem* item);
-    void showFile(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+    void showImg(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+    void selectFile(QListWidgetItem* item);
+    void selectItem();
+    void changeTextPrefix(const QString& text);
+    void registerFile();
 
 private:
     Ui::ResourceEditor                                  *ui = nullptr;
     QHash<QListWidgetItem*, QList<QTreeWidgetItem*>>    m_itemQrcAndRcc_;
-    QString             m_prevTextItem;
-    QTreeWidgetItem     *m_currentItem = nullptr;
+    QString m_prevTextItem;
+    QTreeWidgetItem* m_currentItem = nullptr;
 
-    void setEnableBtnItem1(bool value);
-    void setEnableBtnItem2(bool value);
+    void setEnableBtn(bool value);
+    void setEnableWgt(bool value);
+    void insertNodeQrc(const QString& pathFile, const QString& prefix, const QString& node = QString());
+    void replacePrefixQrc(const QString pathFile, const QString& oldPrefix, const QString& newPrefix);
 };
 
 #endif // RESOURCEEDITOR_H

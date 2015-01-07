@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="8,2">
+    <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="8,2">
      <item>
       <widget class="QSplitter" name="splitter">
        <property name="orientation">
@@ -53,8 +53,8 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="layoutWidget_1">
-        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
+       <widget class="QWidget" name="">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
           <widget class="QTreeWidget" name="treeWgt">
            <column>
@@ -62,11 +62,43 @@
              <string notr="true">Префикс</string>
             </property>
            </column>
-           <column>
-            <property name="text">
-             <string>Псевдоним</string>
-            </property>
-           </column>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Свойства</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,4">
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Псевдоним:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lnEditAlias"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,4">
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>Префикс:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lnEditPrefix"/>
+              </item>
+             </layout>
+            </item>
+           </layout>
           </widget>
          </item>
          <item>
@@ -79,7 +111,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="btnAddFileItem">
+            <widget class="QPushButton" name="btnAddImgItem">
              <property name="text">
               <string>Добавить файлы</string>
              </property>
