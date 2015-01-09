@@ -6,6 +6,7 @@
 #include "setting/settingapp.h"
 #include "setting/messagesavefilebox.h"
 #include "src/fileView/listfilemodel.h"
+#include "resourceeditor.h"
 #include <QMainWindow>
 #include <QWidget>
 #include <QString>

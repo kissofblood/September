@@ -659,6 +659,12 @@ void SeptemberEditor::connectionCoreEditor()
     m_connectionCoreEditor.push_back(this->connect(ui->plainTextEdit,   &CoreEditor::cursorPositionChanged, this, &SeptemberEditor::setStatusBar));
     m_connectionCoreEditor.push_back(this->connect(ui->plainTextEdit,   &CoreEditor::updateStyleSheet, ui->widgetCreateWidget, &WidgetStyle::setStyleSheetWidget));
     m_connectionCoreEditor.push_back(this->connect(ui->plainTextEdit,   &CoreEditor::updateStyleSheet, ui->widgetOpenUI,       &WidgetUiStyle::setStyleSheetWidget));
+    m_connectionCoreEditor.push_back(this->connect(this->findChild<ResourceEditor*>(), &ResourceEditor::removeRcc, this, [this]
+    {
+        QString codeQss = ui->plainTextEdit->toPlainText();
+        ui->widgetCreateWidget->setStyleSheetWidget(codeQss);
+        ui->widgetOpenUI->setStyleSheetWidget(codeQss);
+    }));
 }
 
 void SeptemberEditor::readSettingKey()

@@ -20,6 +20,10 @@
 #include <QLineEdit>
 #include <QFile>
 #include <QIODevice>
+#include <QDir>
+#include <QProcess>
+#include <QPair>
+#include <QResource>
 #include <QXmlStreamWriter>
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
@@ -36,6 +40,9 @@ public:
     explicit ResourceEditor(QWidget* parent = nullptr);
     ~ResourceEditor() override;
 
+signals:
+    void removeRcc();
+
 private slots:
     void createQrcOrRcc();
     void openQrcOrRcc();
@@ -43,7 +50,7 @@ private slots:
     void addImgItem();
     void removeFile();
     void removeItem();
-    void showImg(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+    void showImg(QTreeWidgetItem* item);
     void selectFile(QListWidgetItem* item);
     void selectItem();
     void changeTextPrefix(const QString& text);
@@ -52,12 +59,15 @@ private slots:
 
 private:
     Ui::ResourceEditor      *ui = nullptr;
-    QHash<QListWidgetItem*, QList<QTreeWidgetItem*>> m_itemQrcAndRcc_;
-    QString m_prevTextItem;
-    QTreeWidgetItem* m_currentItem = nullptr;
+    QHash<QListWidgetItem*, QPair<QList<QTreeWidgetItem*>, QResource*>> m_itemQrcAndRcc_;
+    QString             m_prevTextItem;
+    QTreeWidgetItem     *m_currentItem  = nullptr;
+    QProcess            *m_process      = new QProcess(this);
+    const QString       m_pathHome      = QDir::home().absolutePath();
 
     void setEnableBtn(bool value);
     void setEnableWgt(bool value);
+    void parserPathImg(QTreeWidgetItem* treeItem, QListWidgetItem* listItem, const QString& pathImg);
 };
 
 #endif // RESOURCEEDITOR_H

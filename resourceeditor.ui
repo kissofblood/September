@@ -53,7 +53,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QWidget" name="layoutWidget_1">
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
           <widget class="QTreeWidget" name="treeWgt">
@@ -169,6 +169,13 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QLabel" name="lblRegister">
+       <property name="text">
+        <string>Не зарегистрирован</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
