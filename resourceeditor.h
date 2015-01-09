@@ -20,9 +20,7 @@
 #include <QLineEdit>
 #include <QFile>
 #include <QIODevice>
-#include <QBuffer>
-#include <QPair>
-#include <QByteArray>
+#include <QXmlStreamWriter>
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
 #include <QtXml/QDomNode>
@@ -40,6 +38,7 @@ public:
 
 private slots:
     void createQrcOrRcc();
+    void openQrcOrRcc();
     void addItem();
     void addImgItem();
     void removeFile();
@@ -53,15 +52,12 @@ private slots:
 
 private:
     Ui::ResourceEditor      *ui = nullptr;
-    QHash<QListWidgetItem*, QPair<QList<QTreeWidgetItem*>, QBuffer*>> m_itemQrcAndRcc_;
+    QHash<QListWidgetItem*, QList<QTreeWidgetItem*>> m_itemQrcAndRcc_;
     QString m_prevTextItem;
     QTreeWidgetItem* m_currentItem = nullptr;
 
     void setEnableBtn(bool value);
     void setEnableWgt(bool value);
-    void insertElementQrc(const QString& prefix, const QString& node = QString());
-    void insertAliasQrc(const QString& prefix, const QString& value, const QString& node);
-    void replacePrefixQrc(const QString& oldPrefix, const QString& newPrefix);
 };
 
 #endif // RESOURCEEDITOR_H

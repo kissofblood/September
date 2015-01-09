@@ -11,6 +11,7 @@ ResourceEditor::ResourceEditor(QWidget* parent) : QWidget(parent)
     setEnableWgt(false);
 
     this->connect(ui->btnCreate,        &QPushButton::clicked, this, &ResourceEditor::createQrcOrRcc);
+    this->connect(ui->btnOpen,          &QPushButton::clicked, this, &ResourceEditor::openQrcOrRcc);
     this->connect(ui->btnAddItem,       &QPushButton::clicked, this, &ResourceEditor::addItem);
     this->connect(ui->btnRemove,        &QPushButton::clicked, this, &ResourceEditor::removeFile);
     this->connect(ui->btnAddImgItem,    &QPushButton::clicked, this, &ResourceEditor::addImgItem);
@@ -42,18 +43,75 @@ void ResourceEditor::createQrcOrRcc()
         }
 
     QFileInfo info(path);
-    QBuffer* buff = new QBuffer(this);
-    buff->setData(QByteArray("<RCC>\n</RCC>"));
-
     QListWidgetItem* item = new QListWidgetItem;
     item->setText(info.fileName());
     item->setToolTip(info.filePath());
     ui->listWgt->addItem(item);
     ui->listWgt->setCurrentRow(ui->listWgt->count() - 1);
-    m_itemQrcAndRcc_.insert(item, { QList<QTreeWidgetItem*>(), buff });
+    m_itemQrcAndRcc_.insert(item, QList<QTreeWidgetItem*>());
 
     if(ui->listWgt->count() == 1)
         setEnableBtn(true);
+}
+
+void ResourceEditor::openQrcOrRcc()
+{
+    QStringList path = QFileDialog::getOpenFileNames(this, "Открыть файл", QString(), "Image (*.qrc *.rcc)");
+    if(path.isEmpty())
+        return;
+
+    setEnableBtn(true);
+    for(QString& str : path)
+    {
+        QFileInfo info(str);
+        QListWidgetItem* itemList = new QListWidgetItem;
+        itemList->setText(info.fileName());
+        itemList->setToolTip(info.filePath());
+        ui->listWgt->addItem(itemList);
+        m_itemQrcAndRcc_.insert(itemList, QList<QTreeWidgetItem*>());
+
+        if(info.fileName().contains(QRegExp(R"(.+\.qrc)")))
+        {
+            QFile file(info.filePath());
+            if(!file.open(QIODevice::ReadOnly))
+            {
+                file.close();
+                continue;
+            }
+
+            QDomDocument doc;
+            doc.setContent(&file);
+
+            QDomElement dElement = doc.documentElement();
+            QDomNode dNode = dElement.firstChild();
+            while(!dNode.isNull())
+            {
+                QDomElement element = dNode.toElement();
+                QTreeWidgetItem* itemParent = new QTreeWidgetItem;
+                itemParent->setText(0, element.attribute("prefix"));
+                m_itemQrcAndRcc_[itemList].push_back(itemParent);
+                QDomNode nodeChild = element.firstChild();
+                QTreeWidgetItem* itemChild = nullptr;
+                while(!nodeChild.isNull())
+                {
+                    QDomElement elementChild = nodeChild.toElement();
+                    QString alias = elementChild.attribute("alias");
+                    if(!alias.isEmpty())
+                        itemChild->setText(1, alias);
+                    else
+                    {
+                        itemChild = new QTreeWidgetItem(itemParent);;
+                        itemChild->setText(0, elementChild.text());
+                    }
+                    nodeChild  = nodeChild.nextSibling();
+                }
+                dNode = dNode.nextSibling();
+            }
+
+            file.close();
+        }
+    }
+    ui->listWgt->setCurrentRow(0);
 }
 
 void ResourceEditor::addItem()
@@ -83,8 +141,7 @@ void ResourceEditor::addItem()
     item->setText(0, prefix);
     item->setExpanded(true);
     ui->treeWgt->setCurrentItem(item);
-    m_itemQrcAndRcc_[curentPathFile].first.push_back(item);
-    insertElementQrc(prefix);
+    m_itemQrcAndRcc_[curentPathFile].push_back(item);
     m_prevTextItem = prefix;
 
     if(ui->treeWgt->topLevelItemCount() == 1)
@@ -114,7 +171,6 @@ void ResourceEditor::addImgItem()
         {
             QTreeWidgetItem* itemFile = new QTreeWidgetItem(item);
             itemFile->setText(0, str);
-            insertElementQrc(item->text(0), str);
         }
     }
 }
@@ -123,8 +179,7 @@ void ResourceEditor::removeFile()
 {
     int row = ui->listWgt->currentRow();
     QListWidgetItem* item = ui->listWgt->takeItem(row);
-    qDeleteAll(m_itemQrcAndRcc_[item].first);
-    delete m_itemQrcAndRcc_[item].second;
+    qDeleteAll(m_itemQrcAndRcc_[item]);
     m_itemQrcAndRcc_.remove(item);
     delete item;
 
@@ -138,8 +193,8 @@ void ResourceEditor::removeItem()
     if(item->parent() == nullptr)
     {
         QListWidgetItem* listItem = ui->listWgt->currentItem();
-        auto iter = qFind(m_itemQrcAndRcc_[listItem].first.begin(), m_itemQrcAndRcc_[listItem].first.end(), item);
-        m_itemQrcAndRcc_[listItem].first.erase(iter);
+        auto iter = qFind(m_itemQrcAndRcc_[listItem].begin(), m_itemQrcAndRcc_[listItem].end(), item);
+        m_itemQrcAndRcc_[listItem].erase(iter);
     }
     delete item;
     m_currentItem = ui->treeWgt->currentItem();
@@ -185,15 +240,27 @@ void ResourceEditor::showImg(QTreeWidgetItem* current, QTreeWidgetItem* previous
 
 void ResourceEditor::selectFile(QListWidgetItem* item)
 {
+    auto setEnableButton = [this](bool value)
+    {
+        ui->btnAddItem->setEnabled(value);
+        ui->btnAddImgItem->setEnabled(value);
+        ui->btnRemoveItem->setEnabled(value);
+    };
+
+    if(item->text().contains(QRegExp(R"(.+\.qrc)")))
+        setEnableButton(true);
+    else
+        setEnableButton(false);
+
     forever if(ui->treeWgt->takeTopLevelItem(0) == nullptr)
         break;
 
-    if(!m_itemQrcAndRcc_[item].first.isEmpty())
-        ui->treeWgt->addTopLevelItems(m_itemQrcAndRcc_[item].first);
+    if(!m_itemQrcAndRcc_[item].isEmpty())
+        ui->treeWgt->addTopLevelItems(m_itemQrcAndRcc_[item]);
 }
 
 void ResourceEditor::selectItem()
-{
+{    
     QTreeWidgetItem* item = ui->treeWgt->currentItem();
     if(item == nullptr)
     {
@@ -229,8 +296,6 @@ void ResourceEditor::changeTextPrefix(const QString& text)
                     m_prevTextItem.remove(m_prevTextItem.length() - 1, 1);
                     break;
                 }
-
-            replacePrefixQrc(item->text(0), m_prevTextItem);
         }
         item->setText(0, m_prevTextItem);
         ui->lnEditPrefix->setText(m_prevTextItem);
@@ -261,26 +326,41 @@ void ResourceEditor::changeTextAlias(const QString& text)
 
 void ResourceEditor::registerFile()
 {
-    for(int i = 0; i < ui->treeWgt->topLevelItemCount(); i++)
+    for(auto iter = m_itemQrcAndRcc_.begin(); iter != m_itemQrcAndRcc_.end(); iter++)
     {
-        QTreeWidgetItem* itemParent = ui->treeWgt->topLevelItem(i);
-        for(int j = 0; j < itemParent->childCount(); j++)
-        {
-            QTreeWidgetItem* itemChild = itemParent->child(j);
-            if(!itemChild->text(1).isEmpty())
-                insertAliasQrc(itemParent->text(0), itemChild->text(1), itemChild->text(0));
-        }
-    }
+        QString xmlOut;
+        QXmlStreamWriter stream(&xmlOut);
+        stream.setAutoFormatting(true);
+        stream.writeStartDocument();
+            xmlOut.remove("<?xml version=\"1.0\"?>");
+            stream.writeStartElement("RCC");
+                for(QTreeWidgetItem* itemParent : iter.value())
+                {
+                    stream.writeStartElement("qresource");
+                        stream.writeAttribute("prefix", itemParent->text(0));
+                        for(int j = 0; j < itemParent->childCount(); j++)
+                        {
+                            QTreeWidgetItem* itemChild = itemParent->child(j);
+                            stream.writeTextElement("file", itemChild->text(0));
+                            if(!itemChild->text(1).isEmpty())
+                            {
+                                stream.writeStartElement("file");
+                                    stream.writeAttribute("alias", itemChild->text(1));
+                                    stream.writeDTD(itemChild->text(0));
+                                    xmlOut.remove(xmlOut.lastIndexOf('>') + 1, 1);
+                                stream.writeEndElement();
+                                xmlOut.remove(xmlOut.lastIndexOf('<') - 1, 1);
+                            }
+                        }
+                    stream.writeEndElement();
+                }
+            stream.writeEndElement();
+        stream.writeEndDocument();
 
-    for(auto i = m_itemQrcAndRcc_.begin(); i != m_itemQrcAndRcc_.end(); i++)
-    {        
-        QFile file(i.key()->toolTip());
+        QFile file(iter.key()->toolTip());
         file.open(QIODevice::WriteOnly);
-        QBuffer* buff = i.value().second;
-        buff->open(QIODevice::ReadOnly);
-        file.write(buff->readAll());
+        file.write(xmlOut.toUtf8());
         file.close();
-        buff->close();
     }
 }
 
@@ -296,89 +376,4 @@ void ResourceEditor::setEnableWgt(bool value)
     ui->btnAddImgItem->setEnabled(value);
     ui->btnRemoveItem->setEnabled(value);
     ui->lnEditPrefix->setEnabled(value);
-}
-
-void ResourceEditor::insertElementQrc(const QString& prefix, const QString& node)
-{
-    QBuffer* buff = m_itemQrcAndRcc_[ui->listWgt->currentItem()].second;
-    buff->open(QIODevice::ReadOnly);
-    QDomDocument doc;
-    doc.setContent(buff->readAll());
-    buff->close();
-
-    QDomElement dElement = doc.documentElement();
-    QDomNode dNode = dElement.firstChild();
-    bool parentNull = true;
-    while(!dNode.isNull())
-    {
-        QDomElement element = dNode.toElement();
-        if(element.attribute("prefix") == prefix)
-        {
-            QDomElement elementFile = doc.createElement("file");
-            elementFile.appendChild(doc.createTextNode(node));
-            element.appendChild(elementFile);
-            parentNull = false;
-            break;
-        }
-        dNode = dNode.nextSibling();
-    }
-
-    if(parentNull)
-    {
-        QDomElement elementPrefix = doc.createElement("qresource");
-        elementPrefix.setAttribute("prefix", prefix);
-        dElement.appendChild(elementPrefix);
-    }
-    buff->setData(doc.toString(4).toUtf8());
-}
-
-void ResourceEditor::insertAliasQrc(const QString& prefix, const QString& value, const QString& node)
-{
-    QBuffer* buff = m_itemQrcAndRcc_[ui->listWgt->currentItem()].second;
-    buff->open(QIODevice::ReadOnly);
-    QDomDocument doc;
-    doc.setContent(buff->readAll());
-    buff->close();
-
-    QDomElement dElement = doc.documentElement();
-    QDomNode dNode = dElement.firstChild();
-    while(!dNode.isNull())
-    {
-        QDomElement element = dNode.toElement();
-        if(element.attribute("prefix") == prefix)
-        {
-            QDomElement elementFile = doc.createElement("file");
-            elementFile.setAttribute("alias", value);
-            elementFile.appendChild(doc.createTextNode(node));
-            element.appendChild(elementFile);
-            break;
-        }
-        dNode = dNode.nextSibling();
-    }
-    buff->setData(doc.toString(4).toUtf8());
-}
-
-void ResourceEditor::replacePrefixQrc(const QString& oldPrefix, const QString& newPrefix)
-{
-    QBuffer* buff = m_itemQrcAndRcc_[ui->listWgt->currentItem()].second;
-    buff->open(QIODevice::ReadOnly);
-    QDomDocument doc;
-    doc.setContent(buff->readAll());
-    buff->close();
-
-    QDomNode dNode = doc.documentElement().firstChild();
-    while(!dNode.isNull())
-    {
-        if(dNode.isElement())
-        {
-            QDomElement element = dNode.toElement();
-            if(element.attribute("prefix") == oldPrefix)
-            {
-                element.setAttribute("prefix", newPrefix);
-                break;
-            }
-        }
-        dNode = dNode.nextSibling();
-    }
-    buff->setData(doc.toString(4).toUtf8());
 }
