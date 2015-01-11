@@ -42,6 +42,7 @@ public:
 
 signals:
     void removeRcc();
+    void pathResource(const QStringList& list);
 
 private slots:
     void createQrcOrRcc();
@@ -63,7 +64,7 @@ private:
     QString             m_prevTextItem;
     QTreeWidgetItem     *m_currentItem  = nullptr;
     QProcess            *m_process      = new QProcess(this);
-    const QString       m_pathHome      = QDir::home().absolutePath();
+    const QString       m_pathHome      = QDir::homePath();
 
     void setEnableBtn(bool value);
     void setEnableWgt(bool value);

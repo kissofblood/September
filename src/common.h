@@ -6,7 +6,6 @@
 #include <QFile>
 #include <QIODevice>
 #include <QByteArray>
-#include <QMenu>
 
 class Common
 {

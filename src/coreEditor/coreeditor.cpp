@@ -71,6 +71,9 @@ void CoreEditor::setVisibleLineNimberArea(bool value)
     m_lineNumberArea->update();
 }
 
+void CoreEditor::autoCompletePathResource(const QStringList& list)
+{ m_observerCode->addAutoComplete(list); }
+
 void CoreEditor::insertOrRemove(int block)
 {
     if(m_blockNumberError_.size() < block)

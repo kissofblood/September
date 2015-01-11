@@ -17,6 +17,7 @@
 #include <QGraphicsProxyWidget>
 #include <QGraphicsItem>
 #include <QList>
+#include <QDir>
 #include <QtUiTools/QUiLoader>
 
 namespace Ui {

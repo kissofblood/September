@@ -341,6 +341,7 @@ void ResourceEditor::changeTextAlias(const QString& text)
 
 void ResourceEditor::registerFile()
 {
+    QStringList pathRes;
     for(auto iter = m_itemQrcAndRcc_.begin(); iter != m_itemQrcAndRcc_.end(); iter++)
     {
         QString xmlOut;
@@ -355,8 +356,10 @@ void ResourceEditor::registerFile()
                         stream.writeAttribute("prefix", itemParent->text(0));
                         for(int j = 0; j < itemParent->childCount(); j++)
                         {
+                            QString path = itemParent->text(0) + '/';
                             QTreeWidgetItem* itemChild = itemParent->child(j);
                             stream.writeTextElement("file", itemChild->text(0));
+                            bool alias = false;
                             if(!itemChild->text(1).isEmpty())
                             {
                                 stream.writeStartElement("file");
@@ -365,7 +368,13 @@ void ResourceEditor::registerFile()
                                     xmlOut.remove(xmlOut.lastIndexOf('>') + 1, 1);
                                 stream.writeEndElement();
                                 xmlOut.remove(xmlOut.lastIndexOf('<') - 1, 1);
+                                alias = true;
                             }
+                            if(alias)
+                                path += itemChild->text(1);
+                            else
+                                path += itemChild->text(0);
+                            pathRes.push_back(path);
                         }
                     stream.writeEndElement();
                 }
@@ -382,8 +391,7 @@ void ResourceEditor::registerFile()
         if(infoFile.filePath().contains(QRegExp(R"(.+\.qrc)")))
         {
             QString pathRcc = infoFile.path() + '/' + infoFile.fileName().remove("qrc") + "rcc";
-            m_process->start("rcc --binary " + infoFile.absoluteFilePath() +
-                             " -o " + pathRcc);
+            m_process->start("rcc --binary " + infoFile.absoluteFilePath() + " -o " + pathRcc);
             if(m_process->waitForFinished())
             {
                 res->setFileName(pathRcc);
@@ -398,6 +406,7 @@ void ResourceEditor::registerFile()
             ui->lblRegister->setText("Зарегистрирован");
         }
     }
+    emit pathResource(pathRes);
 }
 
 void ResourceEditor::setEnableBtn(bool value)
@@ -428,6 +437,8 @@ void ResourceEditor::parserPathImg(QTreeWidgetItem* treeItem, QListWidgetItem* l
             path = path.left(path.lastIndexOf('/'));
             if(path == infoFile.path())
                 break;
+            else if(path.length() < infoFile.path().length())
+                return;
         }
         treeItem->setText(0, infoImg.filePath().remove(path + '/'));
     }

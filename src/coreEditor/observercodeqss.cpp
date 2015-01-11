@@ -10,6 +10,7 @@ ObserverCodeQss::ObserverCodeQss(const QStringList& properties, const QStringLis
     m_strListModel_.insert("sub", new QStringListModel(sub, this));
     m_strListModel_.insert("other", new QStringListModel(other, this));
     m_strListModel_.insert("empty", new QStringListModel(this));
+    m_strListModel_.insert("pathRes", new QStringListModel(this));
 }
 
 void ObserverCodeQss::textParserHead(const QString& text)
@@ -90,6 +91,12 @@ void ObserverCodeQss::textParserBody(const QString& text)
                     emit stringListModelChanged(m_strListModel_["other"]);
                     break;
                 }
+                else if(text[j] == '(')
+                {
+                    m_isTextParserHead = false;
+                    emit stringListModelChanged(m_strListModel_["pathRes"]);
+                    break;
+                }
             }
             break;
         }
@@ -132,6 +139,9 @@ QVector<int> ObserverCodeQss::checkingCodeQss(std::string& text, QTextBlock& tex
     qDebug()<<"false!!";
     return { blockCharacter[cheking.getIterator()] };
 }
+
+void ObserverCodeQss::addAutoComplete(const QStringList& list)
+{ m_strListModel_["pathRes"]->setStringList(list); }
 
 ObserverCodeQss::CheckingCodeQss::CheckingCodeQss(std::string::iterator first, std::string::iterator last) : qi::grammar<std::string::iterator, qi::space_type>::base_type(m_expession)
     , m_iterFirst(first)

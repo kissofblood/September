@@ -99,6 +99,7 @@ private:
     bool                        m_warningChangeFile;
     int                         m_countUnnamedFile  = 1;
     const QString               m_nameGroup         = { "September" };
+    const QString               m_pathHome          = QDir::homePath();
 
     void connectionCoreEditor();
     void readHistoryFile();

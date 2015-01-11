@@ -37,7 +37,7 @@ void WidgetUiStyle::setBufferUi(QBuffer* buffer)
 
 void WidgetUiStyle::openUI()
 {
-    QString path = QFileDialog::getOpenFileName(this, "Open file", QString("/home/september"), "*.ui");
+    QString path = QFileDialog::getOpenFileName(this, "Open file", QDir::home().absolutePath(), "*.ui");
     if(path.length() == 0)
         return;
 

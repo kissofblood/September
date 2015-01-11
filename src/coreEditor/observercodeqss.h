@@ -31,6 +31,7 @@ public:
     void textParserHead(const QString& text);
     void textParserBody(const QString& text);
     QVector<int> checkingCodeQss(std::string& text, QTextBlock& textBlock);
+    void addAutoComplete(const QStringList& list);
 
 signals:
     void stringListModelChanged(QStringListModel* model);

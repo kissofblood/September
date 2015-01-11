@@ -338,7 +338,7 @@ void SeptemberEditor::closeOrShowResourceEditor()
 
 void SeptemberEditor::openFile()
 {
-    QString path = QFileDialog::getOpenFileName(this, "Open file", QString(), "*.qss");
+    QString path = QFileDialog::getOpenFileName(this, "Open file", m_pathHome, "*.qss");
     if(path.isEmpty())
         return;
 
@@ -398,7 +398,7 @@ bool SeptemberEditor::saveFile(QFileInfo& fileInfo, CoreEditor* editor)
     }
     else
     {
-        path = QFileDialog::getSaveFileName(this, "Save file (" + fileInfo.fileName() + ')', QString(), "*.qss");
+        path = QFileDialog::getSaveFileName(this, "Save file (" + fileInfo.fileName() + ')', m_pathHome, "*.qss");
         if(path.isEmpty())
             return false;
         if(!path.contains(QRegExp(R"(.+\.qss)")))
@@ -420,7 +420,7 @@ bool SeptemberEditor::saveFile(QFileInfo& fileInfo, CoreEditor* editor)
 
 void SeptemberEditor::saveFileAs()
 {
-    QString path = QFileDialog::getSaveFileName(this, "Save file (" + m_fileInfo.fileName() + ')', QString(), "*.qss");
+    QString path = QFileDialog::getSaveFileName(this, "Save file (" + m_fileInfo.fileName() + ')', m_pathHome, "*.qss");
     if(path.isEmpty())
         return;
     if(!path.contains(QRegExp(R"(.+\.qss)")))
@@ -659,12 +659,14 @@ void SeptemberEditor::connectionCoreEditor()
     m_connectionCoreEditor.push_back(this->connect(ui->plainTextEdit,   &CoreEditor::cursorPositionChanged, this, &SeptemberEditor::setStatusBar));
     m_connectionCoreEditor.push_back(this->connect(ui->plainTextEdit,   &CoreEditor::updateStyleSheet, ui->widgetCreateWidget, &WidgetStyle::setStyleSheetWidget));
     m_connectionCoreEditor.push_back(this->connect(ui->plainTextEdit,   &CoreEditor::updateStyleSheet, ui->widgetOpenUI,       &WidgetUiStyle::setStyleSheetWidget));
-    m_connectionCoreEditor.push_back(this->connect(this->findChild<ResourceEditor*>(), &ResourceEditor::removeRcc, this, [this]
+    ResourceEditor* res = this->findChild<ResourceEditor*>();
+    m_connectionCoreEditor.push_back(this->connect(res, &ResourceEditor::removeRcc, this, [this]()
     {
         QString codeQss = ui->plainTextEdit->toPlainText();
         ui->widgetCreateWidget->setStyleSheetWidget(codeQss);
         ui->widgetOpenUI->setStyleSheetWidget(codeQss);
     }));
+    m_connectionCoreEditor.push_back(this->connect(res, &ResourceEditor::pathResource, ui->plainTextEdit, &CoreEditor::autoCompletePathResource));
 }
 
 void SeptemberEditor::readSettingKey()
@@ -800,11 +802,11 @@ void SeptemberEditor::setVisibleWidget(QWidget* wgt)
     bool resourceEditor = false;
     if(wgt == ui->widgetSearchAndReplace)
         searchAndReplace = true;
-    if(wgt == ui->widgetCreateWidget)
+    else if(wgt == ui->widgetCreateWidget)
         createWidget = true;
-    if(wgt == ui->widgetOpenUI)
+    else if(wgt == ui->widgetOpenUI)
         openUI = true;
-    if(wgt == ui->widgetResourceEditor)
+    else if(wgt == ui->widgetResourceEditor)
         resourceEditor = true;
 
     m_clickedButton.searchAndReplace = searchAndReplace;

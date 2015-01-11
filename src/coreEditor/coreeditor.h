@@ -55,6 +55,7 @@ public slots:
     void zoomDocIn();
     void zoomDocOut();
     void setVisibleLineNimberArea(bool value);
+    void autoCompletePathResource(const QStringList& list);
 
 private slots:
     void updateLineNumberAreaWidth();
