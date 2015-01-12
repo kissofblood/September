@@ -15,7 +15,7 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0" colspan="2">
+    <item row="0" column="0" colspan="3">
      <widget class="QWidget" name="toolBar" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
@@ -245,6 +245,61 @@
       </widget>
      </widget>
     </item>
+    <item row="1" column="2">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QPushButton" name="btnColor">
+        <property name="minimumSize">
+         <size>
+          <width>20</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>20</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnFont">
+        <property name="minimumSize">
+         <size>
+          <width>20</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>20</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>168</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -315,6 +370,8 @@
      <addaction name="mnCreateWidget"/>
      <addaction name="mnOpenUi"/>
      <addaction name="mnResourceEditor"/>
+     <addaction name="mnColor"/>
+     <addaction name="mnFont"/>
     </widget>
     <addaction name="mnNextFile"/>
     <addaction name="mnPrevFile"/>
@@ -550,6 +607,16 @@
   <action name="mnResourceEditor">
    <property name="text">
     <string>Показать &quot;Resource Editor&quot;</string>
+   </property>
+  </action>
+  <action name="mnColor">
+   <property name="text">
+    <string>Показать &quot;Color&quot;</string>
+   </property>
+  </action>
+  <action name="mnFont">
+   <property name="text">
+    <string>Показать &quot;Font&quot;</string>
    </property>
   </action>
  </widget>

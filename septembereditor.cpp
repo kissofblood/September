@@ -102,6 +102,8 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     m_settingKey->addValue(m_nameGroup, ui->mnCreateWidget->text());
     m_settingKey->addValue(m_nameGroup, ui->mnOpenUi->text());
     m_settingKey->addValue(m_nameGroup, ui->mnResourceEditor->text());
+    m_settingKey->addValue(m_nameGroup, ui->mnFont->text());
+    m_settingKey->addValue(m_nameGroup, ui->mnColor->text());
     m_settingKey->addValue(m_nameGroup, ui->mnLineWrap->text());
     m_settingKey->addValue(m_nameGroup, ui->mnNumberLine->text());
     m_settingKey->addValue(m_nameGroup, ui->mnZoomIn->text());
@@ -120,6 +122,8 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->btnCreateWidget,      &QPushButton::clicked, this, &SeptemberEditor::closeOrShowCreateWidget);
     this->connect(ui->btnOpenUi,            &QPushButton::clicked, this, &SeptemberEditor::closeOrShowOpenUI);
     this->connect(ui->btnResourceEditor,    &QPushButton::clicked, this, &SeptemberEditor::closeOrShowResourceEditor);
+    this->connect(ui->btnColor,             &QPushButton::clicked, this, &SeptemberEditor::showColorDialog);
+    this->connect(ui->btnFont,              &QPushButton::clicked, this, &SeptemberEditor::showFontDialog);
     this->connect(ui->barBtnCreateFile,     &QPushButton::clicked, this, std::bind(&SeptemberEditor::newFile, this, "Безымянный"));
     this->connect(ui->barBtnOpenFile,       &QPushButton::clicked, this, &SeptemberEditor::openFile);
     this->connect(ui->barBtnSaveFile,       &QPushButton::clicked, this, std::bind(&SeptemberEditor::saveFile, this, m_fileInfo, ui->plainTextEdit));
@@ -154,6 +158,8 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnCreateWidget,   &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowCreateWidget, this));
     this->connect(ui->mnOpenUi,         &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowOpenUI, this));
     this->connect(ui->mnResourceEditor, &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowResourceEditor, this));
+    this->connect(ui->mnColor,          &QAction::triggered, std::bind(&SeptemberEditor::showColorDialog, this));
+    this->connect(ui->mnFont,           &QAction::triggered, std::bind(&SeptemberEditor::showFontDialog, this));
     this->connect(ui->mnLineWrap,   &QAction::triggered, this, &SeptemberEditor::lineWrap);
     this->connect(ui->mnFullScreen, &QAction::triggered, this, &SeptemberEditor::fullScreen);
     this->connect(ui->mnStatusBar,  &QAction::triggered, std::bind(&QLabel::setVisible, ui->lblStatusBar, std::placeholders::_1));
@@ -200,6 +206,8 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnCreateWidget->text(), ui->mnCreateWidget->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnOpenUi->text(), ui->mnOpenUi->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnResourceEditor->text(), ui->mnResourceEditor->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnFont->text(), ui->mnFont->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnColor->text(), ui->mnColor->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnLineWrap->text(), ui->mnLineWrap->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnNumberLine->text(), ui->mnNumberLine->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnZoomIn->text(), ui->mnZoomIn->shortcut().toString());
@@ -333,12 +341,35 @@ void SeptemberEditor::closeOrShowResourceEditor()
         ui->widgetSearchAndReplace->clearResultSearch();
         ui->splitterEdit->setVisibleHeightHandle(true);
         ui->splitterEdit->setHeight(ui->widgetOpenUI->minimumSizeHint().height());
-   }
+    }
+}
+
+void SeptemberEditor::showColorDialog()
+{
+    QColor color = QColorDialog::getColor(Qt::white, this, "Color -- September");
+    if(!color.isValid())
+        return;
+    ui->plainTextEdit->textCursor().insertText(color.name() + ';');
+}
+
+void SeptemberEditor::showFontDialog()
+{
+    //font: 75 oblique 11pt "DejaVu Sans";
+    bool success;
+    QFont font = QFontDialog::getFont(&success, QFont(), this, "Font -- September");
+    if(!success)
+        return;
+    qDebug()<<font.family()
+           <<font.key()
+           //<<font.lastResortFont()
+          <<font.toString()
+           <<font.styleName();
+
 }
 
 void SeptemberEditor::openFile()
 {
-    QString path = QFileDialog::getOpenFileName(this, "Open file", m_pathHome, "*.qss");
+    QString path = QFileDialog::getOpenFileName(this, "Open file -- September", m_pathHome, "*.qss");
     if(path.isEmpty())
         return;
 
@@ -696,6 +727,8 @@ void SeptemberEditor::readSettingKey()
     ui->mnCreateWidget->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnCreateWidget->text())));
     ui->mnOpenUi->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnOpenUi->text())));
     ui->mnResourceEditor->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnResourceEditor->text())));
+    ui->mnColor->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnColor->text())));
+    ui->mnFont->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnFont->text())));
     ui->mnLineWrap->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnLineWrap->text())));
     ui->mnNumberLine->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnNumberLine->text())));
     ui->mnZoomIn->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnZoomIn->text())));

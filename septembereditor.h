@@ -31,8 +31,8 @@
 #include <QtPrintSupport/QPrinter>
 #include <QtPrintSupport/QPrintDialog>
 #include <QMessageBox>
-#include <QFileInfoList>
 
+#include <QDialogButtonBox>
 #include <QDebug>
 
 namespace Ui {
@@ -52,6 +52,8 @@ private slots:
     void closeOrShowCreateWidget();
     void closeOrShowOpenUI();
     void closeOrShowResourceEditor();
+    void showColorDialog();
+    void showFontDialog();
     void openFile();
     void lineWrap(bool trigger);
     void fullScreen(bool trigger);
