@@ -28,8 +28,7 @@ public:
                     const QStringList& other, QObject* parent = nullptr);
     ~ObserverCodeQss() override = default;
 
-    void textParserHead(const QString& text);
-    void textParserBody(const QString& text);
+    void textParser(const QString& text);
     QVector<int> checkingCodeQss(std::string& text, QTextBlock& textBlock);
     void addAutoComplete(const QStringList& list);
 
@@ -58,7 +57,6 @@ private:
     };
 
     QHash<QString, QStringListModel*> m_strListModel_;
-    bool m_isTextParserHead = false;
 };
 
 #endif // OBSERVERCODEQSS_H

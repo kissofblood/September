@@ -9,16 +9,13 @@ ObserverCodeQss::ObserverCodeQss(const QStringList& properties, const QStringLis
     m_strListModel_.insert("widgets", new QStringListModel(widgets, this));
     m_strListModel_.insert("sub", new QStringListModel(sub, this));
     m_strListModel_.insert("other", new QStringListModel(other, this));
-    m_strListModel_.insert("empty", new QStringListModel(this));
+    m_strListModel_.insert("all", new QStringListModel(properties + pseudo + widgets + sub + other, this));
     m_strListModel_.insert("pathRes", new QStringListModel(this));
 }
 
-void ObserverCodeQss::textParserHead(const QString& text)
+void ObserverCodeQss::textParser(const QString& text)
 {
-    if(!m_isTextParserHead)
-        return;
-
-    if(text.length() < 2)
+    if(text.isEmpty())
     {
         emit stringListModelChanged(m_strListModel_["widgets"]);
         return;
@@ -26,78 +23,49 @@ void ObserverCodeQss::textParserHead(const QString& text)
 
     for(int i = text.length() - 1; i >= 0; i--)
     {
-        if(text[i] == '!' && text[i - 1].isLetter())
-        {
-            emit stringListModelChanged(m_strListModel_["empty"]);
-            break;
-        }
-        if(text[i] == '!' && text[i - 1] == ':')
-        {
-            if(text[i - 2].isLetter())
-                emit stringListModelChanged(m_strListModel_["pseudo"]);
-            else
-                emit stringListModelChanged(m_strListModel_["empty"]);
-            break;
-        }
-        else if(text[i] == ':' && text[i - 1].isLetter())
-        {
-            emit stringListModelChanged(m_strListModel_["pseudo"]);
-            break;
-        }
-        else if(text[i] == ':' && text[i - 1] == ':')
-        {
-            if(text[i - 2].isLetter())
-                emit stringListModelChanged(m_strListModel_["sub"]);
-            else
-                emit stringListModelChanged(m_strListModel_["empty"]);
-            break;
-        }
-        else if(text[i] == 'Q' || text[i] == ',' || text[i] == ' ')
+        if(text[i] == 'Q' || text[i] == 'q' || text[i] == '}' || text[i] == ',')
         {
             emit stringListModelChanged(m_strListModel_["widgets"]);
             break;
         }
-
-    }
-}
-
-void ObserverCodeQss::textParserBody(const QString& text)
-{
-    for(int i = text.length() - 1; i >= 0; i--)
-    {
-        if(text[i] == '}' || i == 0)
+        else if(text[i] == '!')
         {
-            m_isTextParserHead = true;
-            break;
-        }
-        else if(text[i] == '{' || text[i] == ';')
-        {
-            m_isTextParserHead = false;
-            emit stringListModelChanged(m_strListModel_["properties"]);
+            emit stringListModelChanged(m_strListModel_["pseudo"]);
             break;
         }
         else if(text[i] == ':')
         {
-            for(int j = i - 1; j >= 0; j--)
+            if(text[i - 1].isLetter() || text[i - 1] == ']')
             {
-                if(text[j] == 'Q')
+                bool flagOther = true;
+                for(int j = i - 1; j >= 0; j--)
                 {
-                    m_isTextParserHead = true;
-                    break;
+                    if(text[j] == 'Q')
+                    {
+                        flagOther = false;
+                        emit stringListModelChanged(m_strListModel_["pseudo"]);
+                        break;
+                    }
+                    else if(text[j] == '{')
+                        break;
                 }
-                else if(text[j] == '{')
-                {
-                    m_isTextParserHead = false;
+                if(flagOther)
                     emit stringListModelChanged(m_strListModel_["other"]);
-                    break;
-                }
-                else if(text[j] == '(')
-                {
-                    m_isTextParserHead = false;
-                    emit stringListModelChanged(m_strListModel_["pathRes"]);
-                    break;
-                }
             }
+            else if(text[i - 1] == ':' && (text[i - 2].isLetter() || text[i - 2] == ']')) {
+                emit stringListModelChanged(m_strListModel_["sub"]);
+            }
+            break;
+        }
+        else if(text[i] == ';' || text[i] == '{')
+        {
+            emit stringListModelChanged(m_strListModel_["properties"]);
+            break;
+        }
+        else if(text[i] == '/')
+        {
+            if(text[i - 1] == '*')
+                emit stringListModelChanged(m_strListModel_["all"]);
             break;
         }
     }
@@ -141,7 +109,10 @@ QVector<int> ObserverCodeQss::checkingCodeQss(std::string& text, QTextBlock& tex
 }
 
 void ObserverCodeQss::addAutoComplete(const QStringList& list)
-{ m_strListModel_["pathRes"]->setStringList(list); }
+{
+    m_strListModel_["pathRes"]->setStringList(list);
+    m_strListModel_["all"]->setStringList(m_strListModel_["all"]->stringList() + list);
+}
 
 ObserverCodeQss::CheckingCodeQss::CheckingCodeQss(std::string::iterator first, std::string::iterator last) : qi::grammar<std::string::iterator, qi::space_type>::base_type(m_expession)
     , m_iterFirst(first)

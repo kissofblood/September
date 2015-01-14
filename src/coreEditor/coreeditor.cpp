@@ -24,16 +24,7 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
     this->connect(this, &QPlainTextEdit::cursorPositionChanged, this, &CoreEditor::highlightCurrentLine);
     this->connect(m_completer, SIGNAL(activated(QString)), SLOT(insertCompletion(QString)));
     this->connect(this, &QPlainTextEdit::cursorPositionChanged, this, [this]()
-    {
-        QTextCursor cursor = this->textCursor();
-        cursor.select(QTextCursor::BlockUnderCursor);
-
-        QTextCursor startBlock = this->textCursor();
-        startBlock.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
-
-        m_observerCode->textParserBody(this->document()->toPlainText().left(this->textCursor().position() + 1));
-        m_observerCode->textParserHead(cursor.selectedText().left(this->textCursor().position() - startBlock.position() + 1));
-    });
+    { m_observerCode->textParser(this->toPlainText().left(this->textCursor().position())); });
     this->connect(m_observerCode, &ObserverCodeQss::stringListModelChanged, m_completer, &QCompleter::setModel);
     this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, &CoreEditor::readValue);
     this->connect(this, &QPlainTextEdit::textChanged, this, [this]()
@@ -174,11 +165,14 @@ void CoreEditor::updateLineNumberArea(const QRect& rect, int dy)
 void CoreEditor::insertCompletion(const QString& text)
 {
     QTextCursor cursor = this->textCursor();
+    cursor.movePosition(QTextCursor::WordLeft);
     cursor.select(QTextCursor::WordUnderCursor);
-    if((cursor.selectedText().end() - 1)->isLetter())
+    QString selectedText = cursor.selectedText();
+    int lenghtST = selectedText.length() - 1;
+    if(lenghtST < 0) lenghtST = 0;
+    if(selectedText[lenghtST].isLetter())
         cursor.removeSelectedText();
-    else
-        cursor.setPosition(cursor.position());
+    cursor.setPosition(this->textCursor().position());
     cursor.insertText(text);
     this->setTextCursor(cursor);
 }
@@ -283,6 +277,7 @@ void CoreEditor::keyPressEvent(QKeyEvent* event)
     if((event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_Space) || flagKey)
     {
         QTextCursor cursor = this->textCursor();
+        cursor.movePosition(QTextCursor::WordLeft);
         cursor.select(QTextCursor::WordUnderCursor);
         QString completePrefix = cursor.selectedText();
 

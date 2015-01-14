@@ -354,11 +354,23 @@ void SeptemberEditor::showColorDialog()
 
 void SeptemberEditor::showFontDialog()
 {
-    //font: 75 oblique 11pt "DejaVu Sans";
+/*font: 75 oblique 11pt "DejaVu Sans";
+font: 75 oblique 16pt "DejaVu Sans";
+font: 75 italic 11pt "Courier 10 Pitch";
+font: 75 oblique 11pt "DejaVu Sans";
+text-decoration: line-through;
+font: 75 oblique 11pt "DejaVu Sans";
+text-decoration: underline line-through;
+font: 75 oblique 11pt "DejaVu Sans";
+font: 11pt "DejaVu Sans";
+font: oblique 11pt "DejaVu Sans";
+font: 75 oblique 22pt "DejaVu Sans";
+text-decoration: line-through;*/
     bool success;
     QFont font = QFontDialog::getFont(&success, QFont(), this, "Font -- September");
     if(!success)
         return;
+
     qDebug()<<font.family()
            <<font.key()
            //<<font.lastResortFont()
