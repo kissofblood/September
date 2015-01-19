@@ -15,8 +15,6 @@
 #include <QColor>
 #include <QPair>
 
-#include <QDebug>
-
 class Highlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
@@ -37,7 +35,7 @@ private:
         QRegExp         pattern;
         QTextCharFormat format;
     };
-    QHash<QString, QVector<HighlightingRule>> m_highlightingRule_;
+    QVector<QPair<QString, QVector<HighlightingRule>>>  m_highlightingRule_;
     QTextCharFormat     m_commentTextFormat;
     QTextCharFormat     m_numberFormat;
     QRegExp             m_commentStart;

@@ -52,9 +52,10 @@ void ObserverCodeQss::textParser(const QString& text)
                 if(flagOther)
                     emit stringListModelChanged(m_strListModel_["other"]);
             }
-            else if(text[i - 1] == ':' && (text[i - 2].isLetter() || text[i - 2] == ']')) {
+            else if(text[i - 1] == ':' && (text[i - 2].isLetter() || text[i - 2] == ']'))
                 emit stringListModelChanged(m_strListModel_["sub"]);
-            }
+            else if(text[i - 1] == '(')
+                emit stringListModelChanged(m_strListModel_["pathRes"]);
             break;
         }
         else if(text[i] == ';' || text[i] == '{')

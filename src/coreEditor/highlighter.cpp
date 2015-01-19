@@ -3,9 +3,9 @@
 Highlighter::Highlighter(const QStringList& properties, const QStringList& pseudo,
                          const QStringList& widgets,    const QStringList& sub,
                          const QStringList& other,    QTextDocument* parent) : QSyntaxHighlighter(parent)
-    , m_commentStart(R"(/\*)")
-    , m_commentEnd(R"(\*/)")
-    , m_number(R"(([0-9]+)|([0-9]+\.[0-9]+)|(#\b(([a-fA-F]|\d)+)\b))")
+    , m_commentStart(QRegExp(R"(/\*)"))
+    , m_commentEnd(QRegExp(R"(\*/)"))
+    , m_number(QRegExp(R"(([0-9]+)|([0-9]+\.[0-9]+)|(#\b(([a-fA-F]|\d)+)\b))"))
 {
     this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, &Highlighter::readValue);
 
@@ -23,7 +23,7 @@ Highlighter::Highlighter(const QStringList& properties, const QStringList& pseud
             else if(name == "sub")
                 rule.pattern.setPattern(R"(\b::)" + str + R"(\b)");
             else if(name == "other")
-                rule.pattern.setPattern(R"(:(\w|\s)*)" + str + R"(.*;)");
+                rule.pattern.setPattern(R"(\:.*)" + str + R"(.*;)");
             vecRule.push_back(rule);
         }
         return vecRule;
@@ -32,11 +32,11 @@ Highlighter::Highlighter(const QStringList& properties, const QStringList& pseud
     for(QString str : other)
         strList.push_back(str.remove(QRegExp(R"(\(.*\))")));
 
-    m_highlightingRule_.insert("properties", setHighlighter("properties", properties));
-    m_highlightingRule_.insert("pseudo", setHighlighter("pseudo", pseudo));
-    m_highlightingRule_.insert("widgets", setHighlighter("widgets", widgets));
-    m_highlightingRule_.insert("sub", setHighlighter("sub", sub));
-    m_highlightingRule_.insert("other", setHighlighter("other", strList));
+    m_highlightingRule_.push_back({ "widgets", setHighlighter("widgets", widgets) });
+    m_highlightingRule_.push_back({ "sub", setHighlighter("sub", sub) });
+    m_highlightingRule_.push_back({ "pseudo", setHighlighter("pseudo", pseudo) });
+    m_highlightingRule_.push_back({ "properties", setHighlighter("properties", properties) });
+    m_highlightingRule_.push_back({ "ot0her", setHighlighter("other", strList) });
 
     m_settingSeptember->readScheme();
     if(m_settingSeptember->containsKey())
@@ -65,46 +65,47 @@ Highlighter::Highlighter(const QStringList& properties, const QStringList& pseud
 void Highlighter::highlightBlock(const QString& text)
 {
     for(auto i = m_highlightingRule_.begin(); i != m_highlightingRule_.end(); i++)
-        for(auto& rule : i.value())
+        for(auto& rule : i->second)
         {
-            QRegExp expression(rule.pattern);
-            int index = expression.indexIn(text);
+            int index = rule.pattern.indexIn(text);
             while(index >= 0)
             {
                 int length;
-                if(i.key() == "properties" || i.key() == "widgets")
+                if(i->first == "properties" || i->first == "widgets")
                 {
 
                     if(index > 1)
                         if(text[index - 1] == ':' || text[index - 1] == '!')
                             break;
-                    length = expression.matchedLength();
+                    length = rule.pattern.matchedLength();
                 }
-                else if(i.key() == "pseudo")
+                else if(i->first == "pseudo")
                 {
                     if(text[index + 1] == '!')
                     {
                         index += 2;
-                        length = expression.matchedLength() - 2;
+                        length = rule.pattern.matchedLength() - 2;
                     }
                     else
                     {
                         index += 1;
-                        length = expression.matchedLength() - 1;
+                        length = rule.pattern.matchedLength() - 1;
                     }
                 }
-                else if(i.key() == "sub")
+                else if(i->first == "sub")
                 {
                     index += 2;
-                    length = expression.matchedLength() - 2;
+                    length = rule.pattern.matchedLength() - 2;
                 }
-                else if(i.key() == "other")
+                else if(i->first == "other")
                 {
-                    index += 1;
-                    length = expression.matchedLength() - 2;
+                    length = rule.pattern.matchedLength();
                 }
+                QString tmp;
+                for(int q = index; q < length; q++)
+                    tmp += text[q];
                 this->setFormat(index, length, rule.format);
-                index = expression.indexIn(text, index + length);
+                index = rule.pattern.indexIn(text, index + length);
             }
         }
 
@@ -167,6 +168,11 @@ void Highlighter::setCharFormat(const QString& name, const QPair<QColor, QFont::
     QTextCharFormat charFormat;
     charFormat.setForeground(QBrush(pair.first));
     charFormat.setFontWeight(pair.second);
-    for(auto& rule : m_highlightingRule_[name])
-        rule.format = charFormat;
+    for(auto& rule1 : m_highlightingRule_)
+        if(rule1.first == name)
+        {
+            for(HighlightingRule& rule2 : rule1.second)
+                rule2.format = charFormat;
+            break;
+        }
 }

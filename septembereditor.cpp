@@ -126,13 +126,13 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->btnFont,              &QPushButton::clicked, this, &SeptemberEditor::showFontDialog);
     this->connect(ui->barBtnCreateFile,     &QPushButton::clicked, this, std::bind(&SeptemberEditor::newFile, this, "Безымянный"));
     this->connect(ui->barBtnOpenFile,       &QPushButton::clicked, this, &SeptemberEditor::openFile);
-    this->connect(ui->barBtnSaveFile,       &QPushButton::clicked, this, std::bind(&SeptemberEditor::saveFile, this, m_fileInfo, ui->plainTextEdit));
+    this->connect(ui->barBtnSaveFile,       &QPushButton::clicked, this, [this]() { saveFile(m_fileInfo, ui->plainTextEdit); });
     this->connect(ui->barBtnSaveAsFile,     &QPushButton::clicked, this, &SeptemberEditor::saveFileAs);
     this->connect(ui->barBtnNextFile,       &QPushButton::clicked, this, &SeptemberEditor::nextFile);
     this->connect(ui->barBtnPrevFile,       &QPushButton::clicked, this, &SeptemberEditor::prevFile);
     this->connect(ui->mnNewFile,        &QAction::triggered,    this, std::bind(&SeptemberEditor::newFile, this, "Безымянный"));
     this->connect(ui->mnOpen,           &QAction::triggered,    this, &SeptemberEditor::openFile);
-    this->connect(ui->mnSave,           &QAction::triggered,    this, std::bind(&SeptemberEditor::saveFile, this, m_fileInfo, ui->plainTextEdit));
+    this->connect(ui->mnSave,           &QAction::triggered,    this, [this]() { saveFile(m_fileInfo, ui->plainTextEdit); });
     this->connect(ui->mnSaveAs,         &QAction::triggered,    this, &SeptemberEditor::saveFileAs);
     this->connect(ui->mnPrint,          &QAction::triggered,    this, &SeptemberEditor::printFile);
     this->connect(ui->mnClearHistoryFile, &QAction::triggered,  this, &SeptemberEditor::clearHistoryFile);

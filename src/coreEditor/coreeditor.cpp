@@ -259,6 +259,7 @@ void CoreEditor::resizeEvent(QResizeEvent* event)
 void CoreEditor::keyPressEvent(QKeyEvent* event)
 {
     static bool flagKey = false;
+    static bool flagReturn = false;
     if(m_completer->popup()->isVisible())
         if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return
             || event->key() == Qt::Key_Escape || event->key() == Qt::Key_Tab)
@@ -296,6 +297,21 @@ void CoreEditor::keyPressEvent(QKeyEvent* event)
         rect.setWidth(m_completer->popup()->sizeHintForColumn(0) + m_completer->popup()->verticalScrollBar()->sizeHint().width());
 
         m_completer->complete(rect);
+    }
+    else if(event->key() == Qt::Key_Return)
+    {
+        QString text = this->toPlainText().left(this->textCursor().position());
+        for(int i = text.length() - 1; i >= 0; i--)
+        {
+            if(text[i] == '}' || text[i] == ',')
+                return;
+            if(text[i] == '{' || text[i] == ';')
+            {
+                for(int i = 0; i < 4; i++)
+                    this->insertPlainText(QString(" "));
+                break;
+            }
+        }
     }
 }
 
