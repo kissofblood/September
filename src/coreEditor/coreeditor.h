@@ -29,8 +29,7 @@
 #include <string>
 #include <QTextDocument>
 #include <tuple>
-
-#include <QtWidgets>
+#include <QScrollBar>
 
 class CoreEditor : public QPlainTextEdit
 {

@@ -28,7 +28,6 @@ SettingSeptember::~SettingSeptember()
 {
     delete ui;
     delete m_settingCommon;
-    delete m_settingSession;
     delete m_settingFontAndColor;
     delete m_settingEditing;
     if(m_removeSpacer)
@@ -161,18 +160,6 @@ void SettingSeptember::selectSetting(QTreeWidgetItem* item)
             m_removeSpacer = false;
         }
         m_currentSetting = m_settingCommon;
-    }
-    else if(setting == item1->child(1)->text(0))
-    {
-        ui->vLayoutSetting->removeWidget(m_currentSetting);
-        m_currentSetting->setParent(nullptr);
-        ui->vLayoutSetting->insertWidget(0, m_settingSession);
-        if(m_removeSpacer)
-        {
-            ui->vLayoutSetting->addItem(m_spacerSetting);
-            m_removeSpacer = false;
-        }
-        m_currentSetting = m_settingSession;
     }
     else if(setting == item2->child(0)->text(0))
     {

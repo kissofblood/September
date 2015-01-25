@@ -4,11 +4,6 @@
 #include "src/common.h"
 #include "src/graphicswidget.h"
 #include "src/coreEditor/coreeditor.h"
-#include <QWidget>
-#include <algorithm>
-#include <functional>
-#include <QList>
-
 #include <QtWidgets>
 
 namespace Ui {

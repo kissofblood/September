@@ -28,7 +28,6 @@ SOURCES += main.cpp\
     src/fileView/listfileview.cpp \
     src/fileView/listfilemodel.cpp \
     setting/settingapp.cpp \
-    setting/settingSeptember/settingsession.cpp \
     setting/settingSeptember/settingfontandcolor.cpp \
     setting/settingSeptember/settingediting.cpp \
     setting/settingSeptember/settingcommon.cpp \
@@ -51,7 +50,6 @@ HEADERS  += septembereditor.h \
     src/common.h \
     src/fileView/listfilemodel.h \
     setting/settingapp.h \
-    setting/settingSeptember/settingsession.h \
     setting/settingSeptember/settingfontandcolor.h \
     setting/settingSeptember/settingediting.h \
     setting/settingSeptember/settingcommon.h \
@@ -65,7 +63,6 @@ FORMS    += septembereditor.ui \
     searchandreplace.ui \
     setting/settingkey.ui \
     setting/settingseptember.ui \
-    setting/settingSeptember/settingsession.ui \
     setting/settingSeptember/settingfontandcolor.ui \
     setting/settingSeptember/settingediting.ui \
     setting/settingSeptember/settingcommon.ui \

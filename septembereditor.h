@@ -32,9 +32,6 @@
 #include <QtPrintSupport/QPrintDialog>
 #include <QMessageBox>
 
-#include <QDialogButtonBox>
-#include <QDebug>
-
 namespace Ui {
 class SeptemberEditor;
 }
@@ -53,7 +50,6 @@ private slots:
     void closeOrShowOpenUI();
     void closeOrShowResourceEditor();
     void showColorDialog();
-    void showFontDialog();
     void openFile();
     void lineWrap(bool trigger);
     void fullScreen(bool trigger);

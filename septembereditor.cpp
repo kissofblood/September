@@ -75,7 +75,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     ui->mnSettingKey->setShortcut(Qt::CTRL + Qt::ALT + Qt::Key_K);
     ui->mnSettingSeptember->setShortcut(Qt::CTRL + Qt::ALT + Qt::Key_S);
     ui->mnFullScreen->setShortcut(QKeySequence::FullScreen);
-    ui->mnAbout->setShortcut(Qt::SHIFT + Qt::Key_F1);
+    ui->mnAboutQt->setShortcut(Qt::SHIFT + Qt::Key_F1);
 
     m_settingKey->addValue(m_nameGroup, ui->mnNewFile->text());
     m_settingKey->addValue(m_nameGroup, ui->mnOpen->text());
@@ -102,7 +102,6 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     m_settingKey->addValue(m_nameGroup, ui->mnCreateWidget->text());
     m_settingKey->addValue(m_nameGroup, ui->mnOpenUi->text());
     m_settingKey->addValue(m_nameGroup, ui->mnResourceEditor->text());
-    m_settingKey->addValue(m_nameGroup, ui->mnFont->text());
     m_settingKey->addValue(m_nameGroup, ui->mnColor->text());
     m_settingKey->addValue(m_nameGroup, ui->mnLineWrap->text());
     m_settingKey->addValue(m_nameGroup, ui->mnNumberLine->text());
@@ -115,7 +114,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     m_settingKey->addValue(m_nameGroup, ui->mnSettingKey->text());
     m_settingKey->addValue(m_nameGroup, ui->mnSettingSeptember->text());
 
-    m_settingKey->addValue(m_nameGroup, ui->mnAbout->text());
+    m_settingKey->addValue(m_nameGroup, ui->mnAboutQt->text());
 
     this->connect(ui->btnCloseListFile,     &QPushButton::clicked, this, &SeptemberEditor::closeOrShowListFile);
     this->connect(ui->btnSearchAndReplace,  &QPushButton::clicked, this, &SeptemberEditor::closeOrShowWidgetSearchAndReplace);
@@ -123,7 +122,6 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->btnOpenUi,            &QPushButton::clicked, this, &SeptemberEditor::closeOrShowOpenUI);
     this->connect(ui->btnResourceEditor,    &QPushButton::clicked, this, &SeptemberEditor::closeOrShowResourceEditor);
     this->connect(ui->btnColor,             &QPushButton::clicked, this, &SeptemberEditor::showColorDialog);
-    this->connect(ui->btnFont,              &QPushButton::clicked, this, &SeptemberEditor::showFontDialog);
     this->connect(ui->barBtnCreateFile,     &QPushButton::clicked, this, std::bind(&SeptemberEditor::newFile, this, "Безымянный"));
     this->connect(ui->barBtnOpenFile,       &QPushButton::clicked, this, &SeptemberEditor::openFile);
     this->connect(ui->barBtnSaveFile,       &QPushButton::clicked, this, [this]() { saveFile(m_fileInfo, ui->plainTextEdit); });
@@ -152,14 +150,13 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
     this->connect(ui->mnCloseFileOther, &QAction::triggered,    this, &SeptemberEditor::closeFileOther);
     this->connect(ui->mnCloseFileAll,   &QAction::triggered,    this, &SeptemberEditor::closeFileAll);
     this->connect(ui->mnQuit,           &QAction::triggered,    qApp, &QApplication::quit);
-    this->connect(ui->mnAbout,          &QAction::triggered,    this, [this]() { QMessageBox::aboutQt(this); });
+    this->connect(ui->mnAboutQt,        &QAction::triggered,    this, [this]() { QMessageBox::aboutQt(this); });
     this->connect(ui->mnSearchReplace,  &QAction::triggered,    this, &SeptemberEditor::closeOrShowWidgetSearchAndReplace);
     this->connect(ui->mnListFile,       &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowListFile, this));
     this->connect(ui->mnCreateWidget,   &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowCreateWidget, this));
     this->connect(ui->mnOpenUi,         &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowOpenUI, this));
     this->connect(ui->mnResourceEditor, &QAction::triggered, std::bind(&SeptemberEditor::closeOrShowResourceEditor, this));
     this->connect(ui->mnColor,          &QAction::triggered, std::bind(&SeptemberEditor::showColorDialog, this));
-    this->connect(ui->mnFont,           &QAction::triggered, std::bind(&SeptemberEditor::showFontDialog, this));
     this->connect(ui->mnLineWrap,   &QAction::triggered, this, &SeptemberEditor::lineWrap);
     this->connect(ui->mnFullScreen, &QAction::triggered, this, &SeptemberEditor::fullScreen);
     this->connect(ui->mnStatusBar,  &QAction::triggered, std::bind(&QLabel::setVisible, ui->lblStatusBar, std::placeholders::_1));
@@ -206,7 +203,6 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnCreateWidget->text(), ui->mnCreateWidget->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnOpenUi->text(), ui->mnOpenUi->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnResourceEditor->text(), ui->mnResourceEditor->shortcut().toString());
-        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnFont->text(), ui->mnFont->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnColor->text(), ui->mnColor->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnLineWrap->text(), ui->mnLineWrap->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnNumberLine->text(), ui->mnNumberLine->shortcut().toString());
@@ -219,7 +215,7 @@ SeptemberEditor::SeptemberEditor(QWidget* parent) : QMainWindow(parent),
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnSettingKey->text(), ui->mnSettingKey->shortcut().toString());
         m_settingKey->writeDefaultKey(m_nameGroup, ui->mnSettingSeptember->text(), ui->mnSettingSeptember->shortcut().toString());
 
-        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnAbout->text(), ui->mnAbout->shortcut().toString());
+        m_settingKey->writeDefaultKey(m_nameGroup, ui->mnAboutQt->text(), ui->mnAboutQt->shortcut().toString());
     }
     m_warningChangeFile = m_settingSeptember->warningChangeFile();
 }
@@ -350,33 +346,6 @@ void SeptemberEditor::showColorDialog()
     if(!color.isValid())
         return;
     ui->plainTextEdit->textCursor().insertText(color.name() + ';');
-}
-
-void SeptemberEditor::showFontDialog()
-{
-/*font: 75 oblique 11pt "DejaVu Sans";
-font: 75 oblique 16pt "DejaVu Sans";
-font: 75 italic 11pt "Courier 10 Pitch";
-font: 75 oblique 11pt "DejaVu Sans";
-text-decoration: line-through;
-font: 75 oblique 11pt "DejaVu Sans";
-text-decoration: underline line-through;
-font: 75 oblique 11pt "DejaVu Sans";
-font: 11pt "DejaVu Sans";
-font: oblique 11pt "DejaVu Sans";
-font: 75 oblique 22pt "DejaVu Sans";
-text-decoration: line-through;*/
-    bool success;
-    QFont font = QFontDialog::getFont(&success, QFont(), this, "Font -- September");
-    if(!success)
-        return;
-
-    qDebug()<<font.family()
-           <<font.key()
-           //<<font.lastResortFont()
-          <<font.toString()
-           <<font.styleName();
-
 }
 
 void SeptemberEditor::openFile()
@@ -740,7 +709,6 @@ void SeptemberEditor::readSettingKey()
     ui->mnOpenUi->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnOpenUi->text())));
     ui->mnResourceEditor->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnResourceEditor->text())));
     ui->mnColor->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnColor->text())));
-    ui->mnFont->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnFont->text())));
     ui->mnLineWrap->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnLineWrap->text())));
     ui->mnNumberLine->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnNumberLine->text())));
     ui->mnZoomIn->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnZoomIn->text())));
@@ -752,7 +720,7 @@ void SeptemberEditor::readSettingKey()
     ui->mnSettingKey->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnSettingKey->text())));
     ui->mnSettingSeptember->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnSettingSeptember->text())));
 
-    ui->mnAbout->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnAbout->text())));
+    ui->mnAboutQt->setShortcut(QKeySequence(m_settingKey->readKey(m_nameGroup, ui->mnAboutQt->text())));
 }
 
 void SeptemberEditor::messageSaveFile(const QList<QPair<QFileInfo, CoreEditor*>>& list)

@@ -9,7 +9,7 @@ WidgetStyle::WidgetStyle(QWidget* parent) : QWidget(parent),
         if(str != "QAbstractScrollArea" && str != "QColumnView" && str != "QDialogButtonBox"
            && str != "QHeaderView" && str != "QMessageBox" && str != "QSizeGrip"
             && str != "QStatusBar" && str != "QTabBar" && str != "QToolBar"
-             && str != "QToolTip")
+             && str != "QToolTip" && str != "QAbstractItemView")
         {
             QString key = str;
             key.remove(0, 1);

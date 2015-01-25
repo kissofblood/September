@@ -29,11 +29,10 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
     this->connect(m_settingSeptember, &SettingSeptember::settingSeptemberOK, this, &CoreEditor::readValue);
     this->connect(this, &QPlainTextEdit::textChanged, this, [this]()
     {
+        emit updateStyleSheet(this->document()->toPlainText());
         if(m_afterFile)
             emit textChangedAfterSetFile();
     });
-    this->connect(this, &QPlainTextEdit::textChanged, this, [this]()
-    { emit updateStyleSheet(this->document()->toPlainText()); });
     this->setFocus();
     this->setObjectName("plainTextEdit");
 

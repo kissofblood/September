@@ -267,25 +267,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnFont">
-        <property name="minimumSize">
-         <size>
-          <width>20</width>
-          <height>100</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>20</width>
-          <height>100</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
        <spacer name="verticalSpacer_2">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -371,7 +352,6 @@
      <addaction name="mnOpenUi"/>
      <addaction name="mnResourceEditor"/>
      <addaction name="mnColor"/>
-     <addaction name="mnFont"/>
     </widget>
     <addaction name="mnNextFile"/>
     <addaction name="mnPrevFile"/>
@@ -400,7 +380,7 @@
     <property name="title">
      <string>Справка</string>
     </property>
-    <addaction name="mnAbout"/>
+    <addaction name="mnAboutQt"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuCorrection"/>
@@ -569,9 +549,9 @@
     <string>Настроить September</string>
    </property>
   </action>
-  <action name="mnAbout">
+  <action name="mnAboutQt">
    <property name="text">
-    <string>О программе</string>
+    <string>О Qt</string>
    </property>
   </action>
   <action name="mnPathFileHis1">

@@ -2,7 +2,6 @@
 #define SETTINGSEPTEMBER_H
 
 #include "settingSeptember/settingcommon.h"
-#include "settingSeptember/settingsession.h"
 #include "settingSeptember/settingfontandcolor.h"
 #include "settingSeptember/settingediting.h"
 #include "settingapp.h"
@@ -15,8 +14,6 @@
 #include <QSpacerItem>
 #include <QColor>
 #include <QFont>
-
-#include <QDebug>
 
 namespace Ui {
 class SettingSeptember;
@@ -77,7 +74,6 @@ private:
     Ui::SettingSeptember    *ui                     = nullptr;
     SettingCommon           *m_settingCommon        = nullptr;
     SettingApp              *m_settingApp           = SettingApp::instance();
-    SettingSession          *m_settingSession       = new SettingSession;
     SettingFontAndColor     *m_settingFontAndColor  = new SettingFontAndColor;
     SettingEditing          *m_settingEditing       = new SettingEditing;
     QWidget                 *m_currentSetting       = nullptr;

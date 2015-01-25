@@ -35,11 +35,6 @@
           <string>Общие</string>
          </property>
         </item>
-        <item>
-         <property name="text">
-          <string>Сеансы</string>
-         </property>
-        </item>
        </item>
        <item>
         <property name="text">
