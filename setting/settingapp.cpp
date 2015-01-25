@@ -849,6 +849,82 @@ bool SettingApp::readWarningChangeFileSeptember()
     return qMove(value);
 }
 
+void SettingApp::writeWidthIndent(int indent)
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("widthIndent");
+            m_setting->setValue("indent", indent);
+        m_setting->endGroup();
+    m_setting->endGroup();
+}
+
+void SettingApp::writeDefaultWidthIndent(int indent)
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("defaultWidthIndent");
+            m_setting->setValue("indent", indent);
+        m_setting->endGroup();
+    m_setting->endGroup();
+}
+
+int SettingApp::readWidthIndent()
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("widthIndent");
+            int indent = m_setting->value("indent").toInt();
+        m_setting->endGroup();
+    m_setting->endGroup();
+    return qMove(indent);
+}
+
+int SettingApp::readDefualtWidthIndent()
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("defaultWidthIndent");
+            int indent = m_setting->value("indent").toInt();
+        m_setting->endGroup();
+    m_setting->endGroup();
+    return qMove(indent);
+}
+
+void SettingApp::writeWidthTab(int tab)
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("widthTab");
+            m_setting->setValue("tab", tab);
+        m_setting->endGroup();
+     m_setting->endGroup();
+}
+
+void SettingApp::writeDefaultWidthTab(int tab)
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("defaultWidthTab");
+            m_setting->setValue("tab", tab);
+        m_setting->endGroup();
+    m_setting->endGroup();
+}
+
+int SettingApp::readWidthTab()
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("widthTab");
+            int tab = m_setting->value("tab").toInt();
+        m_setting->endGroup();
+     m_setting->endGroup();
+     return qMove(tab);
+}
+
+int SettingApp::readDefualtWidthTab()
+{
+    m_setting->beginGroup("settingSeptember");
+        m_setting->beginGroup("defaultWidthTab");
+            int tab = m_setting->value("tab").toInt();
+        m_setting->endGroup();
+    m_setting->endGroup();
+    return qMove(tab);
+}
+
 void SettingApp::deleteScheme(const QString& scheme)
 {
     int size = m_setting->beginReadArray("schemes");

@@ -65,8 +65,7 @@ void ObserverCodeQss::textParser(const QString& text)
         }
         else if(text[i] == '/')
         {
-            if(text[i - 1] == '*')
-                emit stringListModelChanged(m_strListModel_["all"]);
+            emit stringListModelChanged(m_strListModel_["all"]);
             break;
         }
     }

@@ -75,6 +75,12 @@ void SettingSeptember::writeDefaultCommentQss(const QColor& color, QFont::Weight
 void SettingSeptember::writeDefaultNumberQss(const QColor& color, QFont::Weight weight)
 { m_settingFontAndColor->writeNumberQss(color, weight); }
 
+void SettingSeptember::writeDefaultWidthIndent(int indent)
+{ m_settingEditing->writeWidthIndent(indent); }
+
+void SettingSeptember::writeDefaultWidthTab(int tab)
+{ m_settingEditing->writeWidthTab(tab); }
+
 bool SettingSeptember::containsKey()
 {
     if(m_settingApp->containsColorSettingSeptember() && m_settingApp->containsQssSettingSeptember())
@@ -115,6 +121,12 @@ QPair<QColor, QFont::Weight> SettingSeptember::readCommentQss()
 QPair<QColor, QFont::Weight> SettingSeptember::readNumberQss()
 { return m_settingFontAndColor->numberQss(); }
 
+int SettingSeptember::readWidthIndent()
+{ return m_settingEditing->widthIndent(); }
+
+int SettingSeptember::readWidthTab()
+{ return m_settingEditing->widthTab(); }
+
 void SettingSeptember::addValueColor()
 { m_settingFontAndColor->readSettingColor(); }
 
@@ -126,6 +138,9 @@ void SettingSeptember::addKey()
 
 void SettingSeptember::readScheme()
 { m_settingFontAndColor->addScheme(); }
+
+void SettingSeptember::readSettingEditing()
+{ m_settingEditing->readSetting(); }
 
 bool SettingSeptember::warningChangeFile()
 { return m_settingCommon->getState(); }
@@ -186,6 +201,7 @@ void SettingSeptember::writeSetting()
 {
     m_settingFontAndColor->writeSetting();
     m_settingCommon->writeState();
+    m_settingEditing->writeSetting();
     emit settingSeptemberOK();
 }
 

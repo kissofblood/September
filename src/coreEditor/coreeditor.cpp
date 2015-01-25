@@ -49,6 +49,9 @@ CoreEditor::CoreEditor(QWidget* parent) : QPlainTextEdit(parent)
         m_settingSeptember->writeDefaultBackgroundColor(m_backgroundDoc);
         m_settingSeptember->writeDefaultCurrentLineColor(m_lineColor);
         m_settingSeptember->writeDefaultFontText(m_fontText);
+        m_settingSeptember->writeDefaultWidthTab(4);
+        m_settingSeptember->writeDefaultWidthIndent(m_indent);
+        this->setTabStopWidth(40);
     }
 
     updateLineNumberAreaWidth();
@@ -259,7 +262,6 @@ void CoreEditor::resizeEvent(QResizeEvent* event)
 void CoreEditor::keyPressEvent(QKeyEvent* event)
 {
     static bool flagKey = false;
-    static bool flagReturn = false;
     if(m_completer->popup()->isVisible())
         if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return
             || event->key() == Qt::Key_Escape || event->key() == Qt::Key_Tab)
@@ -307,7 +309,7 @@ void CoreEditor::keyPressEvent(QKeyEvent* event)
                 return;
             if(text[i] == '{' || text[i] == ';')
             {
-                for(int i = 0; i < 4; i++)
+                for(int i = 0; i < m_indent; i++)
                     this->insertPlainText(QString(" "));
                 break;
             }
@@ -330,6 +332,7 @@ void CoreEditor::wheelEvent(QWheelEvent* event)
 void CoreEditor::readValue()
 {
     m_settingSeptember->addValueColor();
+    m_settingSeptember->readSettingEditing();
     QPalette pal;
     m_backgroundDoc = m_settingSeptember->readBackgroundColor();
     pal.setColor(QPalette::Text, m_otherTextColor);
@@ -338,7 +341,9 @@ void CoreEditor::readValue()
     m_lineColor = m_settingSeptember->readCurrentLineColor();
     m_fontText = m_settingSeptember->readFontText();
     m_zoomDocument = m_fontText.pointSize();
+    m_indent = m_settingSeptember->readWidthIndent();
     this->document()->setDefaultFont(m_fontText);
+    this->setTabStopWidth(m_settingSeptember->readWidthTab() * 10);
     highlightCurrentLine();
 }
 

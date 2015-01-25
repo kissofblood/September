@@ -88,6 +88,14 @@ public:
     QString readCurrentSchemeSettingSeptember();
     void writeWarningChangeFileSeptember(bool value);
     bool readWarningChangeFileSeptember();
+    void writeWidthIndent(int indent);
+    void writeDefaultWidthIndent(int indent);
+    int readWidthIndent();
+    int readDefualtWidthIndent();
+    void writeWidthTab(int tab);
+    void writeDefaultWidthTab(int tab);
+    int readWidthTab();
+    int readDefualtWidthTab();
 
 private:
     QSettings   *m_setting = nullptr;

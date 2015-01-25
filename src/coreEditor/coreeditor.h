@@ -93,6 +93,7 @@ private:
     bool                m_afterFile             = false;
     QColor              m_backgroundDoc;
     QFont               m_fontText;
+    int                 m_indent = 4;
     QMultiHash<int, std::tuple<QTextCursor, QTextCharFormat, bool>> m_selectTextSearch_;
 
     int lineNumberAreaWidth();

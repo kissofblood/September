@@ -42,6 +42,8 @@ public:
     void writeDefaultPropertiesQss(const QColor& color, QFont::Weight weight);
     void writeDefaultCommentQss(const QColor& color, QFont::Weight weight);
     void writeDefaultNumberQss(const QColor& color, QFont::Weight weight);
+    void writeDefaultWidthIndent(int indent);
+    void writeDefaultWidthTab(int tab);
     bool containsKey();
     QColor readBackgroundColor();
     QColor readCurrentLineColor();
@@ -54,10 +56,13 @@ public:
     QPair<QColor, QFont::Weight> readPropertiesQss();
     QPair<QColor, QFont::Weight> readCommentQss();
     QPair<QColor, QFont::Weight> readNumberQss();
+    int readWidthIndent();
+    int readWidthTab();
     void addValueColor();
     void addValueQss();
     void addKey();
     void readScheme();
+    void readSettingEditing();
     bool warningChangeFile();
 
 signals:
